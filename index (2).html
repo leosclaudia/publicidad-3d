@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Publicidad 3D Billboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        p {
+            color: #aaa;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Controles */
+        .controls {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            max-width: 800px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            background: #333;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="range"] {
+            accent-color: #4caf50;
+            width: 120px;
+        }
+
+        /* Contenedor del Canvas / Imagen de Fondo */
+        .billboard-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 16 / 9;
+            background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?auto=format&fit=crop&w=1200&q=80'); /* Edificio moderno de noche */
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            /* Activamos la perspectiva 3D para los hijos */
+            perspective: 1000px; 
+        }
+
+        /* El marco o pantalla virtual en el edificio */
+        .screen-3d {
+            position: absolute;
+            /* Posicionamiento sobre el cartel del edificio de la foto de fondo */
+            top: 25%;
+            left: 35%;
+            width: 38%;
+            height: 32%;
+            background: #050505;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.1);
+            
+            /* Deformación 3D para simular la perspectiva de la esquina de la calle */
+            transform: rotateX(10deg) rotateY(-28deg) rotateZ(3deg) skewY(2deg);
+            transform-style: preserve-3d;
+        }
+
+        /* Resplandor simulando pantalla LED publicitaria */
+        .screen-3d::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(255,255,255,0.15), transparent);
+            pointer-events: none;
+            mix-blend-mode: overlay;
+        }
+
+        /* La imagen del usuario dentro del cartel */
+        .user-ad {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform-origin: center;
+            transition: transform 0.1s ease-out;
+            filter: brightness(1.1) contrast(1.05); /* Efecto de luz de pantalla */
+        }
+
+        .placeholder-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            pointer-events: none;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Generador de Cartelería Publicitaria 3D</h1>
+    <p>Subí tu imagen de catálogo, marca o diseño para ver cómo luciría en una pantalla gigante en la ciudad.</p>
+
+    <div class="controls">
+        <div class="control-group">
+            <label for="imageLoader">1. Seleccioná tu Imagen</label>
+            <input type="file" id="imageLoader" accept="image/*">
+        </div>
+        
+        <div class="control-group">
+            <label for="scale">Zoom Imagen</label>
+            <input type="range" id="scale" min="0.5" max="3" step="0.05" value="1">
+        </div>
+
+        <div class="control-group">
+            <label for="posX">Posición X</label>
+            <input type="range" id="posX" min="-100" max="100" step="1" value="0">
+        </div>
+
+        <div class="control-group">
+            <label for="posY">Posición Y</label>
+            <input type="range" id="posY" min="-100" max="100" step="1" value="0">
+        </div>
+    </div>
+
+    <div class="billboard-container">
+        <div class="screen-3d">
+            <div id="placeholder" class="placeholder-text">Tu publicidad va a aparecer acá</div>
+            <img id="outputImage" class="user-ad" style="display: none;" src="" alt="Tu Publicidad">
+        </div>
+    </div>
+
+    <script>
+        const imageLoader = document.getElementById('imageLoader');
+        const outputImage = document.getElementById('outputImage');
+        const placeholder = document.getElementById('placeholder');
+        
+        // Sliders
+        const scaleSlider = document.getElementById('scale');
+        const posXSlider = document.getElementById('posX');
+        const posYSlider = document.getElementById('posY');
+
+        // Escuchar cuando el usuario sube una foto
+        imageLoader.addEventListener('change', handleImage, false);
+
+        function handleImage(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                outputImage.src = event.target.result;
+                outputImage.style.display = 'block';
+                placeholder.style.display = 'none';
+                updateImageTransform();
+            }
+            reader.readAsDataURL(e.target.files[0]);
+        }
+
+        // Actualizar posición y tamaño dentro de la pantalla 3D
+        function updateImageTransform() {
+            const scale = scaleSlider.value;
+            const x = posXSlider.value;
+            const y = posYSlider.value;
+            
+            // Aplicamos las transformaciones de escala y traslación personalizadas por el usuario
+            outputImage.style.transform = `scale(${scale}) translate(${x}px, ${y}px)`;
+        }
+
+        // Eventos para los cambios en tiempo real de los controles
+        scaleSlider.addEventListener('input', updateImageTransform);
+        posXSlider.addEventListener('input', updateImageTransform);
+        posYSlider.addEventListener('input', updateImageTransform);
+    </script>
+
+</body>
+</html>
