@@ -3,20 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Billboard Pro – Generador de Publicidad 3D</title>
+  <title>3D Billboard – Generador de Publicidad</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --green: #00e676;
-      --green-dim: #00c85e;
-      --red: #f44336;
-      --bg: #0d0d0d;
-      --surface: #181818;
-      --surface2: #222;
-      --border: #2e2e2e;
-      --text: #e8e8e8;
-      --text-dim: #777;
+      --green:  #00e676;
+      --yellow: #ffd600;
+      --red:    #f44336;
+      --bg:     #0a0a0a;
+      --card:   #141414;
+      --border: #2a2a2a;
+      --text:   #e0e0e0;
+      --dim:    #666;
     }
 
     body {
@@ -27,70 +26,111 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px 40px;
+      padding: 20px 14px 50px;
     }
 
-    /* ─── HEADER ─── */
+    /* ── HEADER ── */
     .header { text-align: center; margin-bottom: 22px; }
-    .header h1 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.3px; }
+    .header h1 { font-size: 1.5rem; font-weight: 800; }
     .header h1 span { color: var(--green); }
-    .header p  { font-size: 0.82rem; color: var(--text-dim); margin-top: 4px; }
+    .header p  { font-size: 0.8rem; color: var(--dim); margin-top: 4px; }
 
-    /* ─── CONTROLS ─── */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
+    /* ── STEPS ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
       max-width: 980px;
       width: 100%;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    .cg { display: flex; flex-direction: column; gap: 7px; }
+    .step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
 
-    .cg label {
-      font-size: 10px;
+    .step-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #000;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-title strong { font-size: 13px; font-weight: 700; }
+    .step-title small  { font-size: 11px; color: var(--dim); display: block; margin-top: 1px; }
+
+    .step input[type="file"] {
+      background: #1c1c1c;
+      border: 1px dashed #3a3a3a;
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--dim);
+      font-size: 11px;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color .2s;
+    }
+    .step input[type="file"]:hover { border-color: var(--green); color: var(--text); }
+
+    /* ── ADJUST ROW ── */
+    .adjust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      max-width: 980px;
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 14px;
+      align-items: flex-end;
+    }
+
+    .adj {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 130px;
+      flex: 1;
+    }
+
+    .adj label {
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.9px;
+      letter-spacing: 0.8px;
       font-weight: 700;
       color: var(--green);
       display: flex;
       justify-content: space-between;
     }
 
-    .cg label em {
+    .adj label em {
       font-style: normal;
-      color: var(--text-dim);
+      color: var(--dim);
       font-weight: 400;
       text-transform: none;
       letter-spacing: 0;
     }
 
-    input[type="file"] {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 7px 8px;
-      color: var(--text-dim);
-      font-size: 11px;
-      cursor: pointer;
-      width: 100%;
-      transition: border-color .2s;
-    }
-    input[type="file"]:hover { border-color: var(--green); }
-
-    input[type="range"] {
-      accent-color: var(--green);
-      width: 100%;
-      cursor: pointer;
-    }
+    input[type="range"] { accent-color: var(--green); width: 100%; cursor: pointer; }
 
     select {
-      background: var(--surface2);
+      background: #1c1c1c;
       border: 1px solid var(--border);
       border-radius: 7px;
       padding: 8px;
@@ -100,82 +140,84 @@
       width: 100%;
     }
 
-    /* ─── ACTION BAR ─── */
-    .actions {
+    /* ── PREVIEW CANVAS ── */
+    .preview-wrap {
       max-width: 980px;
       width: 100%;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      padding: 9px 18px;
-      border-radius: 8px;
-      border: none;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .18s;
-      white-space: nowrap;
-    }
-    .btn:disabled { opacity: .45; cursor: not-allowed; }
-    .btn-green  { background: var(--green); color: #000; }
-    .btn-green:hover:not(:disabled) { background: var(--green-dim); transform: translateY(-1px); }
-    .btn-red    { background: var(--red); color: #fff; }
-    .btn-red:hover:not(:disabled)   { background: #d32f2f; transform: translateY(-1px); }
-    .btn-ghost  { background: transparent; border: 1px solid var(--border); color: var(--text); }
-    .btn-ghost:hover { border-color: var(--green); color: var(--green); }
-
-    .rec-badge {
-      display: none;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      color: var(--red);
-      font-weight: 600;
-    }
-    .rec-badge.on { display: flex; }
-    .rec-dot {
-      width: 9px; height: 9px;
-      background: var(--red);
-      border-radius: 50%;
-      animation: blink 1s infinite;
-    }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
-
-    /* ─── CANVAS WRAPPER ─── */
-    .preview {
-      max-width: 980px;
-      width: 100%;
-      aspect-ratio: 16/9;
-      border-radius: 12px;
+      border-radius: 14px;
+      /* Glowing border so you always see the canvas */
+      border: 2px solid var(--green);
+      box-shadow: 0 0 0 1px #004d28, 0 0 30px rgba(0,230,118,.18), 0 20px 60px rgba(0,0,0,.9);
       overflow: hidden;
-      box-shadow: 0 20px 70px rgba(0,0,0,.85);
+      aspect-ratio: 16 / 9;
+      margin-bottom: 16px;
       background: #000;
+    }
+
+    #cnv { width: 100%; height: 100%; display: block; }
+
+    /* ── ACTION BUTTONS ── */
+    .actions {
+      display: flex;
+      gap: 12px;
+      max-width: 980px;
+      width: 100%;
+      flex-wrap: wrap;
       margin-bottom: 14px;
     }
 
-    #cnv {
-      width: 100%;
-      height: 100%;
-      display: block;
+    .btn {
+      padding: 12px 22px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .18s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
+    .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+    .btn:not(:disabled):hover { transform: translateY(-2px); }
 
-    /* ─── STATUS ─── */
+    .btn-anim {
+      background: #1e3a2f;
+      color: var(--green);
+      border: 1px solid var(--green);
+    }
+    .btn-anim:not(:disabled):hover { background: #264d3b; }
+
+    .btn-img {
+      background: #1a1a1a;
+      color: var(--yellow);
+      border: 1px solid var(--yellow);
+    }
+    .btn-img:not(:disabled):hover { background: #2a2800; }
+
+    .btn-rec {
+      background: var(--red);
+      color: #fff;
+      font-size: 15px;
+      padding: 13px 28px;
+      flex: 1;
+    }
+    .btn-rec:not(:disabled):hover { background: #d32f2f; }
+    .btn-rec.recording { background: #7f0000; animation: pulse-rec 1s infinite; }
+
+    @keyframes pulse-rec { 0%,100%{box-shadow:0 0 0 0 rgba(244,67,54,.6)} 50%{box-shadow:0 0 0 8px rgba(244,67,54,0)} }
+
+    /* ── STATUS ── */
     .status {
       max-width: 980px;
       width: 100%;
-      background: var(--surface);
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 10px 16px;
       font-size: 12px;
-      color: var(--text-dim);
+      color: var(--dim);
       text-align: center;
-      min-height: 38px;
     }
   </style>
 </head>
@@ -183,604 +225,462 @@
 
 <div class="header">
   <h1>3D Billboard <span>Pro</span></h1>
-  <p>Subí tus imágenes, ajustá el efecto y exportá el video</p>
+  <p>Creá publicidades con efecto de producto emergente y exportá como video o imagen</p>
 </div>
 
-<!-- CONTROLS -->
-<div class="panel">
+<!-- PASO 1-3 -->
+<div class="steps">
 
-  <div class="cg">
-    <label>Fondo de escena</label>
-    <input type="file" id="inBg" accept="image/*">
+  <div class="step">
+    <div class="step-title">
+      <div class="step-num">1</div>
+      <div>
+        <strong>Fondo de escena</strong>
+        <small>Estadio, edificio, lo que quieras</small>
+      </div>
+    </div>
+    <input type="file" id="inBg" accept="image/*" title="Subir imagen de fondo">
   </div>
 
-  <div class="cg">
-    <label>Imagen del cartel</label>
-    <input type="file" id="inBoard" accept="image/*">
+  <div class="step">
+    <div class="step-title">
+      <div class="step-num">2</div>
+      <div>
+        <strong>Imagen del cartel</strong>
+        <small>Opcional – aparece dentro del marco</small>
+      </div>
+    </div>
+    <input type="file" id="inBoard" accept="image/*" title="Subir imagen del cartel">
   </div>
 
-  <div class="cg">
-    <label>Producto PNG (sin fondo)</label>
-    <input type="file" id="inProd" accept="image/*">
+  <div class="step">
+    <div class="step-title">
+      <div class="step-num">3</div>
+      <div>
+        <strong>Producto PNG</strong>
+        <small>Sin fondo – se escapa del cartel</small>
+      </div>
+    </div>
+    <input type="file" id="inProd" accept="image/*" title="Subir PNG del producto">
   </div>
 
-  <div class="cg">
-    <label>Rotación Y <em id="vTiltY">–12°</em></label>
-    <input type="range" id="sTiltY" min="-45" max="45" value="-12">
-  </div>
+</div>
 
-  <div class="cg">
-    <label>Rotación X <em id="vTiltX">8°</em></label>
-    <input type="range" id="sTiltX" min="-30" max="30" value="8">
-  </div>
+<!-- AJUSTES -->
+<div class="adjust-row">
 
-  <div class="cg">
-    <label>Profundidad producto <em id="vDepth">90</em></label>
-    <input type="range" id="sDepth" min="0" max="250" value="90">
-  </div>
-
-  <div class="cg">
-    <label>Escala producto <em id="vScale">1.0</em></label>
-    <input type="range" id="sScale" min="0.4" max="2.8" step="0.05" value="1.0">
-  </div>
-
-  <div class="cg">
-    <label>Posición X <em id="vPosX">0</em></label>
-    <input type="range" id="sPosX" min="-300" max="300" value="0">
-  </div>
-
-  <div class="cg">
-    <label>Posición Y <em id="vPosY">0</em></label>
-    <input type="range" id="sPosY" min="-200" max="200" value="0">
-  </div>
-
-  <div class="cg">
+  <div class="adj">
     <label>Animación</label>
     <select id="sAnim">
-      <option value="float">Flotante</option>
-      <option value="burst">Irrupción</option>
-      <option value="swing">Balanceo</option>
-      <option value="none">Sin animación</option>
+      <option value="float">Flotante (loop)</option>
+      <option value="burst">Irrupción (loop)</option>
+      <option value="swing">Balanceo (loop)</option>
+      <option value="none">Estático</option>
     </select>
   </div>
 
-  <div class="cg">
+  <div class="adj">
+    <label>Profundidad <em id="vDepth">90</em></label>
+    <input type="range" id="sDepth" min="0" max="250" value="90">
+  </div>
+
+  <div class="adj">
+    <label>Tamaño producto <em id="vScale">1.00</em></label>
+    <input type="range" id="sScale" min="0.3" max="3.0" step="0.05" value="1.0">
+  </div>
+
+  <div class="adj">
+    <label>Rotación cartel <em id="vTiltY">–12°</em></label>
+    <input type="range" id="sTiltY" min="-45" max="45" value="-12">
+  </div>
+
+  <div class="adj">
     <label>Duración video <em id="vDur">5 s</em></label>
     <input type="range" id="sDur" min="2" max="20" value="5">
   </div>
 
-  <div class="cg">
-    <label>FPS grabación</label>
-    <select id="sFps">
-      <option value="30">30 fps</option>
-      <option value="60">60 fps</option>
-      <option value="24">24 fps</option>
-    </select>
-  </div>
-
 </div>
 
-<!-- ACTIONS -->
-<div class="actions">
-  <button class="btn btn-green" id="btnAnim">▶ Previsualizar</button>
-  <button class="btn btn-red"   id="btnRec">⏺ Grabar video</button>
-  <div class="rec-badge" id="recBadge">
-    <div class="rec-dot"></div>
-    <span id="recLabel">Grabando…</span>
-  </div>
-  <button class="btn btn-ghost" id="btnReset" style="margin-left:auto">↺ Reiniciar</button>
-</div>
-
-<!-- CANVAS PREVIEW -->
-<div class="preview">
+<!-- CANVAS -->
+<div class="preview-wrap">
   <canvas id="cnv"></canvas>
 </div>
 
-<div class="status" id="statusBar">
-  Cargá las imágenes para empezar. El video se guarda como .webm (compatible con la mayoría de reproductores).
+<!-- BOTONES DE ACCIÓN -->
+<div class="actions">
+
+  <button class="btn btn-anim" id="btnAnim">▶ Previsualizar animación</button>
+
+  <button class="btn btn-img" id="btnImg">📸 Descargar imagen PNG</button>
+
+  <button class="btn btn-rec" id="btnRec">⏺&nbsp;&nbsp;GRABAR Y DESCARGAR VIDEO</button>
+
+</div>
+
+<div class="status" id="status">
+  Subí tus imágenes en los pasos 1, 2 y 3 · El cartel verde ya es visible en el preview
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// SETUP
-// ═══════════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════
+// CANVAS
+// ═══════════════════════════════════════════
 const cnv = document.getElementById('cnv');
 const ctx = cnv.getContext('2d');
 const W = 1920, H = 1080;
-cnv.width  = W;
-cnv.height = H;
+cnv.width = W; cnv.height = H;
 
-const st = {
-  bg:         null,
-  board:      null,
-  product:    null,
-  tiltY:     -12,
-  tiltX:       8,
-  depth:      90,
-  scale:       1.0,
-  posX:        0,
-  posY:        0,
-  anim:       'float',
-  duration:    5,
-  fps:         30,
-  playing:     false,
-  recording:   false,
-  rafId:       null,
-  t0:          0,
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const S = {
+  bg: null, board: null, product: null,
+  tiltY: -12, tiltX: 8,
+  depth: 90, scale: 1.0,
+  anim: 'float', duration: 5,
+  playing: false, recording: false,
+  rafId: null, t0: 0,
 };
 
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // FILE INPUTS
-// ═══════════════════════════════════════════════════════════
-
-function bindFile(id, key) {
+// ═══════════════════════════════════════════
+function bindFile(id, key, label) {
   document.getElementById(id).addEventListener('change', e => {
     const f = e.target.files[0];
     if (!f) return;
     const r = new FileReader();
     r.onload = ev => {
       const img = new Image();
-      img.onload = () => { st[key] = img; redraw(); setStatus(`✔ ${f.name} cargado`); };
+      img.onload = () => { S[key] = img; redraw(); setStatus(`✔ ${label} cargado: ${f.name}`); };
       img.src = ev.target.result;
     };
     r.readAsDataURL(f);
   });
 }
+bindFile('inBg',    'bg',      'Fondo');
+bindFile('inBoard', 'board',   'Cartel');
+bindFile('inProd',  'product', 'Producto');
 
-bindFile('inBg',    'bg');
-bindFile('inBoard', 'board');
-bindFile('inProd',  'product');
-
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // SLIDERS
-// ═══════════════════════════════════════════════════════════
-
-function bindSlider(sliderId, displayId, key, unit = '', decimals = 0) {
-  const s = document.getElementById(sliderId);
-  const d = document.getElementById(displayId);
+// ═══════════════════════════════════════════
+function bindSlider(id, dispId, key, unit, dec = 0) {
+  const s = document.getElementById(id);
+  const d = document.getElementById(dispId);
   s.addEventListener('input', () => {
-    st[key] = parseFloat(s.value);
-    d.textContent = parseFloat(s.value).toFixed(decimals) + unit;
-    if (!st.playing) redraw();
+    S[key] = parseFloat(s.value);
+    d.textContent = parseFloat(s.value).toFixed(dec) + unit;
+    if (!S.playing) redraw();
   });
 }
+bindSlider('sDepth', 'vDepth', 'depth', '');
+bindSlider('sScale', 'vScale', 'scale', '', 2);
+bindSlider('sTiltY', 'vTiltY', 'tiltY', '°');
+bindSlider('sDur',   'vDur',   'duration', ' s');
+document.getElementById('sAnim').addEventListener('change', e => { S.anim = e.target.value; });
 
-bindSlider('sTiltY', 'vTiltY',  'tiltY',  '°');
-bindSlider('sTiltX', 'vTiltX',  'tiltX',  '°');
-bindSlider('sDepth', 'vDepth',  'depth',  '');
-bindSlider('sScale', 'vScale',  'scale',  '', 2);
-bindSlider('sPosX',  'vPosX',   'posX',   '');
-bindSlider('sPosY',  'vPosY',   'posY',   '');
-bindSlider('sDur',   'vDur',    'duration','  s');
-
-document.getElementById('sAnim').addEventListener('change', e => { st.anim = e.target.value; });
-document.getElementById('sFps').addEventListener('change',  e => { st.fps  = +e.target.value; });
-
-// ═══════════════════════════════════════════════════════════
-// PERSPECTIVE MATH
-// ═══════════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════
+// PERSPECTIVA
+// ═══════════════════════════════════════════
 const FOV = 1400;
 
-/* Returns 4 canvas-space points {x,y} for the billboard quad:
-   [TL, TR, BR, BL] after applying tiltY + tiltX + perspective. */
-function getBoardQuad(tiltYdeg, tiltXdeg, cx, cy, bW, bH) {
-  const ry = tiltYdeg * Math.PI / 180;
-  const rx = tiltXdeg * Math.PI / 180;
-  const half = [ [-bW,-bH,0], [bW,-bH,0], [bW,bH,0], [-bW,bH,0] ];
-
-  return half.map(([x, y, z]) => {
-    // Rotate Y
-    const x1 = x * Math.cos(ry) + z * Math.sin(ry);
-    const z1 = -x * Math.sin(ry) + z * Math.cos(ry);
-    // Rotate X
-    const y2 = y * Math.cos(rx) - z1 * Math.sin(rx);
-    const z2 = y * Math.sin(rx) + z1 * Math.cos(rx);
-    // Perspective
-    const s = FOV / (FOV + z2);
-    return { x: cx + x1 * s, y: cy + y2 * s };
+function getBoardQuad(tY, tX, cx, cy, hw, hh) {
+  const ry = tY * Math.PI / 180;
+  const rx = tX * Math.PI / 180;
+  return [[-hw,-hh,0],[hw,-hh,0],[hw,hh,0],[-hw,hh,0]].map(([x,y,z]) => {
+    const x1 = x*Math.cos(ry) + z*Math.sin(ry);
+    const z1 = -x*Math.sin(ry) + z*Math.cos(ry);
+    const y2 = y*Math.cos(rx) - z1*Math.sin(rx);
+    const z2 = y*Math.sin(rx) + z1*Math.cos(rx);
+    const s  = FOV / (FOV + z2);
+    return { x: cx + x1*s, y: cy + y2*s };
   });
 }
 
-/* Draw image stretched to a perspective quad using two affine triangles. */
-function drawQuadImage(img, quad) {
-  const [tl, tr, br, bl] = quad;
+function drawQuadImg(img, q) {
   const iw = img.width, ih = img.height;
-  // Upper-left triangle  : img (0,0)(iw,0)(0,ih)  → canvas tl,tr,bl
-  triDraw(img, [0,0],[iw,0],[0,ih],  tl, tr, bl);
-  // Lower-right triangle : img (iw,0)(iw,ih)(0,ih) → canvas tr,br,bl
-  triDraw(img, [iw,0],[iw,ih],[0,ih], tr, br, bl);
+  tri(img,[0,0],[iw,0],[0,ih], q[0],q[1],q[3]);
+  tri(img,[iw,0],[iw,ih],[0,ih], q[1],q[2],q[3]);
 }
 
-function triDraw(img, s0, s1, s2, d0, d1, d2) {
+function tri(img, s0, s1, s2, d0, d1, d2) {
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(d0.x, d0.y);
-  ctx.lineTo(d1.x, d1.y);
-  ctx.lineTo(d2.x, d2.y);
-  ctx.closePath();
-  ctx.clip();
-
+  ctx.moveTo(d0.x,d0.y); ctx.lineTo(d1.x,d1.y); ctx.lineTo(d2.x,d2.y);
+  ctx.closePath(); ctx.clip();
   const det = (s1[0]-s0[0])*(s2[1]-s0[1]) - (s2[0]-s0[0])*(s1[1]-s0[1]);
-  const a  = ((d1.x-d0.x)*(s2[1]-s0[1]) - (d2.x-d0.x)*(s1[1]-s0[1])) / det;
-  const b  = ((d2.x-d0.x)*(s1[0]-s0[0]) - (d1.x-d0.x)*(s2[0]-s0[0])) / det;
-  const e  = d0.x - a*s0[0] - b*s0[1];
-  const c  = ((d1.y-d0.y)*(s2[1]-s0[1]) - (d2.y-d0.y)*(s1[1]-s0[1])) / det;
-  const d  = ((d2.y-d0.y)*(s1[0]-s0[0]) - (d1.y-d0.y)*(s2[0]-s0[0])) / det;
-  const f  = d0.y - c*s0[0] - d*s0[1];
-
-  ctx.transform(a, c, b, d, e, f);
+  const a = ((d1.x-d0.x)*(s2[1]-s0[1]) - (d2.x-d0.x)*(s1[1]-s0[1])) / det;
+  const b = ((d2.x-d0.x)*(s1[0]-s0[0]) - (d1.x-d0.x)*(s2[0]-s0[0])) / det;
+  const e = d0.x - a*s0[0] - b*s0[1];
+  const c = ((d1.y-d0.y)*(s2[1]-s0[1]) - (d2.y-d0.y)*(s1[1]-s0[1])) / det;
+  const d = ((d2.y-d0.y)*(s1[0]-s0[0]) - (d1.y-d0.y)*(s2[0]-s0[0])) / det;
+  const f = d0.y - c*s0[0] - d*s0[1];
+  ctx.transform(a,c,b,d,e,f);
   ctx.drawImage(img, 0, 0);
   ctx.restore();
 }
 
-// ═══════════════════════════════════════════════════════════
-// ANIMATION HELPERS
-// ═══════════════════════════════════════════════════════════
+function clipQuad(q) {
+  ctx.beginPath();
+  ctx.moveTo(q[0].x,q[0].y);
+  q.forEach(p => ctx.lineTo(p.x,p.y));
+  ctx.closePath(); ctx.clip();
+}
 
-function getAnimDelta(t) {
-  switch (st.anim) {
+// ═══════════════════════════════════════════
+// ANIMACIÓN DELTA
+// ═══════════════════════════════════════════
+function animDelta(t) {
+  switch (S.anim) {
     case 'float': {
-      const s = Math.sin(t * 1.4);
-      return { dy: s * 18, dz: s * 12, ds: 1 + s * 0.025, dr: s * 1.5 };
+      const s = Math.sin(t * 1.3);
+      return { dy: s*20, dz: s*14, ds: 1+s*0.03, rot: s*1.8 };
     }
     case 'burst': {
-      const cyc = (t % 2.8) / 2.8;
-      const ease = 1 - Math.pow(1 - Math.min(cyc * 2, 1), 3);
-      const fade = cyc > 0.75 ? 1 - (cyc - 0.75) / 0.25 : 1;
-      const v = ease * fade;
-      return { dy: -v * 30, dz: v * 70, ds: 0.6 + v * 0.4, dr: 0 };
+      const c = (t % 3) / 3;
+      const e = 1 - Math.pow(1 - Math.min(c*2,1), 3);
+      const f = c > 0.72 ? 1-(c-0.72)/0.28 : 1;
+      const v = e * f;
+      return { dy: -v*35, dz: v*80, ds: 0.55+v*0.45, rot: 0 };
     }
     case 'swing': {
-      const s = Math.sin(t * 0.9);
-      return { dy: 0, dz: 0, ds: 1, dr: s * 8 };
+      const s = Math.sin(t * 0.85);
+      return { dy: 0, dz: 0, ds: 1, rot: s*9 };
     }
-    default:
-      return { dy: 0, dz: 0, ds: 1, dr: 0 };
+    default: return { dy:0, dz:0, ds:1, rot:0 };
   }
 }
 
-// ═══════════════════════════════════════════════════════════
-// MAIN RENDER
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function render(ms) {
+  ctx.clearRect(0,0,W,H);
+  const t = ms / 1000;
+  const d = animDelta(t);
 
-function render(t) {
-  ctx.clearRect(0, 0, W, H);
-
-  const anim = getAnimDelta(t / 1000);
-
-  // ── 1. BACKGROUND ───────────────────────────────────────
-  if (st.bg) {
-    ctx.drawImage(st.bg, 0, 0, W, H);
+  // 1. Fondo
+  if (S.bg) {
+    ctx.drawImage(S.bg, 0, 0, W, H);
   } else {
     drawDefaultBg();
   }
 
-  // Billboard geometry
-  const boardW = W * 0.46;
-  const boardH = H * 0.42;
-  const cx = W / 2 + st.posX;
-  const cy = H / 2 - H * 0.02 + st.posY;
-  const quad = getBoardQuad(st.tiltY, st.tiltX, cx, cy, boardW / 2, boardH / 2);
+  // Geometría del cartel
+  const bW = W * 0.46, bH = H * 0.42;
+  const cx = W / 2, cy = H * 0.46;
+  const q  = getBoardQuad(S.tiltY, S.tiltX, cx, cy, bW/2, bH/2);
 
-  // ── 2. BILLBOARD BACKGROUND ─────────────────────────────
+  // 2. Fondo del cartel
   ctx.save();
-  clipToQuad(quad);
-  if (st.board) {
-    drawQuadImage(st.board, quad);
+  clipQuad(q);
+  if (S.board) {
+    drawQuadImg(S.board, q);
   } else {
-    drawDefaultBoard(quad);
+    drawDefaultBoard(q);
   }
   ctx.restore();
 
-  // ── 3. PRODUCT SHADOW on the billboard surface ──────────
-  if (st.product) {
-    const depth  = st.depth + anim.dz;
-    const pScale = st.scale * anim.ds * (FOV / (FOV + depth));
-    const shadowH = boardH * 0.25 * pScale;
-    const shadowW = shadowH * 1.6;
-
+  // 3. Sombra del producto sobre el cartel
+  if (S.product) {
+    const depth = S.depth + d.dz;
+    const sc    = S.scale * d.ds * (FOV / (FOV + depth));
     ctx.save();
-    clipToQuad(quad);
-    const sg = ctx.createRadialGradient(cx, cy + boardH * 0.1, 10, cx, cy + boardH * 0.1, shadowH * 1.4);
-    sg.addColorStop(0, 'rgba(0,0,0,0.55)');
-    sg.addColorStop(1, 'rgba(0,0,0,0)');
+    clipQuad(q);
+    const sg = ctx.createRadialGradient(cx, cy+bH*0.1, 10, cx, cy+bH*0.1, bH*0.45*sc);
+    sg.addColorStop(0,'rgba(0,0,0,.55)');
+    sg.addColorStop(1,'rgba(0,0,0,0)');
     ctx.fillStyle = sg;
-    ctx.ellipse(cx, cy + boardH * 0.1, shadowW, shadowH, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx, cy+bH*0.1, bW*0.38*sc, bH*0.22*sc, 0, 0, Math.PI*2); ctx.fill();
     ctx.restore();
   }
 
-  // ── 4. BILLBOARD FRAME (covers product bottom) ──────────
-  drawBoardFrame(quad);
+  // 4. Marco del cartel (tapa la base del producto → efecto de salida)
+  drawFrame(q);
 
-  // ── 5. PRODUCT (in front of frame) ──────────────────────
-  if (st.product) {
-    const depth  = st.depth + anim.dz;
-    const pScale = st.scale * anim.ds * (FOV / (FOV + depth));
-    const dy     = anim.dy;
-    const rotY   = st.tiltY * 0.15 + anim.dr;
-
-    drawProduct(cx, cy + dy, pScale, rotY);
+  // 5. Producto emergiendo
+  if (S.product) {
+    const depth = S.depth + d.dz;
+    const sc    = S.scale * d.ds * (FOV / (FOV + depth));
+    drawProduct(cx, cy + d.dy, sc, S.tiltY * 0.12 + d.rot);
   } else {
-    drawProductHint(quad);
+    drawProductHint(q);
   }
-
-  // ── 6. SCAN LINES overlay (subtle, cinematic) ───────────
-  drawScanLines();
 }
-
-// ── SUB-RENDERS ─────────────────────────────────────────────
 
 function drawDefaultBg() {
-  const g = ctx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0,   '#0d1117');
-  g.addColorStop(0.5, '#161b22');
-  g.addColorStop(1,   '#0d1117');
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, W, H);
-
-  // Subtle building grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-  ctx.lineWidth = 1;
-  for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-  for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-
-  // Glow at center
-  const cg = ctx.createRadialGradient(W/2, H/2, 100, W/2, H/2, 700);
-  cg.addColorStop(0, 'rgba(0,100,255,0.06)');
-  cg.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = cg;
-  ctx.fillRect(0, 0, W, H);
+  const g = ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#0d1117'); g.addColorStop(0.55,'#161b22'); g.addColorStop(1,'#0d1117');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.04)'; ctx.lineWidth=1;
+  for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  const cg=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,750);
+  cg.addColorStop(0,'rgba(0,100,255,.07)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
 }
 
-function clipToQuad(q) {
-  ctx.beginPath();
-  ctx.moveTo(q[0].x, q[0].y);
-  q.forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.closePath();
-  ctx.clip();
+function drawDefaultBoard(q) {
+  ctx.fillStyle='#080808';
+  ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.fill();
+  // texto de ayuda dentro del cartel
+  ctx.fillStyle='rgba(255,255,255,.15)';
+  const cx=q.reduce((s,p)=>s+p.x,0)/4, cy=q.reduce((s,p)=>s+p.y,0)/4;
+  ctx.font=`bold ${H*.028}px Segoe UI`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Subí la imagen del cartel (paso 2)', cx, cy);
 }
 
-function drawDefaultBoard(quad) {
-  const g = ctx.createLinearGradient(quad[0].x, quad[0].y, quad[2].x, quad[2].y);
-  g.addColorStop(0, '#050505');
-  g.addColorStop(1, '#121212');
-  ctx.fillStyle = g;
-  ctx.beginPath();
-  ctx.moveTo(quad[0].x, quad[0].y);
-  quad.forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.fillStyle = 'rgba(255,255,255,0.12)';
-  ctx.font = `bold ${H * 0.04}px Segoe UI`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const cx = quad.reduce((s, p) => s + p.x, 0) / 4;
-  const cy = quad.reduce((s, p) => s + p.y, 0) / 4;
-  ctx.fillText('PUBLICIDAD', cx, cy);
-}
-
-function drawBoardFrame(quad) {
-  // Thick outer frame (dark metal)
+function drawFrame(q) {
   ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(quad[0].x, quad[0].y);
-  quad.forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.closePath();
-  ctx.strokeStyle = '#111';
-  ctx.lineWidth   = 28;
+  // Marco grueso oscuro (tapa la base del producto → efecto emergente)
+  ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath();
+  ctx.strokeStyle='#0d0d0d'; ctx.lineWidth=30; ctx.stroke();
+  // Borde LED verde visible
+  ctx.strokeStyle='#00e676'; ctx.lineWidth=4;
+  ctx.shadowColor='#00e676'; ctx.shadowBlur=18;
   ctx.stroke();
-
-  // Inner highlight edge
-  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-  ctx.lineWidth   = 3;
-  ctx.stroke();
+  ctx.shadowBlur=0;
+  // Brillo interior sutil
+  ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=2; ctx.stroke();
   ctx.restore();
 }
 
-function drawProduct(cx, cy, scale, rotYdeg) {
-  const img = st.product;
-  const aspect = img.width / img.height;
-  const baseH  = H * 0.68;
-  const pH = baseH * scale;
-  const pW = pH * aspect;
-
+function drawProduct(cx, cy, sc, rotYdeg) {
+  const img = S.product;
+  const asp = img.width / img.height;
+  const pH  = H * 0.70 * sc;
+  const pW  = pH * asp;
   ctx.save();
-  ctx.translate(cx, cy - pH * 0.18); // float a bit upward
-
-  // Simulate tilt: horizontal shear proportional to rotY
-  const shear = Math.sin(rotYdeg * Math.PI / 180) * 0.25;
+  ctx.translate(cx, cy - pH * 0.16);
+  const shear = Math.sin(rotYdeg * Math.PI / 180) * 0.22;
   ctx.transform(1, 0, shear, 1, 0, 0);
-
-  // Drop shadow
-  ctx.shadowColor   = 'rgba(0,0,0,0.75)';
-  ctx.shadowBlur    = 60 + scale * 20;
-  ctx.shadowOffsetX = 12;
-  ctx.shadowOffsetY = 30;
-
-  ctx.drawImage(img, -pW / 2, -pH / 2, pW, pH);
+  ctx.shadowColor='rgba(0,0,0,.8)'; ctx.shadowBlur=70+sc*25; ctx.shadowOffsetX=14; ctx.shadowOffsetY=32;
+  ctx.drawImage(img, -pW/2, -pH/2, pW, pH);
   ctx.restore();
 }
 
-function drawProductHint(quad) {
-  const cx = quad.reduce((s, p) => s + p.x, 0) / 4;
-  const cy = quad.reduce((s, p) => s + p.y, 0) / 4;
+function drawProductHint(q) {
+  const cx=q.reduce((s,p)=>s+p.x,0)/4;
+  const cy=q.reduce((s,p)=>s+p.y,0)/4 - H*0.12;
   ctx.save();
-  ctx.fillStyle = 'rgba(255,255,255,0.18)';
-  ctx.font = `${H * 0.025}px Segoe UI`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('Subí un producto PNG para ver el efecto 3D', cx, cy);
-  ctx.restore();
-}
-
-function drawScanLines() {
-  ctx.save();
-  ctx.globalAlpha = 0.025;
-  ctx.fillStyle = '#000';
-  for (let y = 0; y < H; y += 4) {
-    ctx.fillRect(0, y, W, 2);
-  }
-  ctx.globalAlpha = 1;
+  ctx.strokeStyle='rgba(0,230,118,.35)'; ctx.lineWidth=3; ctx.setLineDash([12,8]);
+  ctx.strokeRect(cx - H*0.14, cy - H*0.18, H*0.28, H*0.36);
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(0,230,118,.5)'; ctx.font=`${H*.02}px Segoe UI`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Subí el producto PNG (paso 3)', cx, cy + H*0.21);
   ctx.restore();
 }
 
 function redraw() { render(0); }
 
-// ═══════════════════════════════════════════════════════════
-// ANIMATION LOOP
-// ═══════════════════════════════════════════════════════════
-
+// ═══════════════════════════════════════════
+// ANIMACIÓN PREVIEW
+// ═══════════════════════════════════════════
 document.getElementById('btnAnim').addEventListener('click', () => {
-  st.playing ? stopAnim() : startAnim();
+  S.playing ? stopAnim() : startAnim();
 });
 
 function startAnim() {
-  if (st.playing) return;
-  st.playing = true;
-  st.t0 = performance.now();
-  document.getElementById('btnAnim').textContent = '⏹ Detener';
-  loop(st.t0);
+  S.playing = true; S.t0 = performance.now();
+  document.getElementById('btnAnim').textContent = '⏹ Detener preview';
+  (function loop(now){ if(!S.playing)return; render(now-S.t0); S.rafId=requestAnimationFrame(loop); })(S.t0);
 }
 
 function stopAnim() {
-  st.playing = false;
-  cancelAnimationFrame(st.rafId);
-  document.getElementById('btnAnim').textContent = '▶ Previsualizar';
+  S.playing = false; cancelAnimationFrame(S.rafId);
+  document.getElementById('btnAnim').textContent = '▶ Previsualizar animación';
   redraw();
 }
 
-function loop(now) {
-  if (!st.playing) return;
-  render(now - st.t0);
-  st.rafId = requestAnimationFrame(loop);
-}
-
-// ═══════════════════════════════════════════════════════════
-// RECORDING
-// ═══════════════════════════════════════════════════════════
-
-let mr = null, chunks = [];
-
-document.getElementById('btnRec').addEventListener('click', () => {
-  st.recording ? stopRec() : startRec();
+// ═══════════════════════════════════════════
+// DESCARGAR IMAGEN PNG
+// ═══════════════════════════════════════════
+document.getElementById('btnImg').addEventListener('click', () => {
+  if (S.playing) stopAnim();
+  redraw();
+  cnv.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), { href: url, download: `billboard-${Date.now()}.png` });
+    a.click(); URL.revokeObjectURL(url);
+    setStatus('✅ Imagen PNG descargada correctamente');
+  }, 'image/png');
 });
 
-function startRec() {
-  if (st.playing) stopAnim();
+// ═══════════════════════════════════════════
+// GRABAR VIDEO
+// ═══════════════════════════════════════════
+let mr = null, chunks = [];
 
-  const mime = pickMime();
-  if (!mime) { setStatus('⚠️ Tu navegador no soporta grabación de canvas. Probá con Chrome.'); return; }
+const btnRec = document.getElementById('btnRec');
+btnRec.addEventListener('click', () => { S.recording ? finishRec() : startRec(); });
+
+function startRec() {
+  if (S.playing) stopAnim();
+
+  const mime = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']
+    .find(t => MediaRecorder.isTypeSupported(t));
+
+  if (!mime) {
+    setStatus('⚠️ Tu navegador no soporta grabación. Usá Chrome o Edge, o descargá la imagen PNG.');
+    return;
+  }
 
   chunks = [];
-  const stream = cnv.captureStream(st.fps);
-  mr = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 10_000_000 });
-
+  mr = new MediaRecorder(cnv.captureStream(30), { mimeType: mime, videoBitsPerSecond: 10_000_000 });
   mr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
   mr.onstop = () => {
     const blob = new Blob(chunks, { type: mime });
     const ext  = mime.includes('mp4') ? 'mp4' : 'webm';
-    downloadBlob(blob, `3d-billboard-${Date.now()}.${ext}`);
-    setStatus(`✅ Video exportado · ${(blob.size / 1048576).toFixed(1)} MB`);
-    cleanupRec();
+    const url  = URL.createObjectURL(blob);
+    const a    = Object.assign(document.createElement('a'), { href: url, download: `billboard-3d-${Date.now()}.${ext}` });
+    a.click(); URL.revokeObjectURL(url);
+    setStatus(`✅ Video descargado · ${(blob.size/1048576).toFixed(1)} MB · formato ${ext.toUpperCase()}`);
+    endRec();
   };
 
-  st.recording = true;
+  S.recording = true;
   mr.start();
+  btnRec.textContent = '⏹  DETENER Y DESCARGAR';
+  btnRec.classList.add('recording');
 
-  document.getElementById('recBadge').classList.add('on');
-  document.getElementById('btnRec').textContent = '⏹ Detener grabación';
+  const durMs = S.duration * 1000;
+  const t0    = performance.now();
+  S.playing   = true;
 
-  // Run animation for the recording
-  const durMs = st.duration * 1000;
-  st.playing = true;
-  const recStart = performance.now();
-
-  let countdown = st.duration;
-  document.getElementById('recLabel').textContent = `Grabando… ${countdown}s`;
-  const ticker = setInterval(() => {
-    countdown--;
-    if (countdown > 0) document.getElementById('recLabel').textContent = `Grabando… ${countdown}s`;
+  let secs = S.duration;
+  setStatus(`⏺ Grabando… ${secs}s restantes`);
+  const tick = setInterval(() => {
+    secs--;
+    if (secs > 0 && S.recording) setStatus(`⏺ Grabando… ${secs}s restantes`);
+    else clearInterval(tick);
   }, 1000);
 
-  function recLoop(now) {
-    if (!st.recording) return;
-    const elapsed = now - recStart;
-    render(elapsed);
-    if (elapsed < durMs) {
-      st.rafId = requestAnimationFrame(recLoop);
-    } else {
-      clearInterval(ticker);
-      stopRec();
-    }
-  }
-  st.rafId = requestAnimationFrame(recLoop);
-  setStatus(`⏺ Grabando ${st.duration}s de video…`);
+  (function loop(now){
+    if (!S.recording) return;
+    render(now - t0);
+    if (now - t0 < durMs) { S.rafId = requestAnimationFrame(loop); }
+    else { clearInterval(tick); finishRec(); }
+  })(t0);
 }
 
-function stopRec() {
-  if (mr && mr.state !== 'inactive') mr.stop();
-}
+function finishRec() { if (mr && mr.state !== 'inactive') mr.stop(); }
 
-function cleanupRec() {
-  st.recording = false;
-  st.playing   = false;
-  cancelAnimationFrame(st.rafId);
-  document.getElementById('recBadge').classList.remove('on');
-  document.getElementById('btnRec').textContent = '⏺ Grabar video';
+function endRec() {
+  S.recording = false; S.playing = false;
+  cancelAnimationFrame(S.rafId);
+  btnRec.textContent = '⏺  GRABAR Y DESCARGAR VIDEO';
+  btnRec.classList.remove('recording');
   redraw();
 }
 
-function pickMime() {
-  const types = [
-    'video/mp4;codecs=h264',
-    'video/mp4',
-    'video/webm;codecs=vp9',
-    'video/webm;codecs=vp8',
-    'video/webm',
-  ];
-  return types.find(t => MediaRecorder.isTypeSupported(t)) ?? null;
-}
-
-function downloadBlob(blob, name) {
-  const url = URL.createObjectURL(blob);
-  const a   = Object.assign(document.createElement('a'), { href: url, download: name });
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// ═══════════════════════════════════════════════════════════
-// RESET
-// ═══════════════════════════════════════════════════════════
-
-document.getElementById('btnReset').addEventListener('click', () => {
-  if (st.playing)   stopAnim();
-  if (st.recording) stopRec();
-  ['inBg','inBoard','inProd'].forEach(id => document.getElementById(id).value = '');
-  Object.assign(st, { bg: null, board: null, product: null,
-    tiltY: -12, tiltX: 8, depth: 90, scale: 1.0, posX: 0, posY: 0 });
-  document.getElementById('sTiltY').value = -12; document.getElementById('vTiltY').textContent = '-12°';
-  document.getElementById('sTiltX').value =   8; document.getElementById('vTiltX').textContent = '8°';
-  document.getElementById('sDepth').value =  90; document.getElementById('vDepth').textContent = '90';
-  document.getElementById('sScale').value = 1.0; document.getElementById('vScale').textContent = '1.00';
-  document.getElementById('sPosX').value  =   0; document.getElementById('vPosX').textContent = '0';
-  document.getElementById('sPosY').value  =   0; document.getElementById('vPosY').textContent = '0';
-  redraw();
-  setStatus('Reiniciado. Cargá tus imágenes para empezar.');
-});
-
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
 // STATUS
-// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════
+function setStatus(msg) { document.getElementById('status').textContent = msg; }
 
-function setStatus(msg) {
-  document.getElementById('statusBar').textContent = msg;
-}
-
-// ─── initial render ───────────────────────────────────────
+// render inicial
 redraw();
 </script>
 </body>
