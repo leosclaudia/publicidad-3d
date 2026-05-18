@@ -3,349 +3,289 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Billboard – Generador de Publicidad</title>
+  <title>3D Billboard Pro</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --green:  #00e676;
-      --yellow: #ffd600;
-      --red:    #f44336;
-      --bg:     #0a0a0a;
-      --card:   #141414;
-      --border: #2a2a2a;
-      --text:   #e0e0e0;
-      --dim:    #666;
+      --g:  #00e676; --g2: #00c85e;
+      --y:  #ffd600;
+      --r:  #f44336;
+      --bg: #080808; --s1: #131313; --s2: #1c1c1c;
+      --bd: #272727; --tx: #e0e0e0; --dim: #666;
+    }
+    body { background:var(--bg); color:var(--tx); font-family:'Segoe UI',system-ui,sans-serif;
+           min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:18px 14px 50px; }
+
+    /* ── header ── */
+    .hdr { text-align:center; margin-bottom:18px; }
+    .hdr h1 { font-size:1.45rem; font-weight:800; }
+    .hdr h1 span { color:var(--g); }
+    .hdr p { font-size:.78rem; color:var(--dim); margin-top:3px; }
+
+    /* ── card genérico ── */
+    .card {
+      background:var(--s1); border:1px solid var(--bd); border-radius:12px;
+      padding:16px; max-width:980px; width:100%; margin-bottom:12px;
+    }
+    .card-title {
+      font-size:11px; text-transform:uppercase; letter-spacing:.9px;
+      font-weight:700; color:var(--g); margin-bottom:12px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .card-title .badge {
+      background:var(--g); color:#000; border-radius:50%;
+      width:20px; height:20px; font-size:11px; font-weight:800;
+      display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
     }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 14px 50px;
+    /* ── grids ── */
+    .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .g4 { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:12px; }
+    .g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media(max-width:600px){ .g3,.g4,.g2 { grid-template-columns:1fr; } }
+
+    /* ── campo ── */
+    .fld { display:flex; flex-direction:column; gap:6px; }
+    .fld label { font-size:10px; text-transform:uppercase; letter-spacing:.7px;
+                 font-weight:700; color:var(--g); display:flex; justify-content:space-between; }
+    .fld label em { font-style:normal; color:var(--dim); font-weight:400;
+                    text-transform:none; letter-spacing:0; }
+
+    input[type="file"] {
+      background:var(--s2); border:1px dashed #3a3a3a; border-radius:8px;
+      padding:8px; color:var(--dim); font-size:11px; cursor:pointer; width:100%;
+      transition:border-color .2s;
     }
-
-    /* ── HEADER ── */
-    .header { text-align: center; margin-bottom: 22px; }
-    .header h1 { font-size: 1.5rem; font-weight: 800; }
-    .header h1 span { color: var(--green); }
-    .header p  { font-size: 0.8rem; color: var(--dim); margin-top: 4px; }
-
-    /* ── STEPS ── */
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      max-width: 980px;
-      width: 100%;
-      margin-bottom: 14px;
+    input[type="file"]:hover { border-color:var(--g); color:var(--tx); }
+    input[type="range"]  { accent-color:var(--g); width:100%; cursor:pointer; }
+    input[type="text"]   {
+      background:var(--s2); border:1px solid var(--bd); border-radius:7px;
+      padding:8px 10px; color:var(--tx); font-size:13px; width:100%;
+      outline:none; transition:border-color .2s;
     }
-
-    .step {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 16px;
+    input[type="text"]:focus  { border-color:var(--g); }
+    input[type="color"] {
+      background:var(--s2); border:1px solid var(--bd); border-radius:6px;
+      width:38px; height:32px; cursor:pointer; padding:2px 3px;
     }
-
-    .step-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .step-num {
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      background: var(--green);
-      color: #000;
-      font-size: 13px;
-      font-weight: 800;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .step-title strong { font-size: 13px; font-weight: 700; }
-    .step-title small  { font-size: 11px; color: var(--dim); display: block; margin-top: 1px; }
-
-    .step input[type="file"] {
-      background: #1c1c1c;
-      border: 1px dashed #3a3a3a;
-      border-radius: 8px;
-      padding: 8px 10px;
-      color: var(--dim);
-      font-size: 11px;
-      cursor: pointer;
-      width: 100%;
-      transition: border-color .2s;
-    }
-    .step input[type="file"]:hover { border-color: var(--green); color: var(--text); }
-
-    /* ── ADJUST ROW ── */
-    .adjust-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      max-width: 980px;
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 14px;
-      align-items: flex-end;
-    }
-
-    .adj {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 130px;
-      flex: 1;
-    }
-
-    .adj label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      font-weight: 700;
-      color: var(--green);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .adj label em {
-      font-style: normal;
-      color: var(--dim);
-      font-weight: 400;
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
-    input[type="range"] { accent-color: var(--green); width: 100%; cursor: pointer; }
-
     select {
-      background: #1c1c1c;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 8px;
-      color: var(--text);
-      font-size: 12px;
-      cursor: pointer;
-      width: 100%;
+      background:var(--s2); border:1px solid var(--bd); border-radius:7px;
+      padding:8px; color:var(--tx); font-size:12px; cursor:pointer; width:100%;
     }
 
-    /* ── PREVIEW CANVAS ── */
-    .preview-wrap {
-      max-width: 980px;
-      width: 100%;
-      border-radius: 14px;
-      /* Glowing border so you always see the canvas */
-      border: 2px solid var(--green);
-      box-shadow: 0 0 0 1px #004d28, 0 0 30px rgba(0,230,118,.18), 0 20px 60px rgba(0,0,0,.9);
-      overflow: hidden;
-      aspect-ratio: 16 / 9;
-      margin-bottom: 16px;
-      background: #000;
-    }
+    /* ── fila texto ── */
+    .txt-row { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+    .txt-row .txt-inp { flex:1; min-width:180px; }
+    .txt-row .txt-mini { width:52px; }
 
-    #cnv { width: 100%; height: 100%; display: block; }
-
-    /* ── ACTION BUTTONS ── */
-    .actions {
-      display: flex;
-      gap: 12px;
-      max-width: 980px;
-      width: 100%;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
+    /* ── botones ── */
     .btn {
-      padding: 12px 22px;
-      border-radius: 10px;
-      border: none;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all .18s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      padding:11px 18px; border-radius:9px; border:none; font-size:13px;
+      font-weight:700; cursor:pointer; transition:all .18s;
+      display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
     }
-    .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
-    .btn:not(:disabled):hover { transform: translateY(-2px); }
+    .btn:disabled { opacity:.38; cursor:not-allowed; transform:none !important; }
+    .btn:not(:disabled):hover { transform:translateY(-2px); }
+    .btn-g    { background:var(--g); color:#000; }
+    .btn-g:not(:disabled):hover { background:var(--g2); }
+    .btn-y    { background:var(--y); color:#000; }
+    .btn-y:not(:disabled):hover { background:#e6c200; }
+    .btn-r    { background:var(--r); color:#fff; }
+    .btn-r:not(:disabled):hover { background:#d32f2f; }
+    .btn-ghost { background:transparent; color:var(--dim); border:1px solid var(--bd); }
+    .btn-ghost:not(:disabled):hover { border-color:var(--g); color:var(--g); }
+    .btn-mic  { background:#1a1a1a; color:var(--tx); border:1px solid var(--bd); }
+    .btn-mic.on { background:#7f0000; color:#fff; border-color:var(--r);
+                  animation:blink-btn 1.2s infinite; }
+    @keyframes blink-btn { 0%,100%{opacity:1} 50%{opacity:.65} }
 
-    .btn-anim {
-      background: #1e3a2f;
-      color: var(--green);
-      border: 1px solid var(--green);
+    .actions { display:flex; gap:10px; flex-wrap:wrap; max-width:980px; width:100%; margin-bottom:12px; }
+    .rec-count { display:none; align-items:center; gap:7px; font-size:12px; color:var(--r); font-weight:700; }
+    .rec-count.on { display:flex; }
+    .rdot { width:9px;height:9px;background:var(--r);border-radius:50%;animation:blink-btn 1s infinite; }
+
+    /* ── canvas ── */
+    .preview-wrap {
+      max-width:980px; width:100%; aspect-ratio:16/9;
+      border-radius:13px; overflow:hidden;
+      border:2px solid var(--g);
+      box-shadow:0 0 0 1px #004d28, 0 0 28px rgba(0,230,118,.16), 0 20px 60px rgba(0,0,0,.9);
+      background:#000; margin-bottom:12px;
     }
-    .btn-anim:not(:disabled):hover { background: #264d3b; }
+    #cnv { width:100%; height:100%; display:block; }
 
-    .btn-img {
-      background: #1a1a1a;
-      color: var(--yellow);
-      border: 1px solid var(--yellow);
-    }
-    .btn-img:not(:disabled):hover { background: #2a2800; }
-
-    .btn-rec {
-      background: var(--red);
-      color: #fff;
-      font-size: 15px;
-      padding: 13px 28px;
-      flex: 1;
-    }
-    .btn-rec:not(:disabled):hover { background: #d32f2f; }
-    .btn-rec.recording { background: #7f0000; animation: pulse-rec 1s infinite; }
-
-    @keyframes pulse-rec { 0%,100%{box-shadow:0 0 0 0 rgba(244,67,54,.6)} 50%{box-shadow:0 0 0 8px rgba(244,67,54,0)} }
-
-    /* ── STATUS ── */
+    /* ── status ── */
     .status {
-      max-width: 980px;
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 12px;
-      color: var(--dim);
-      text-align: center;
+      max-width:980px; width:100%; background:var(--s1); border:1px solid var(--bd);
+      border-radius:8px; padding:9px 16px; font-size:12px; color:var(--dim); text-align:center;
     }
+
+    /* ── audio indicator ── */
+    .audio-info { font-size:11px; color:var(--g); margin-top:6px; min-height:16px; }
   </style>
 </head>
 <body>
 
-<div class="header">
+<div class="hdr">
   <h1>3D Billboard <span>Pro</span></h1>
-  <p>Creá publicidades con efecto de producto emergente y exportá como video o imagen</p>
+  <p>Imágenes · Texto · Audio · Exportá en video con todo incluido</p>
 </div>
 
-<!-- PASO 1-3 -->
-<div class="steps">
+<!-- ══ 1. ARCHIVOS ══ -->
+<div class="card">
+  <div class="card-title">Archivos</div>
+  <div class="g3">
+    <div class="fld"><label><span class="badge">1</span> Fondo de escena</label>
+      <input type="file" id="inBg" accept="image/*"></div>
+    <div class="fld"><label><span class="badge">2</span> Imagen del cartel</label>
+      <input type="file" id="inBoard" accept="image/*"></div>
+    <div class="fld"><label><span class="badge">3</span> Producto PNG (sin fondo)</label>
+      <input type="file" id="inProd" accept="image/*"></div>
+  </div>
+</div>
 
-  <div class="step">
-    <div class="step-title">
-      <div class="step-num">1</div>
-      <div>
-        <strong>Fondo de escena</strong>
-        <small>Estadio, edificio, lo que quieras</small>
+<!-- ══ 2. TEXTO PUBLICITARIO ══ -->
+<div class="card">
+  <div class="card-title">Texto publicitario</div>
+
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <!-- Título principal -->
+    <div class="fld">
+      <label>Título principal</label>
+      <div class="txt-row">
+        <input type="text" class="txt-inp" id="tText1" placeholder="Ej: NUEVO AIR MAX 2025">
+        <div class="fld txt-mini"><label>Color</label><input type="color" id="tCol1" value="#ffffff"></div>
+        <div class="fld" style="width:90px"><label>Tamaño <em id="vTS1">72</em></label>
+          <input type="range" id="tSize1" min="30" max="160" value="72"></div>
       </div>
     </div>
-    <input type="file" id="inBg" accept="image/*" title="Subir imagen de fondo">
-  </div>
-
-  <div class="step">
-    <div class="step-title">
-      <div class="step-num">2</div>
-      <div>
-        <strong>Imagen del cartel</strong>
-        <small>Opcional – aparece dentro del marco</small>
+    <!-- Subtítulo -->
+    <div class="fld">
+      <label>Subtítulo / Tagline</label>
+      <div class="txt-row">
+        <input type="text" class="txt-inp" id="tText2" placeholder="Ej: Solo por tiempo limitado">
+        <div class="fld txt-mini"><label>Color</label><input type="color" id="tCol2" value="#ffd600"></div>
+        <div class="fld" style="width:90px"><label>Tamaño <em id="vTS2">44</em></label>
+          <input type="range" id="tSize2" min="18" max="100" value="44"></div>
       </div>
     </div>
-    <input type="file" id="inBoard" accept="image/*" title="Subir imagen del cartel">
-  </div>
-
-  <div class="step">
-    <div class="step-title">
-      <div class="step-num">3</div>
-      <div>
-        <strong>Producto PNG</strong>
-        <small>Sin fondo – se escapa del cartel</small>
+    <!-- Opciones de texto -->
+    <div class="g4">
+      <div class="fld"><label>Posición</label>
+        <select id="tPos">
+          <option value="bottom">Abajo</option>
+          <option value="top">Arriba</option>
+          <option value="center">Centro</option>
+        </select>
+      </div>
+      <div class="fld"><label>Animación del texto</label>
+        <select id="tAnim">
+          <option value="none">Estático</option>
+          <option value="fade">Fade in</option>
+          <option value="slide">Slide up</option>
+          <option value="glow">Glow pulsante</option>
+        </select>
       </div>
     </div>
-    <input type="file" id="inProd" accept="image/*" title="Subir PNG del producto">
   </div>
-
 </div>
 
-<!-- AJUSTES -->
-<div class="adjust-row">
-
-  <div class="adj">
-    <label>Animación</label>
-    <select id="sAnim">
-      <option value="float">Flotante (loop)</option>
-      <option value="burst">Irrupción (loop)</option>
-      <option value="swing">Balanceo (loop)</option>
-      <option value="none">Estático</option>
-    </select>
+<!-- ══ 3. ANIMACIÓN ══ -->
+<div class="card">
+  <div class="card-title">Animación del producto</div>
+  <div class="g4">
+    <div class="fld"><label>Tipo</label>
+      <select id="sAnim">
+        <option value="float">Flotante (loop)</option>
+        <option value="burst">Irrupción (loop)</option>
+        <option value="swing">Balanceo (loop)</option>
+        <option value="none">Sin animación</option>
+      </select>
+    </div>
+    <div class="fld"><label>Intensidad <em id="vInt">100%</em></label>
+      <input type="range" id="sInt" min="0" max="200" value="100"></div>
+    <div class="fld"><label>Velocidad <em id="vSpd">1.0×</em></label>
+      <input type="range" id="sSpd" min="20" max="300" value="100"></div>
+    <div class="fld"><label>Profundidad <em id="vDepth">90</em></label>
+      <input type="range" id="sDepth" min="0" max="250" value="90"></div>
+    <div class="fld"><label>Tamaño producto <em id="vScale">1.00</em></label>
+      <input type="range" id="sScale" min="0.3" max="3.0" step="0.05" value="1.0"></div>
+    <div class="fld"><label>Rotación cartel <em id="vTiltY">–12°</em></label>
+      <input type="range" id="sTiltY" min="-45" max="45" value="-12"></div>
+    <div class="fld"><label>Duración video <em id="vDur">5 s</em></label>
+      <input type="range" id="sDur" min="2" max="30" value="5"></div>
   </div>
-
-  <div class="adj">
-    <label>Profundidad <em id="vDepth">90</em></label>
-    <input type="range" id="sDepth" min="0" max="250" value="90">
-  </div>
-
-  <div class="adj">
-    <label>Tamaño producto <em id="vScale">1.00</em></label>
-    <input type="range" id="sScale" min="0.3" max="3.0" step="0.05" value="1.0">
-  </div>
-
-  <div class="adj">
-    <label>Rotación cartel <em id="vTiltY">–12°</em></label>
-    <input type="range" id="sTiltY" min="-45" max="45" value="-12">
-  </div>
-
-  <div class="adj">
-    <label>Duración video <em id="vDur">5 s</em></label>
-    <input type="range" id="sDur" min="2" max="20" value="5">
-  </div>
-
 </div>
 
-<!-- CANVAS -->
-<div class="preview-wrap">
-  <canvas id="cnv"></canvas>
+<!-- ══ 4. AUDIO ══ -->
+<div class="card">
+  <div class="card-title">Audio (música o voz)</div>
+  <div class="g3">
+    <div class="fld">
+      <label>Subir música / audio</label>
+      <input type="file" id="inAudio" accept="audio/*">
+      <div class="audio-info" id="audioInfo">Sin audio cargado</div>
+    </div>
+    <div class="fld">
+      <label>O grabá tu voz en vivo</label>
+      <button class="btn btn-mic" id="btnMic">🎤 Activar micrófono</button>
+      <div class="audio-info" id="micInfo">Micrófono inactivo</div>
+    </div>
+    <div class="fld">
+      <label>Volumen audio <em id="vVol">100%</em></label>
+      <input type="range" id="sVol" min="0" max="150" value="100">
+      <div style="font-size:10px;color:var(--dim);margin-top:4px;">
+        El audio se mezcla automáticamente al grabar el video
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- BOTONES DE ACCIÓN -->
+<!-- ══ CANVAS ══ -->
+<div class="preview-wrap"><canvas id="cnv"></canvas></div>
+
+<!-- ══ ACCIONES ══ -->
 <div class="actions">
-
-  <button class="btn btn-anim" id="btnAnim">▶ Previsualizar animación</button>
-
-  <button class="btn btn-img" id="btnImg">📸 Descargar imagen PNG</button>
-
-  <button class="btn btn-rec" id="btnRec">⏺&nbsp;&nbsp;GRABAR Y DESCARGAR VIDEO</button>
-
+  <button class="btn btn-g"     id="btnAnim">▶ Previsualizar</button>
+  <button class="btn btn-ghost" id="btnImg" >📸 Descargar PNG</button>
+  <button class="btn btn-r"     id="btnRec" style="flex:1;justify-content:center;font-size:14px;">
+    ⏺&nbsp; GRABAR VIDEO (con audio si está cargado)
+  </button>
+  <div class="rec-count" id="recCount"><div class="rdot"></div><span id="recLabel">Grabando…</span></div>
 </div>
 
 <div class="status" id="status">
-  Subí tus imágenes en los pasos 1, 2 y 3 · El cartel verde ya es visible en el preview
+  Cargá las imágenes, escribí el texto y subí un audio — luego grabá todo junto en un solo video
 </div>
 
 <script>
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // CANVAS
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
 const cnv = document.getElementById('cnv');
 const ctx = cnv.getContext('2d');
 const W = 1920, H = 1080;
 cnv.width = W; cnv.height = H;
 
-// ═══════════════════════════════════════════
-// STATE (exposed on window for automation/testing)
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
 window.S = {
-  bg: null, board: null, product: null,
-  tiltY: -12, tiltX: 8,
-  depth: 90, scale: 1.0,
-  anim: 'float', duration: 5,
-  playing: false, recording: false,
-  rafId: null, t0: 0,
+  bg:null, board:null, product:null,
+  tiltY:-12, tiltX:8, depth:90, scale:1.0,
+  anim:'float', intensity:1.0, speed:1.0, duration:5,
+  text1:'', text1Color:'#ffffff', text1Size:72,
+  text2:'', text2Color:'#ffd600', text2Size:44,
+  textPos:'bottom', textAnim:'none',
+  audioBuffer:null, audioFileName:'',
+  micStream:null, micActive:false, audioVolume:1.0,
+  playing:false, recording:false, rafId:null, t0:0,
 };
 const S = window.S;
 
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // FILE INPUTS
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
 function bindFile(id, key, label) {
   document.getElementById(id).addEventListener('change', e => {
     const f = e.target.files[0];
@@ -353,339 +293,456 @@ function bindFile(id, key, label) {
     const r = new FileReader();
     r.onload = ev => {
       const img = new Image();
-      img.onload = () => { S[key] = img; redraw(); setStatus(`✔ ${label} cargado: ${f.name}`); };
+      img.onload = () => { S[key] = img; redraw(); setStatus(`✔ ${label}: ${f.name}`); };
       img.src = ev.target.result;
     };
     r.readAsDataURL(f);
   });
 }
-bindFile('inBg',    'bg',      'Fondo');
-bindFile('inBoard', 'board',   'Cartel');
-bindFile('inProd',  'product', 'Producto');
+bindFile('inBg',    'bg',    'Fondo');
+bindFile('inBoard', 'board', 'Cartel');
+bindFile('inProd',  'product','Producto');
 
-// ═══════════════════════════════════════════
-// SLIDERS
-// ═══════════════════════════════════════════
-function bindSlider(id, dispId, key, unit, dec = 0) {
-  const s = document.getElementById(id);
-  const d = document.getElementById(dispId);
+// Audio file
+document.getElementById('inAudio').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  setStatus('⏳ Decodificando audio…');
+  const ab  = await f.arrayBuffer();
+  const ac  = new AudioContext();
+  S.audioBuffer = await ac.decodeAudioData(ab);
+  await ac.close();
+  S.audioFileName = f.name;
+  document.getElementById('audioInfo').textContent = `✔ ${f.name} (${S.audioBuffer.duration.toFixed(1)}s)`;
+  setStatus(`✔ Audio cargado: ${f.name}`);
+});
+
+// ════════════════════════════════════════════════════
+// SLIDERS & INPUTS
+// ════════════════════════════════════════════════════
+function bindSlider(id, dispId, key, unit, dec=0, factor=1) {
+  const s=document.getElementById(id), d=document.getElementById(dispId);
   s.addEventListener('input', () => {
-    S[key] = parseFloat(s.value);
-    d.textContent = parseFloat(s.value).toFixed(dec) + unit;
+    S[key] = parseFloat(s.value) * factor;
+    if(d) d.textContent = (parseFloat(s.value)*factor).toFixed(dec) + unit;
     if (!S.playing) redraw();
   });
 }
-bindSlider('sDepth', 'vDepth', 'depth', '');
-bindSlider('sScale', 'vScale', 'scale', '', 2);
-bindSlider('sTiltY', 'vTiltY', 'tiltY', '°');
-bindSlider('sDur',   'vDur',   'duration', ' s');
-document.getElementById('sAnim').addEventListener('change', e => { S.anim = e.target.value; });
+bindSlider('sDepth','vDepth','depth','');
+bindSlider('sScale','vScale','scale','',2);
+bindSlider('sTiltY','vTiltY','tiltY','°');
+bindSlider('sDur',  'vDur',  'duration',' s');
+bindSlider('sInt',  'vInt',  'intensity','%',0);   // raw 0-200 → state
+bindSlider('sSpd',  'vSpd',  'speed','×',1,0.01);  // raw 20-300 → 0.2-3.0
+bindSlider('tSize1','vTS1',  'text1Size','');
+bindSlider('tSize2','vTS2',  'text2Size','');
+bindSlider('sVol',  'vVol',  'audioVolume','%',0,0.01); // raw 0-150 → 0-1.5
 
-// ═══════════════════════════════════════════
-// PERSPECTIVA
-// ═══════════════════════════════════════════
+// Fix intensity factor (raw value IS the percentage)
+document.getElementById('sInt').addEventListener('input', e => {
+  S.intensity = parseFloat(e.target.value) / 100;
+  document.getElementById('vInt').textContent = e.target.value + '%';
+  if (!S.playing) redraw();
+});
+
+document.getElementById('sVol').addEventListener('input', e => {
+  S.audioVolume = parseFloat(e.target.value) / 100;
+  document.getElementById('vVol').textContent = e.target.value + '%';
+});
+
+['sAnim','tPos','tAnim'].forEach(id => {
+  document.getElementById(id).addEventListener('change', e => {
+    const map = {sAnim:'anim', tPos:'textPos', tAnim:'textAnim'};
+    S[map[id]] = e.target.value;
+    if (!S.playing) redraw();
+  });
+});
+
+// Text inputs
+['tText1','tText2','tCol1','tCol2'].forEach(id => {
+  const map = {tText1:'text1',tText2:'text2',tCol1:'text1Color',tCol2:'text2Color'};
+  document.getElementById(id).addEventListener('input', e => {
+    S[map[id]] = e.target.value;
+    if (!S.playing) redraw();
+  });
+});
+
+// ════════════════════════════════════════════════════
+// PERSPECTIVE MATH
+// ════════════════════════════════════════════════════
 const FOV = 1400;
 
 function getBoardQuad(tY, tX, cx, cy, hw, hh) {
-  const ry = tY * Math.PI / 180;
-  const rx = tX * Math.PI / 180;
+  const ry = tY*Math.PI/180, rx = tX*Math.PI/180;
   return [[-hw,-hh,0],[hw,-hh,0],[hw,hh,0],[-hw,hh,0]].map(([x,y,z]) => {
-    const x1 = x*Math.cos(ry) + z*Math.sin(ry);
-    const z1 = -x*Math.sin(ry) + z*Math.cos(ry);
-    const y2 = y*Math.cos(rx) - z1*Math.sin(rx);
-    const z2 = y*Math.sin(rx) + z1*Math.cos(rx);
-    const s  = FOV / (FOV + z2);
-    return { x: cx + x1*s, y: cy + y2*s };
+    const x1 = x*Math.cos(ry)+z*Math.sin(ry), z1 = -x*Math.sin(ry)+z*Math.cos(ry);
+    const y2 = y*Math.cos(rx)-z1*Math.sin(rx), z2 = y*Math.sin(rx)+z1*Math.cos(rx);
+    const s = FOV/(FOV+z2);
+    return {x:cx+x1*s, y:cy+y2*s};
   });
 }
 
 function drawQuadImg(img, q) {
-  const iw = img.width, ih = img.height;
-  tri(img,[0,0],[iw,0],[0,ih], q[0],q[1],q[3]);
-  tri(img,[iw,0],[iw,ih],[0,ih], q[1],q[2],q[3]);
+  const iw=img.width, ih=img.height;
+  tri(img,[0,0],[iw,0],[0,ih],  q[0],q[1],q[3]);
+  tri(img,[iw,0],[iw,ih],[0,ih],q[1],q[2],q[3]);
 }
 
 function tri(img, s0, s1, s2, d0, d1, d2) {
   ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(d0.x,d0.y); ctx.lineTo(d1.x,d1.y); ctx.lineTo(d2.x,d2.y);
-  ctx.closePath(); ctx.clip();
-  const det = (s1[0]-s0[0])*(s2[1]-s0[1]) - (s2[0]-s0[0])*(s1[1]-s0[1]);
-  const a = ((d1.x-d0.x)*(s2[1]-s0[1]) - (d2.x-d0.x)*(s1[1]-s0[1])) / det;
-  const b = ((d2.x-d0.x)*(s1[0]-s0[0]) - (d1.x-d0.x)*(s2[0]-s0[0])) / det;
-  const e = d0.x - a*s0[0] - b*s0[1];
-  const c = ((d1.y-d0.y)*(s2[1]-s0[1]) - (d2.y-d0.y)*(s1[1]-s0[1])) / det;
-  const d = ((d2.y-d0.y)*(s1[0]-s0[0]) - (d1.y-d0.y)*(s2[0]-s0[0])) / det;
-  const f = d0.y - c*s0[0] - d*s0[1];
-  ctx.transform(a,c,b,d,e,f);
-  ctx.drawImage(img, 0, 0);
-  ctx.restore();
+  ctx.beginPath(); ctx.moveTo(d0.x,d0.y); ctx.lineTo(d1.x,d1.y); ctx.lineTo(d2.x,d2.y); ctx.closePath(); ctx.clip();
+  const det=(s1[0]-s0[0])*(s2[1]-s0[1])-(s2[0]-s0[0])*(s1[1]-s0[1]);
+  const a=((d1.x-d0.x)*(s2[1]-s0[1])-(d2.x-d0.x)*(s1[1]-s0[1]))/det;
+  const b=((d2.x-d0.x)*(s1[0]-s0[0])-(d1.x-d0.x)*(s2[0]-s0[0]))/det;
+  const e=d0.x-a*s0[0]-b*s0[1];
+  const c=((d1.y-d0.y)*(s2[1]-s0[1])-(d2.y-d0.y)*(s1[1]-s0[1]))/det;
+  const d=((d2.y-d0.y)*(s1[0]-s0[0])-(d1.y-d0.y)*(s2[0]-s0[0]))/det;
+  const f=d0.y-c*s0[0]-d*s0[1];
+  ctx.transform(a,c,b,d,e,f); ctx.drawImage(img,0,0); ctx.restore();
 }
 
 function clipQuad(q) {
-  ctx.beginPath();
-  ctx.moveTo(q[0].x,q[0].y);
-  q.forEach(p => ctx.lineTo(p.x,p.y));
-  ctx.closePath(); ctx.clip();
+  ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.clip();
 }
 
-// ═══════════════════════════════════════════
-// ANIMACIÓN DELTA
-// ═══════════════════════════════════════════
-function animDelta(t) {
-  switch (S.anim) {
+// ════════════════════════════════════════════════════
+// ANIMATION DELTA
+// ════════════════════════════════════════════════════
+function animDelta(ms) {
+  const I   = S.intensity;
+  const t   = ms / 1000 * S.speed;
+  switch(S.anim) {
     case 'float': {
-      const s = Math.sin(t * 1.3);
-      return { dy: s*20, dz: s*14, ds: 1+s*0.03, rot: s*1.8 };
+      const s = Math.sin(t*1.3);
+      return {dy:s*20*I, dz:s*14*I, ds:1+s*0.03*I, rot:s*1.8*I};
     }
     case 'burst': {
-      const c = (t % 3) / 3;
-      const e = 1 - Math.pow(1 - Math.min(c*2,1), 3);
-      const f = c > 0.72 ? 1-(c-0.72)/0.28 : 1;
-      const v = e * f;
-      return { dy: -v*35, dz: v*80, ds: 0.55+v*0.45, rot: 0 };
+      const cyc=(t%3)/3, e=1-Math.pow(1-Math.min(cyc*2,1),3);
+      const f=cyc>0.72?1-(cyc-0.72)/0.28:1, v=e*f;
+      return {dy:-v*35*I, dz:v*80*I, ds:0.55+v*0.45*I, rot:0};
     }
     case 'swing': {
-      const s = Math.sin(t * 0.85);
-      return { dy: 0, dz: 0, ds: 1, rot: s*9 };
+      const s=Math.sin(t*0.85);
+      return {dy:0, dz:0, ds:1, rot:s*9*I};
     }
-    default: return { dy:0, dz:0, ds:1, rot:0 };
+    default: return {dy:0,dz:0,ds:1,rot:0};
   }
 }
 
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
+// TEXT OVERLAY
+// ════════════════════════════════════════════════════
+function drawText(ms) {
+  const {text1,text1Color,text1Size,text2,text2Color,text2Size,textPos,textAnim} = S;
+  if (!text1 && !text2) return;
+
+  const cx = W/2;
+  const baseY = textPos==='top' ? H*0.09 : textPos==='center' ? H*0.50 : H*0.87;
+  const t = ms/1000;
+
+  let alpha=1, offsetY=0, glowPx=0;
+  switch(textAnim) {
+    case 'fade':
+      alpha = Math.min(t*1.2, 1); break;
+    case 'slide':
+      const p=Math.min(t*1.4,1), ease=1-Math.pow(1-p,3);
+      offsetY=(1-ease)*H*0.06; alpha=ease; break;
+    case 'glow':
+      glowPx=12+Math.sin(t*2.2)*10; break;
+  }
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.textAlign   = 'center';
+  ctx.textBaseline= 'middle';
+
+  if (text1) {
+    const sz = text1Size * (W/1280); // scale to canvas resolution
+    ctx.font = `bold ${sz}px 'Segoe UI', Arial Black, Arial`;
+    ctx.shadowColor = text1Color; ctx.shadowBlur = glowPx;
+    ctx.strokeStyle = 'rgba(0,0,0,0.85)'; ctx.lineWidth = sz/7;
+    ctx.lineJoin = 'round';
+    ctx.strokeText(text1, cx, baseY+offsetY);
+    ctx.fillStyle = text1Color;
+    ctx.fillText(text1, cx, baseY+offsetY);
+  }
+
+  if (text2) {
+    const sz  = text2Size * (W/1280);
+    const gap = text1 ? text1Size*(W/1280)*0.72+sz*0.6 : 0;
+    ctx.font  = `600 ${sz}px 'Segoe UI', Arial`;
+    ctx.shadowColor = text2Color; ctx.shadowBlur = glowPx*0.6;
+    ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.lineWidth = sz/9;
+    ctx.strokeText(text2, cx, baseY+gap+offsetY);
+    ctx.fillStyle = text2Color;
+    ctx.fillText(text2, cx, baseY+gap+offsetY);
+  }
+
+  ctx.restore();
+}
+
+// ════════════════════════════════════════════════════
 // RENDER
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
 function render(ms) {
   ctx.clearRect(0,0,W,H);
-  const t = ms / 1000;
-  const d = animDelta(t);
+  const d = animDelta(ms);
 
   // 1. Fondo
-  if (S.bg) {
-    ctx.drawImage(S.bg, 0, 0, W, H);
-  } else {
-    drawDefaultBg();
-  }
+  if (S.bg) { ctx.drawImage(S.bg,0,0,W,H); }
+  else { drawDefaultBg(); }
 
-  // Geometría del cartel
-  const bW = W * 0.46, bH = H * 0.42;
-  const cx = W / 2, cy = H * 0.46;
-  const q  = getBoardQuad(S.tiltY, S.tiltX, cx, cy, bW/2, bH/2);
+  // Billboard geom
+  const bW=W*0.46, bH=H*0.42, cx=W/2, cy=H*0.46;
+  const q = getBoardQuad(S.tiltY,S.tiltX,cx,cy,bW/2,bH/2);
 
   // 2. Fondo del cartel
-  ctx.save();
-  clipQuad(q);
-  if (S.board) {
-    drawQuadImg(S.board, q);
-  } else {
-    drawDefaultBoard(q);
-  }
+  ctx.save(); clipQuad(q);
+  if (S.board) { drawQuadImg(S.board,q); } else { drawDefaultBoard(q,cx,cy); }
   ctx.restore();
 
   // 3. Sombra del producto sobre el cartel
   if (S.product) {
-    const depth = S.depth + d.dz;
-    const sc    = S.scale * d.ds * (FOV / (FOV + depth));
-    ctx.save();
-    clipQuad(q);
-    const sg = ctx.createRadialGradient(cx, cy+bH*0.1, 10, cx, cy+bH*0.1, bH*0.45*sc);
-    sg.addColorStop(0,'rgba(0,0,0,.55)');
-    sg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle = sg;
-    ctx.beginPath(); ctx.ellipse(cx, cy+bH*0.1, bW*0.38*sc, bH*0.22*sc, 0, 0, Math.PI*2); ctx.fill();
+    const depth=S.depth+d.dz, sc=S.scale*d.ds*(FOV/(FOV+depth));
+    ctx.save(); clipQuad(q);
+    const sg=ctx.createRadialGradient(cx,cy+bH*0.1,10,cx,cy+bH*0.1,bH*0.45*sc);
+    sg.addColorStop(0,'rgba(0,0,0,.52)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=sg; ctx.beginPath(); ctx.ellipse(cx,cy+bH*0.1,bW*0.36*sc,bH*0.20*sc,0,0,Math.PI*2); ctx.fill();
     ctx.restore();
   }
 
-  // 4. Marco del cartel (tapa la base del producto → efecto de salida)
+  // 4. Marco (tapa base del producto → efecto emergente)
   drawFrame(q);
 
-  // 5. Producto emergiendo
+  // 5. Producto
   if (S.product) {
-    const depth = S.depth + d.dz;
-    const sc    = S.scale * d.ds * (FOV / (FOV + depth));
-    drawProduct(cx, cy + d.dy, sc, S.tiltY * 0.12 + d.rot);
-  } else {
-    drawProductHint(q);
-  }
+    const depth=S.depth+d.dz, sc=S.scale*d.ds*(FOV/(FOV+depth));
+    drawProduct(cx, cy+d.dy, sc, S.tiltY*0.12+d.rot);
+  } else { drawProductHint(q,cx,cy); }
+
+  // 6. Texto publicitario
+  drawText(ms);
+
+  // 7. Vignette sutil
+  const vg=ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.9);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.35)');
+  ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
 }
 
 function drawDefaultBg() {
-  const g = ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,'#0d1117'); g.addColorStop(0.55,'#161b22'); g.addColorStop(1,'#0d1117');
-  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(255,255,255,.04)'; ctx.lineWidth=1;
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#05051a'); g.addColorStop(.6,'#0d1b3e'); g.addColorStop(1,'#0d0d0d');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.035)'; ctx.lineWidth=1;
   for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
   for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-  const cg=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,750);
-  cg.addColorStop(0,'rgba(0,100,255,.07)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+  const cg=ctx.createRadialGradient(W/2,H/2,100,W/2,H/2,700);
+  cg.addColorStop(0,'rgba(30,100,255,.06)'); cg.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
 }
 
-function drawDefaultBoard(q) {
+function drawDefaultBoard(q,cx,cy) {
   ctx.fillStyle='#080808';
   ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.fill();
-  // texto de ayuda dentro del cartel
-  ctx.fillStyle='rgba(255,255,255,.15)';
-  const cx=q.reduce((s,p)=>s+p.x,0)/4, cy=q.reduce((s,p)=>s+p.y,0)/4;
-  ctx.font=`bold ${H*.028}px Segoe UI`; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('Subí la imagen del cartel (paso 2)', cx, cy);
+  ctx.fillStyle='rgba(255,255,255,.13)';
+  ctx.font=`bold ${H*.026}px Segoe UI`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Subí la imagen del cartel (paso 2)',cx,cy);
 }
 
 function drawFrame(q) {
   ctx.save();
-  // Marco grueso oscuro (tapa la base del producto → efecto emergente)
   ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath();
-  ctx.strokeStyle='#0d0d0d'; ctx.lineWidth=30; ctx.stroke();
-  // Borde LED verde visible
+  ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=32; ctx.stroke();
   ctx.strokeStyle='#00e676'; ctx.lineWidth=4;
-  ctx.shadowColor='#00e676'; ctx.shadowBlur=18;
-  ctx.stroke();
-  ctx.shadowBlur=0;
-  // Brillo interior sutil
-  ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.shadowColor='#00e676'; ctx.shadowBlur=20; ctx.stroke(); ctx.shadowBlur=0;
+  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=2; ctx.stroke();
   ctx.restore();
 }
 
-function drawProduct(cx, cy, sc, rotYdeg) {
-  const img = S.product;
-  const asp = img.width / img.height;
-  const pH  = H * 0.70 * sc;
-  const pW  = pH * asp;
+function drawProduct(cx,cy,sc,rotYdeg) {
+  const img=S.product, asp=img.width/img.height;
+  const pH=H*0.70*sc, pW=pH*asp;
   ctx.save();
-  ctx.translate(cx, cy - pH * 0.16);
-  const shear = Math.sin(rotYdeg * Math.PI / 180) * 0.22;
-  ctx.transform(1, 0, shear, 1, 0, 0);
+  ctx.translate(cx, cy-pH*0.16);
+  ctx.transform(1,0,Math.sin(rotYdeg*Math.PI/180)*0.22,1,0,0);
   ctx.shadowColor='rgba(0,0,0,.8)'; ctx.shadowBlur=70+sc*25; ctx.shadowOffsetX=14; ctx.shadowOffsetY=32;
-  ctx.drawImage(img, -pW/2, -pH/2, pW, pH);
+  ctx.drawImage(img,-pW/2,-pH/2,pW,pH);
   ctx.restore();
 }
 
-function drawProductHint(q) {
-  const cx=q.reduce((s,p)=>s+p.x,0)/4;
-  const cy=q.reduce((s,p)=>s+p.y,0)/4 - H*0.12;
+function drawProductHint(q,cx,cy) {
+  const oy=cy-H*0.12;
   ctx.save();
-  ctx.strokeStyle='rgba(0,230,118,.35)'; ctx.lineWidth=3; ctx.setLineDash([12,8]);
-  ctx.strokeRect(cx - H*0.14, cy - H*0.18, H*0.28, H*0.36);
+  ctx.strokeStyle='rgba(0,230,118,.32)'; ctx.lineWidth=3; ctx.setLineDash([12,8]);
+  ctx.strokeRect(cx-H*0.13,oy-H*0.17,H*0.26,H*0.34);
   ctx.setLineDash([]);
-  ctx.fillStyle='rgba(0,230,118,.5)'; ctx.font=`${H*.02}px Segoe UI`;
+  ctx.fillStyle='rgba(0,230,118,.45)'; ctx.font=`${H*.019}px Segoe UI`;
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('Subí el producto PNG (paso 3)', cx, cy + H*0.21);
+  ctx.fillText('Subí el producto PNG (paso 3)',cx,oy+H*0.20);
   ctx.restore();
 }
 
+window.render=render;
 function redraw() { render(0); }
-window.redraw = redraw;
-window.render = render;
-window.startAnim = startAnim;
-window.stopAnim  = stopAnim;
+window.redraw=redraw;
 
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // ANIMACIÓN PREVIEW
-// ═══════════════════════════════════════════
-document.getElementById('btnAnim').addEventListener('click', () => {
-  S.playing ? stopAnim() : startAnim();
-});
-
+// ════════════════════════════════════════════════════
 function startAnim() {
-  S.playing = true; S.t0 = performance.now();
-  document.getElementById('btnAnim').textContent = '⏹ Detener preview';
+  S.playing=true; S.t0=performance.now();
+  document.getElementById('btnAnim').textContent='⏹ Detener';
   (function loop(now){ if(!S.playing)return; render(now-S.t0); S.rafId=requestAnimationFrame(loop); })(S.t0);
 }
-
 function stopAnim() {
-  S.playing = false; cancelAnimationFrame(S.rafId);
-  document.getElementById('btnAnim').textContent = '▶ Previsualizar animación';
+  S.playing=false; cancelAnimationFrame(S.rafId);
+  document.getElementById('btnAnim').textContent='▶ Previsualizar';
   redraw();
 }
+window.startAnim=startAnim; window.stopAnim=stopAnim;
 
-// ═══════════════════════════════════════════
-// DESCARGAR IMAGEN PNG
-// ═══════════════════════════════════════════
+document.getElementById('btnAnim').addEventListener('click', ()=> S.playing ? stopAnim() : startAnim());
+
+// ════════════════════════════════════════════════════
+// MICRÓFONO
+// ════════════════════════════════════════════════════
+document.getElementById('btnMic').addEventListener('click', async () => {
+  if (S.micActive) {
+    S.micStream.getTracks().forEach(t=>t.stop());
+    S.micStream=null; S.micActive=false;
+    document.getElementById('btnMic').textContent='🎤 Activar micrófono';
+    document.getElementById('btnMic').classList.remove('on');
+    document.getElementById('micInfo').textContent='Micrófono inactivo';
+    setStatus('Micrófono desactivado');
+  } else {
+    try {
+      S.micStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+      S.micActive = true;
+      document.getElementById('btnMic').textContent='🔴 Mic activo – click para apagar';
+      document.getElementById('btnMic').classList.add('on');
+      document.getElementById('micInfo').textContent='✔ Listo para grabar';
+      setStatus('🎤 Micrófono activo. Grabá el video y hablá al mismo tiempo.');
+    } catch(e) {
+      setStatus('⚠️ Sin acceso al micrófono: '+e.message);
+    }
+  }
+});
+
+// ════════════════════════════════════════════════════
+// PNG DOWNLOAD
+// ════════════════════════════════════════════════════
 document.getElementById('btnImg').addEventListener('click', () => {
   if (S.playing) stopAnim();
   redraw();
   cnv.toBlob(blob => {
-    const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'), { href: url, download: `billboard-${Date.now()}.png` });
-    a.click(); URL.revokeObjectURL(url);
-    setStatus('✅ Imagen PNG descargada correctamente');
-  }, 'image/png');
+    const url=URL.createObjectURL(blob);
+    Object.assign(document.createElement('a'),{href:url,download:`billboard-${Date.now()}.png`}).click();
+    URL.revokeObjectURL(url);
+    setStatus('✅ Imagen PNG descargada');
+  },'image/png');
 });
 
-// ═══════════════════════════════════════════
-// GRABAR VIDEO
-// ═══════════════════════════════════════════
-let mr = null, chunks = [];
+// ════════════════════════════════════════════════════
+// GRABACIÓN CON AUDIO
+// ════════════════════════════════════════════════════
+let mr=null, chunks=[], recAudioCtx=null, recAudioSrc=null;
+const btnRec=document.getElementById('btnRec');
 
-const btnRec = document.getElementById('btnRec');
-btnRec.addEventListener('click', () => { S.recording ? finishRec() : startRec(); });
+btnRec.addEventListener('click', ()=> S.recording ? finishRec() : startRec());
 
-function startRec() {
+async function startRec() {
   if (S.playing) stopAnim();
 
-  const mime = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']
-    .find(t => MediaRecorder.isTypeSupported(t));
+  const mime=['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']
+    .find(t=>MediaRecorder.isTypeSupported(t));
+  if (!mime) { setStatus('⚠️ Tu navegador no soporta grabación. Usá Chrome o Edge.'); return; }
 
-  if (!mime) {
-    setStatus('⚠️ Tu navegador no soporta grabación. Usá Chrome o Edge, o descargá la imagen PNG.');
-    return;
+  // ── video stream ──────────────────────────────
+  const videoStream = cnv.captureStream(30);
+
+  // ── audio stream ──────────────────────────────
+  let audioTrack = null;
+
+  if (S.audioBuffer) {
+    recAudioCtx = new AudioContext();
+    recAudioSrc = recAudioCtx.createBufferSource();
+    recAudioSrc.buffer = S.audioBuffer;
+    recAudioSrc.loop = true;
+    const gain = recAudioCtx.createGain();
+    gain.gain.value = S.audioVolume;
+    const dest = recAudioCtx.createMediaStreamDestination();
+    recAudioSrc.connect(gain); gain.connect(dest);
+    audioTrack = dest.stream.getAudioTracks()[0];
+  } else if (S.micActive && S.micStream) {
+    audioTrack = S.micStream.getAudioTracks()[0];
   }
 
+  // ── combine ───────────────────────────────────
+  const tracks = [...videoStream.getVideoTracks()];
+  if (audioTrack) tracks.push(audioTrack);
+  const combined = new MediaStream(tracks);
+
+  // ── recorder ──────────────────────────────────
   chunks = [];
-  mr = new MediaRecorder(cnv.captureStream(30), { mimeType: mime, videoBitsPerSecond: 10_000_000 });
-  mr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  mr = new MediaRecorder(combined, {mimeType:mime, videoBitsPerSecond:10_000_000});
+  mr.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
   mr.onstop = () => {
-    const blob = new Blob(chunks, { type: mime });
-    const ext  = mime.includes('mp4') ? 'mp4' : 'webm';
-    const url  = URL.createObjectURL(blob);
-    const a    = Object.assign(document.createElement('a'), { href: url, download: `billboard-3d-${Date.now()}.${ext}` });
-    a.click(); URL.revokeObjectURL(url);
-    setStatus(`✅ Video descargado · ${(blob.size/1048576).toFixed(1)} MB · formato ${ext.toUpperCase()}`);
+    if (recAudioCtx) { recAudioCtx.close(); recAudioCtx=null; }
+    const blob=new Blob(chunks,{type:mime});
+    const ext=mime.includes('mp4')?'mp4':'webm';
+    const url=URL.createObjectURL(blob);
+    Object.assign(document.createElement('a'),{href:url,download:`billboard-3d-${Date.now()}.${ext}`}).click();
+    URL.revokeObjectURL(url);
+    const hasAudio = !!(S.audioBuffer||S.micActive);
+    setStatus(`✅ Video${hasAudio?' con audio':''} descargado · ${(blob.size/1048576).toFixed(1)} MB · ${ext.toUpperCase()}`);
     endRec();
   };
 
-  S.recording = true;
+  S.recording=true;
   mr.start();
-  btnRec.textContent = '⏹  DETENER Y DESCARGAR';
-  btnRec.classList.add('recording');
+  if (recAudioSrc) recAudioSrc.start(); // empieza el audio
 
-  const durMs = S.duration * 1000;
-  const t0    = performance.now();
-  S.playing   = true;
+  btnRec.textContent='⏹  DETENER Y DESCARGAR';
+  btnRec.style.background='#7f0000';
+  document.getElementById('recCount').classList.add('on');
 
-  let secs = S.duration;
-  setStatus(`⏺ Grabando… ${secs}s restantes`);
-  const tick = setInterval(() => {
-    secs--;
-    if (secs > 0 && S.recording) setStatus(`⏺ Grabando… ${secs}s restantes`);
+  const durMs=S.duration*1000, t0=performance.now();
+  S.playing=true;
+
+  let secs=S.duration;
+  document.getElementById('recLabel').textContent=`Grabando… ${secs}s`;
+  const tick=setInterval(()=>{
+    secs--; if(secs>0&&S.recording) document.getElementById('recLabel').textContent=`Grabando… ${secs}s`;
     else clearInterval(tick);
-  }, 1000);
+  },1000);
+
+  const hasAudio=!!(S.audioBuffer||S.micActive);
+  setStatus(`⏺ Grabando ${S.duration}s${hasAudio?' · con audio':''}…`);
 
   (function loop(now){
-    if (!S.recording) return;
-    render(now - t0);
-    if (now - t0 < durMs) { S.rafId = requestAnimationFrame(loop); }
+    if(!S.recording) return;
+    render(now-t0);
+    if(now-t0<durMs){ S.rafId=requestAnimationFrame(loop); }
     else { clearInterval(tick); finishRec(); }
   })(t0);
 }
 
-function finishRec() { if (mr && mr.state !== 'inactive') mr.stop(); }
+function finishRec() { if(mr&&mr.state!=='inactive') mr.stop(); }
 
 function endRec() {
-  S.recording = false; S.playing = false;
-  cancelAnimationFrame(S.rafId);
-  btnRec.textContent = '⏺  GRABAR Y DESCARGAR VIDEO';
-  btnRec.classList.remove('recording');
+  S.recording=false; S.playing=false; cancelAnimationFrame(S.rafId);
+  btnRec.textContent='⏺  GRABAR VIDEO (con audio si está cargado)';
+  btnRec.style.background='';
+  document.getElementById('recCount').classList.remove('on');
   redraw();
 }
 
-// ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════
 // STATUS
-// ═══════════════════════════════════════════
-function setStatus(msg) { document.getElementById('status').textContent = msg; }
+// ════════════════════════════════════════════════════
+function setStatus(m){ document.getElementById('status').textContent=m; }
 
-// render inicial
+// ── render inicial ──
 redraw();
 </script>
 </body>
