@@ -5,392 +5,387 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>3D Billboard Pro</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
-      --g:  #00e676; --g2: #00c85e;
-      --y:  #ffd600;
-      --r:  #f44336;
-      --bg: #080808; --s1: #131313; --s2: #1c1c1c;
-      --bd: #272727; --tx: #e0e0e0; --dim: #666;
+      --g:#00e676; --g2:#00c85e; --y:#ffd600; --r:#f44336;
+      --bg:#070707; --s1:#111; --s2:#181818; --bd:#252525;
+      --tx:#dedede; --dim:#5a5a5a;
     }
     body { background:var(--bg); color:var(--tx); font-family:'Segoe UI',system-ui,sans-serif;
-           min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:18px 14px 50px; }
+           min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:16px 12px 50px; }
 
-    /* ── header ── */
-    .hdr { text-align:center; margin-bottom:18px; }
-    .hdr h1 { font-size:1.45rem; font-weight:800; }
+    .hdr { text-align:center; margin-bottom:14px; }
+    .hdr h1 { font-size:1.4rem; font-weight:800; }
     .hdr h1 span { color:var(--g); }
-    .hdr p { font-size:.78rem; color:var(--dim); margin-top:3px; }
+    .hdr p { font-size:.76rem; color:var(--dim); margin-top:3px; }
 
-    /* ── card genérico ── */
-    .card {
-      background:var(--s1); border:1px solid var(--bd); border-radius:12px;
-      padding:16px; max-width:980px; width:100%; margin-bottom:12px;
-    }
-    .card-title {
-      font-size:11px; text-transform:uppercase; letter-spacing:.9px;
-      font-weight:700; color:var(--g); margin-bottom:12px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .card-title .badge {
-      background:var(--g); color:#000; border-radius:50%;
-      width:20px; height:20px; font-size:11px; font-weight:800;
-      display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
-    }
+    .card { background:var(--s1); border:1px solid var(--bd); border-radius:11px;
+            padding:14px; max-width:980px; width:100%; margin-bottom:10px; }
+    .card-title { font-size:10px; text-transform:uppercase; letter-spacing:.9px;
+                  font-weight:700; color:var(--g); margin-bottom:11px; }
 
-    /* ── grids ── */
-    .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-    .g4 { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:12px; }
-    .g2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    @media(max-width:600px){ .g3,.g4,.g2 { grid-template-columns:1fr; } }
+    .g2 { display:grid; grid-template-columns:1fr 1fr; gap:11px; }
+    .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:11px; }
+    .g4 { display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:11px; }
+    .g5 { display:grid; grid-template-columns:repeat(auto-fill,minmax(128px,1fr)); gap:11px; }
+    @media(max-width:580px){ .g2,.g3,.g4,.g5 { grid-template-columns:1fr; } }
 
-    /* ── campo ── */
-    .fld { display:flex; flex-direction:column; gap:6px; }
-    .fld label { font-size:10px; text-transform:uppercase; letter-spacing:.7px;
-                 font-weight:700; color:var(--g); display:flex; justify-content:space-between; }
-    .fld label em { font-style:normal; color:var(--dim); font-weight:400;
-                    text-transform:none; letter-spacing:0; }
+    .fld { display:flex; flex-direction:column; gap:5px; }
+    .fld label { font-size:9.5px; text-transform:uppercase; letter-spacing:.7px; font-weight:700;
+                 color:var(--g); display:flex; justify-content:space-between; }
+    .fld label em { font-style:normal; color:var(--dim); font-weight:400; text-transform:none; letter-spacing:0; }
 
-    input[type="file"] {
-      background:var(--s2); border:1px dashed #3a3a3a; border-radius:8px;
-      padding:8px; color:var(--dim); font-size:11px; cursor:pointer; width:100%;
-      transition:border-color .2s;
-    }
-    input[type="file"]:hover { border-color:var(--g); color:var(--tx); }
-    input[type="range"]  { accent-color:var(--g); width:100%; cursor:pointer; }
-    input[type="text"]   {
-      background:var(--s2); border:1px solid var(--bd); border-radius:7px;
-      padding:8px 10px; color:var(--tx); font-size:13px; width:100%;
-      outline:none; transition:border-color .2s;
-    }
-    input[type="text"]:focus  { border-color:var(--g); }
-    input[type="color"] {
-      background:var(--s2); border:1px solid var(--bd); border-radius:6px;
-      width:38px; height:32px; cursor:pointer; padding:2px 3px;
-    }
-    select {
-      background:var(--s2); border:1px solid var(--bd); border-radius:7px;
-      padding:8px; color:var(--tx); font-size:12px; cursor:pointer; width:100%;
-    }
+    input[type="file"]  { background:var(--s2); border:1px dashed #333; border-radius:7px;
+                          padding:7px 8px; color:var(--dim); font-size:11px; cursor:pointer; width:100%;
+                          transition:border-color .2s; }
+    input[type="file"]:hover { border-color:var(--g); }
+    input[type="range"] { accent-color:var(--g); width:100%; cursor:pointer; }
+    input[type="text"]  { background:var(--s2); border:1px solid var(--bd); border-radius:7px;
+                          padding:7px 9px; color:var(--tx); font-size:13px; width:100%; outline:none;
+                          transition:border-color .2s; }
+    input[type="text"]:focus { border-color:var(--g); }
+    input[type="color"] { background:var(--s2); border:1px solid var(--bd); border-radius:5px;
+                          width:36px; height:30px; cursor:pointer; padding:2px; }
+    select { background:var(--s2); border:1px solid var(--bd); border-radius:7px;
+             padding:7px; color:var(--tx); font-size:12px; cursor:pointer; width:100%; }
 
-    /* ── fila texto ── */
-    .txt-row { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
-    .txt-row .txt-inp { flex:1; min-width:180px; }
-    .txt-row .txt-mini { width:52px; }
+    .txt-row { display:flex; gap:9px; align-items:flex-end; flex-wrap:wrap; }
+    .txt-inp { flex:1; min-width:160px; }
 
-    /* ── botones ── */
-    .btn {
-      padding:11px 18px; border-radius:9px; border:none; font-size:13px;
-      font-weight:700; cursor:pointer; transition:all .18s;
-      display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
-    }
-    .btn:disabled { opacity:.38; cursor:not-allowed; transform:none !important; }
+    .btn { padding:10px 16px; border-radius:9px; border:none; font-size:13px; font-weight:700;
+           cursor:pointer; transition:all .18s; display:inline-flex; align-items:center; gap:7px; white-space:nowrap; }
+    .btn:disabled { opacity:.35; cursor:not-allowed; transform:none !important; }
     .btn:not(:disabled):hover { transform:translateY(-2px); }
-    .btn-g    { background:var(--g); color:#000; }
-    .btn-g:not(:disabled):hover { background:var(--g2); }
-    .btn-y    { background:var(--y); color:#000; }
-    .btn-y:not(:disabled):hover { background:#e6c200; }
-    .btn-r    { background:var(--r); color:#fff; }
-    .btn-r:not(:disabled):hover { background:#d32f2f; }
+    .btn-g  { background:var(--g); color:#000; }
+    .btn-g:not(:disabled):hover  { background:var(--g2); }
+    .btn-y  { background:var(--y); color:#000; }
+    .btn-y:not(:disabled):hover  { background:#e6c200; }
+    .btn-r  { background:var(--r); color:#fff; }
+    .btn-r:not(:disabled):hover  { background:#c62828; }
     .btn-ghost { background:transparent; color:var(--dim); border:1px solid var(--bd); }
     .btn-ghost:not(:disabled):hover { border-color:var(--g); color:var(--g); }
-    .btn-mic  { background:#1a1a1a; color:var(--tx); border:1px solid var(--bd); }
-    .btn-mic.on { background:#7f0000; color:#fff; border-color:var(--r);
-                  animation:blink-btn 1.2s infinite; }
-    @keyframes blink-btn { 0%,100%{opacity:1} 50%{opacity:.65} }
+    .btn-mic { background:#181818; color:var(--tx); border:1px solid var(--bd); }
+    .btn-mic.on { background:#6f0000; color:#fff; border-color:var(--r); animation:blink 1.1s infinite; }
 
-    .actions { display:flex; gap:10px; flex-wrap:wrap; max-width:980px; width:100%; margin-bottom:12px; }
-    .rec-count { display:none; align-items:center; gap:7px; font-size:12px; color:var(--r); font-weight:700; }
+    .actions { display:flex; gap:9px; flex-wrap:wrap; max-width:980px; width:100%; margin-bottom:10px; }
+    .rec-count { display:none; align-items:center; gap:6px; font-size:12px; color:var(--r); font-weight:700; }
     .rec-count.on { display:flex; }
-    .rdot { width:9px;height:9px;background:var(--r);border-radius:50%;animation:blink-btn 1s infinite; }
+    .rdot { width:8px;height:8px;background:var(--r);border-radius:50%;animation:blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 
-    /* ── canvas ── */
-    .preview-wrap {
-      max-width:980px; width:100%; aspect-ratio:16/9;
-      border-radius:13px; overflow:hidden;
-      border:2px solid var(--g);
-      box-shadow:0 0 0 1px #004d28, 0 0 28px rgba(0,230,118,.16), 0 20px 60px rgba(0,0,0,.9);
-      background:#000; margin-bottom:12px;
-    }
+    .preview-wrap { max-width:980px; width:100%; border-radius:12px; overflow:hidden;
+                    border:2px solid var(--g); aspect-ratio:16/9;
+                    box-shadow:0 0 0 1px #003d20,0 0 24px rgba(0,230,118,.14),0 16px 50px rgba(0,0,0,.9);
+                    background:#000; margin-bottom:10px; transition:aspect-ratio .3s; }
     #cnv { width:100%; height:100%; display:block; }
 
-    /* ── status ── */
-    .status {
-      max-width:980px; width:100%; background:var(--s1); border:1px solid var(--bd);
-      border-radius:8px; padding:9px 16px; font-size:12px; color:var(--dim); text-align:center;
-    }
-
-    /* ── audio indicator ── */
-    .audio-info { font-size:11px; color:var(--g); margin-top:6px; min-height:16px; }
+    .status { max-width:980px; width:100%; background:var(--s1); border:1px solid var(--bd);
+              border-radius:8px; padding:8px 14px; font-size:11px; color:var(--dim); text-align:center; }
+    .audio-note { font-size:10px; color:var(--dim); margin-top:5px; }
   </style>
 </head>
 <body>
 
 <div class="hdr">
   <h1>3D Billboard <span>Pro</span></h1>
-  <p>Imágenes · Texto · Audio · Exportá en video con todo incluido</p>
+  <p>Imágenes · Texto · Partículas · Audio · Exportá en video listo para publicar</p>
 </div>
 
-<!-- ══ 1. ARCHIVOS ══ -->
+<!-- ══ ARCHIVOS ══ -->
 <div class="card">
-  <div class="card-title">Archivos</div>
+  <div class="card-title">① Archivos</div>
   <div class="g3">
-    <div class="fld"><label><span class="badge">1</span> Fondo de escena</label>
-      <input type="file" id="inBg" accept="image/*"></div>
-    <div class="fld"><label><span class="badge">2</span> Imagen del cartel</label>
-      <input type="file" id="inBoard" accept="image/*"></div>
-    <div class="fld"><label><span class="badge">3</span> Producto PNG (sin fondo)</label>
-      <input type="file" id="inProd" accept="image/*"></div>
+    <div class="fld"><label>Fondo de escena</label><input type="file" id="inBg" accept="image/*"></div>
+    <div class="fld"><label>Imagen del cartel</label><input type="file" id="inBoard" accept="image/*"></div>
+    <div class="fld"><label>Producto PNG (sin fondo)</label><input type="file" id="inProd" accept="image/*"></div>
   </div>
 </div>
 
-<!-- ══ 2. TEXTO PUBLICITARIO ══ -->
+<!-- ══ TEXTO ══ -->
 <div class="card">
-  <div class="card-title">Texto publicitario</div>
-
-  <div style="display:flex;flex-direction:column;gap:10px;">
-    <!-- Título principal -->
+  <div class="card-title">② Texto publicitario</div>
+  <div style="display:flex;flex-direction:column;gap:9px;">
     <div class="fld">
       <label>Título principal</label>
       <div class="txt-row">
         <input type="text" class="txt-inp" id="tText1" placeholder="Ej: NUEVO AIR MAX 2025">
-        <div class="fld txt-mini"><label>Color</label><input type="color" id="tCol1" value="#ffffff"></div>
-        <div class="fld" style="width:90px"><label>Tamaño <em id="vTS1">72</em></label>
-          <input type="range" id="tSize1" min="30" max="160" value="72"></div>
+        <div class="fld"><label>Color</label><input type="color" id="tCol1" value="#ffffff"></div>
+        <div class="fld" style="width:85px"><label>Tamaño <em id="vTS1">72</em></label><input type="range" id="tSize1" min="24" max="160" value="72"></div>
       </div>
     </div>
-    <!-- Subtítulo -->
     <div class="fld">
-      <label>Subtítulo / Tagline</label>
+      <label>Subtítulo</label>
       <div class="txt-row">
-        <input type="text" class="txt-inp" id="tText2" placeholder="Ej: Solo por tiempo limitado">
-        <div class="fld txt-mini"><label>Color</label><input type="color" id="tCol2" value="#ffd600"></div>
-        <div class="fld" style="width:90px"><label>Tamaño <em id="vTS2">44</em></label>
-          <input type="range" id="tSize2" min="18" max="100" value="44"></div>
+        <input type="text" class="txt-inp" id="tText2" placeholder="Ej: Solo por tiempo limitado · 40% OFF">
+        <div class="fld"><label>Color</label><input type="color" id="tCol2" value="#ffd600"></div>
+        <div class="fld" style="width:85px"><label>Tamaño <em id="vTS2">42</em></label><input type="range" id="tSize2" min="14" max="100" value="42"></div>
       </div>
     </div>
-    <!-- Opciones de texto -->
     <div class="g4">
-      <div class="fld"><label>Posición</label>
-        <select id="tPos">
-          <option value="bottom">Abajo</option>
-          <option value="top">Arriba</option>
-          <option value="center">Centro</option>
-        </select>
-      </div>
-      <div class="fld"><label>Animación del texto</label>
-        <select id="tAnim">
-          <option value="none">Estático</option>
-          <option value="fade">Fade in</option>
-          <option value="slide">Slide up</option>
-          <option value="glow">Glow pulsante</option>
-        </select>
-      </div>
+      <div class="fld"><label>Posición texto</label>
+        <select id="tPos"><option value="bottom">Abajo</option><option value="top">Arriba</option><option value="center">Centro</option></select></div>
+      <div class="fld"><label>Animación texto</label>
+        <select id="tAnim"><option value="none">Estático</option><option value="fade">Fade in</option><option value="slide">Slide up</option><option value="glow">Glow pulsante</option></select></div>
     </div>
   </div>
 </div>
 
-<!-- ══ 3. ANIMACIÓN ══ -->
+<!-- ══ ANIMACIÓN ══ -->
 <div class="card">
-  <div class="card-title">Animación del producto</div>
-  <div class="g4">
+  <div class="card-title">③ Animación del producto</div>
+  <div class="g5">
     <div class="fld"><label>Tipo</label>
       <select id="sAnim">
-        <option value="float">Flotante (loop)</option>
-        <option value="burst">Irrupción (loop)</option>
-        <option value="swing">Balanceo (loop)</option>
-        <option value="none">Sin animación</option>
-      </select>
-    </div>
-    <div class="fld"><label>Intensidad <em id="vInt">100%</em></label>
-      <input type="range" id="sInt" min="0" max="200" value="100"></div>
-    <div class="fld"><label>Velocidad <em id="vSpd">1.0×</em></label>
-      <input type="range" id="sSpd" min="20" max="300" value="100"></div>
-    <div class="fld"><label>Profundidad <em id="vDepth">90</em></label>
-      <input type="range" id="sDepth" min="0" max="250" value="90"></div>
-    <div class="fld"><label>Tamaño producto <em id="vScale">1.00</em></label>
-      <input type="range" id="sScale" min="0.3" max="3.0" step="0.05" value="1.0"></div>
-    <div class="fld"><label>Rotación cartel <em id="vTiltY">–12°</em></label>
-      <input type="range" id="sTiltY" min="-45" max="45" value="-12"></div>
-    <div class="fld"><label>Duración video <em id="vDur">5 s</em></label>
-      <input type="range" id="sDur" min="2" max="30" value="5"></div>
+        <option value="float">Flotante</option>
+        <option value="burst">Irrupción</option>
+        <option value="swing">Balanceo</option>
+        <option value="sweep">Barrido de luz</option>
+        <option value="none">Estático</option>
+      </select></div>
+    <div class="fld"><label>Intensidad <em id="vInt">100%</em></label><input type="range" id="sInt" min="0" max="200" value="100"></div>
+    <div class="fld"><label>Velocidad <em id="vSpd">1.0×</em></label><input type="range" id="sSpd" min="20" max="300" value="100"></div>
+    <div class="fld"><label>Profundidad <em id="vDepth">90</em></label><input type="range" id="sDepth" min="0" max="250" value="90"></div>
+    <div class="fld"><label>Tamaño <em id="vScale">1.00</em></label><input type="range" id="sScale" min="0.3" max="3.0" step="0.05" value="1.0"></div>
+    <div class="fld"><label>Rotación cartel <em id="vTiltY">–12°</em></label><input type="range" id="sTiltY" min="-45" max="45" value="-12"></div>
   </div>
 </div>
 
-<!-- ══ 4. AUDIO ══ -->
+<!-- ══ CALIDAD / EXTRAS ══ -->
 <div class="card">
-  <div class="card-title">Audio (música o voz)</div>
+  <div class="card-title">④ Calidad visual y formato</div>
+  <div class="g5">
+    <div class="fld"><label>Formato de video</label>
+      <select id="sFormat">
+        <option value="16:9">16:9 — YouTube / Horizontal</option>
+        <option value="9:16">9:16 — Reels / Stories</option>
+        <option value="1:1">1:1 — Cuadrado / Feed</option>
+      </select></div>
+    <div class="fld"><label>Grading de color</label>
+      <select id="sGrade">
+        <option value="none">Sin grading</option>
+        <option value="cinematic">Cinematográfico</option>
+        <option value="neon">Neón / Cyber</option>
+        <option value="warm">Cálido / Sunset</option>
+        <option value="cold">Frío / Nocturno</option>
+      </select></div>
+    <div class="fld"><label>Bloom del cartel</label>
+      <select id="sBloom">
+        <option value="medium">Medio</option>
+        <option value="strong">Fuerte</option>
+        <option value="none">Sin bloom</option>
+      </select></div>
+    <div class="fld"><label>Logo / marca (PNG)</label><input type="file" id="inLogo" accept="image/*"></div>
+    <div class="fld"><label>Posición logo</label>
+      <select id="sLogoPos">
+        <option value="br">Abajo derecha</option>
+        <option value="bl">Abajo izquierda</option>
+        <option value="tr">Arriba derecha</option>
+        <option value="tl">Arriba izquierda</option>
+      </select></div>
+    <div class="fld"><label>Tamaño logo <em id="vLogoSz">120</em></label><input type="range" id="sLogoSz" min="40" max="400" value="120"></div>
+    <div class="fld"><label>Duración video <em id="vDur">6 s</em></label><input type="range" id="sDur" min="2" max="30" value="6"></div>
+  </div>
+</div>
+
+<!-- ══ AUDIO ══ -->
+<div class="card">
+  <div class="card-title">⑤ Audio (música o voz)</div>
   <div class="g3">
     <div class="fld">
       <label>Subir música / audio</label>
       <input type="file" id="inAudio" accept="audio/*">
-      <div class="audio-info" id="audioInfo">Sin audio cargado</div>
+      <div class="audio-note" id="audioInfo">Sin audio</div>
     </div>
     <div class="fld">
-      <label>O grabá tu voz en vivo</label>
+      <label>Grabar voz en vivo</label>
       <button class="btn btn-mic" id="btnMic">🎤 Activar micrófono</button>
-      <div class="audio-info" id="micInfo">Micrófono inactivo</div>
+      <div class="audio-note" id="micInfo">Micrófono inactivo</div>
     </div>
     <div class="fld">
-      <label>Volumen audio <em id="vVol">100%</em></label>
+      <label>Volumen <em id="vVol">100%</em></label>
       <input type="range" id="sVol" min="0" max="150" value="100">
-      <div style="font-size:10px;color:var(--dim);margin-top:4px;">
-        El audio se mezcla automáticamente al grabar el video
-      </div>
+      <div class="audio-note">Se mezcla automáticamente al grabar el video</div>
     </div>
   </div>
 </div>
 
 <!-- ══ CANVAS ══ -->
-<div class="preview-wrap"><canvas id="cnv"></canvas></div>
+<div class="preview-wrap" id="previewWrap"><canvas id="cnv"></canvas></div>
 
 <!-- ══ ACCIONES ══ -->
 <div class="actions">
   <button class="btn btn-g"     id="btnAnim">▶ Previsualizar</button>
-  <button class="btn btn-ghost" id="btnImg" >📸 Descargar PNG</button>
+  <button class="btn btn-ghost" id="btnImg" >📸 PNG</button>
   <button class="btn btn-r"     id="btnRec" style="flex:1;justify-content:center;font-size:14px;">
-    ⏺&nbsp; GRABAR VIDEO (con audio si está cargado)
+    ⏺&nbsp; GRABAR VIDEO
   </button>
   <div class="rec-count" id="recCount"><div class="rdot"></div><span id="recLabel">Grabando…</span></div>
 </div>
-
-<div class="status" id="status">
-  Cargá las imágenes, escribí el texto y subí un audio — luego grabá todo junto en un solo video
-</div>
+<div class="status" id="status">Cargá las imágenes para empezar · El cartel ya es visible en el preview</div>
 
 <script>
-// ════════════════════════════════════════════════════
-// CANVAS
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// CANVAS Y DIMENSIONES DINÁMICAS
+// ══════════════════════════════════════════════════════
 const cnv = document.getElementById('cnv');
-const ctx = cnv.getContext('2d');
-const W = 1920, H = 1080;
+const ctx  = cnv.getContext('2d');
+let W = 1920, H = 1080;
 cnv.width = W; cnv.height = H;
 
-// ════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════
 window.S = {
-  bg:null, board:null, product:null,
+  bg:null, board:null, product:null, logo:null,
   tiltY:-12, tiltX:8, depth:90, scale:1.0,
-  anim:'float', intensity:1.0, speed:1.0, duration:5,
+  anim:'float', intensity:1.0, speed:1.0, duration:6,
   text1:'', text1Color:'#ffffff', text1Size:72,
-  text2:'', text2Color:'#ffd600', text2Size:44,
+  text2:'', text2Color:'#ffd600', text2Size:42,
   textPos:'bottom', textAnim:'none',
-  audioBuffer:null, audioFileName:'',
-  micStream:null, micActive:false, audioVolume:1.0,
+  format:'16:9', colorGrade:'none', bloom:'medium',
+  logoPos:'br', logoSize:120,
+  audioBuffer:null, micStream:null, micActive:false, audioVolume:1.0,
   playing:false, recording:false, rafId:null, t0:0,
 };
 const S = window.S;
 
-// ════════════════════════════════════════════════════
-// FILE INPUTS
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// SISTEMA DE PARTÍCULAS
+// ══════════════════════════════════════════════════════
+const PARTS = [];
+const MAX_P = 150;
+
+function spawnParticles(cx, ty, count=4) {
+  for (let i = 0; i < count && PARTS.length < MAX_P; i++) {
+    const angle = -Math.PI/2 + (Math.random()-0.5)*Math.PI*1.6;
+    const spd   = 3 + Math.random()*10;
+    const hue   = 20 + Math.random()*80;
+    PARTS.push({
+      x: cx+(Math.random()-.5)*W*0.12, y: ty+(Math.random()-.5)*H*0.06,
+      vx: Math.cos(angle)*spd, vy: Math.sin(angle)*spd,
+      life:1.0, decay: 0.018+Math.random()*0.022,
+      size: 2+Math.random()*6, hue,
+    });
+  }
+}
+
+function updateParticles() {
+  for (let i = PARTS.length-1; i >= 0; i--) {
+    const p = PARTS[i];
+    p.x += p.vx; p.y += p.vy;
+    p.vy += 0.45; p.vx *= 0.97;
+    p.life -= p.decay;
+    if (p.life <= 0) PARTS.splice(i,1);
+  }
+}
+
+function drawParticles() {
+  PARTS.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = Math.pow(p.life, 0.6);
+    ctx.shadowColor = `hsl(${p.hue},100%,65%)`; ctx.shadowBlur = p.size*2.5;
+    ctx.fillStyle   = `hsl(${p.hue},100%,${55+p.life*35}%)`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.size*p.life, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// ARCHIVOS
+// ══════════════════════════════════════════════════════
 function bindFile(id, key, label) {
   document.getElementById(id).addEventListener('change', e => {
-    const f = e.target.files[0];
-    if (!f) return;
-    const r = new FileReader();
-    r.onload = ev => {
-      const img = new Image();
-      img.onload = () => { S[key] = img; redraw(); setStatus(`✔ ${label}: ${f.name}`); };
-      img.src = ev.target.result;
-    };
+    const f=e.target.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=ev=>{ const img=new Image(); img.onload=()=>{ S[key]=img; redraw(); setStatus(`✔ ${label}: ${f.name}`); }; img.src=ev.target.result; };
     r.readAsDataURL(f);
   });
 }
-bindFile('inBg',    'bg',    'Fondo');
-bindFile('inBoard', 'board', 'Cartel');
-bindFile('inProd',  'product','Producto');
+bindFile('inBg',   'bg',     'Fondo');
+bindFile('inBoard','board',  'Cartel');
+bindFile('inProd', 'product','Producto');
+bindFile('inLogo', 'logo',   'Logo');
 
-// Audio file
 document.getElementById('inAudio').addEventListener('change', async e => {
-  const f = e.target.files[0];
-  if (!f) return;
+  const f=e.target.files[0]; if(!f) return;
   setStatus('⏳ Decodificando audio…');
-  const ab  = await f.arrayBuffer();
-  const ac  = new AudioContext();
-  S.audioBuffer = await ac.decodeAudioData(ab);
-  await ac.close();
-  S.audioFileName = f.name;
-  document.getElementById('audioInfo').textContent = `✔ ${f.name} (${S.audioBuffer.duration.toFixed(1)}s)`;
+  const ab=await f.arrayBuffer(), ac=new AudioContext();
+  S.audioBuffer=await ac.decodeAudioData(ab); await ac.close();
+  document.getElementById('audioInfo').textContent=`✔ ${f.name} (${S.audioBuffer.duration.toFixed(1)}s)`;
   setStatus(`✔ Audio cargado: ${f.name}`);
 });
 
-// ════════════════════════════════════════════════════
-// SLIDERS & INPUTS
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// CONTROLES
+// ══════════════════════════════════════════════════════
 function bindSlider(id, dispId, key, unit, dec=0, factor=1) {
-  const s=document.getElementById(id), d=document.getElementById(dispId);
-  s.addEventListener('input', () => {
-    S[key] = parseFloat(s.value) * factor;
-    if(d) d.textContent = (parseFloat(s.value)*factor).toFixed(dec) + unit;
-    if (!S.playing) redraw();
+  const s=document.getElementById(id), d=dispId?document.getElementById(dispId):null;
+  s.addEventListener('input', ()=>{
+    const v=parseFloat(s.value)*factor; S[key]=v;
+    if(d) d.textContent=(parseFloat(s.value)*factor).toFixed(dec)+unit;
+    if(!S.playing) redraw();
   });
 }
-bindSlider('sDepth','vDepth','depth','');
-bindSlider('sScale','vScale','scale','',2);
-bindSlider('sTiltY','vTiltY','tiltY','°');
-bindSlider('sDur',  'vDur',  'duration',' s');
-bindSlider('sInt',  'vInt',  'intensity','%',0);   // raw 0-200 → state
-bindSlider('sSpd',  'vSpd',  'speed','×',1,0.01);  // raw 20-300 → 0.2-3.0
-bindSlider('tSize1','vTS1',  'text1Size','');
-bindSlider('tSize2','vTS2',  'text2Size','');
-bindSlider('sVol',  'vVol',  'audioVolume','%',0,0.01); // raw 0-150 → 0-1.5
+bindSlider('sDepth','vDepth','depth',''); bindSlider('sScale','vScale','scale','',2);
+bindSlider('sTiltY','vTiltY','tiltY','°'); bindSlider('sDur','vDur','duration',' s');
+bindSlider('sLogoSz','vLogoSz','logoSize','');
+bindSlider('tSize1','vTS1','text1Size',''); bindSlider('tSize2','vTS2','text2Size','');
+bindSlider('sVol','vVol','audioVolume','%',0,0.01);
 
-// Fix intensity factor (raw value IS the percentage)
-document.getElementById('sInt').addEventListener('input', e => {
-  S.intensity = parseFloat(e.target.value) / 100;
-  document.getElementById('vInt').textContent = e.target.value + '%';
-  if (!S.playing) redraw();
+document.getElementById('sInt').addEventListener('input',e=>{
+  S.intensity=parseFloat(e.target.value)/100;
+  document.getElementById('vInt').textContent=e.target.value+'%';
+  if(!S.playing) redraw();
+});
+document.getElementById('sSpd').addEventListener('input',e=>{
+  S.speed=parseFloat(e.target.value)/100;
+  document.getElementById('vSpd').textContent=S.speed.toFixed(1)+'×';
+  if(!S.playing) redraw();
 });
 
-document.getElementById('sVol').addEventListener('input', e => {
-  S.audioVolume = parseFloat(e.target.value) / 100;
-  document.getElementById('vVol').textContent = e.target.value + '%';
+['sAnim','tPos','tAnim','sBloom','sLogoPos'].forEach(id=>{
+  const map={sAnim:'anim',tPos:'textPos',tAnim:'textAnim',sBloom:'bloom',sLogoPos:'logoPos'};
+  document.getElementById(id).addEventListener('change',e=>{ S[map[id]]=e.target.value; if(!S.playing)redraw(); });
+});
+['tText1','tText2','tCol1','tCol2'].forEach(id=>{
+  const map={tText1:'text1',tText2:'text2',tCol1:'text1Color',tCol2:'text2Color'};
+  document.getElementById(id).addEventListener('input',e=>{ S[map[id]]=e.target.value; if(!S.playing)redraw(); });
 });
 
-['sAnim','tPos','tAnim'].forEach(id => {
-  document.getElementById(id).addEventListener('change', e => {
-    const map = {sAnim:'anim', tPos:'textPos', tAnim:'textAnim'};
-    S[map[id]] = e.target.value;
-    if (!S.playing) redraw();
-  });
+// Grading
+document.getElementById('sGrade').addEventListener('change',e=>{ S.colorGrade=e.target.value; if(!S.playing)redraw(); });
+
+// Formato
+document.getElementById('sFormat').addEventListener('change', e => {
+  S.format=e.target.value;
+  const [fw,fh]=e.target.value.split(':').map(Number);
+  W=fw===16?1920:1080; H=fh===9?1080:fh===16?1920:1080;
+  cnv.width=W; cnv.height=H;
+  document.getElementById('previewWrap').style.aspectRatio=`${fw}/${fh}`;
+  if(!S.playing) redraw();
 });
 
-// Text inputs
-['tText1','tText2','tCol1','tCol2'].forEach(id => {
-  const map = {tText1:'text1',tText2:'text2',tCol1:'text1Color',tCol2:'text2Color'};
-  document.getElementById(id).addEventListener('input', e => {
-    S[map[id]] = e.target.value;
-    if (!S.playing) redraw();
-  });
-});
-
-// ════════════════════════════════════════════════════
-// PERSPECTIVE MATH
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// PERSPECTIVA
+// ══════════════════════════════════════════════════════
 const FOV = 1400;
 
-function getBoardQuad(tY, tX, cx, cy, hw, hh) {
-  const ry = tY*Math.PI/180, rx = tX*Math.PI/180;
-  return [[-hw,-hh,0],[hw,-hh,0],[hw,hh,0],[-hw,hh,0]].map(([x,y,z]) => {
-    const x1 = x*Math.cos(ry)+z*Math.sin(ry), z1 = -x*Math.sin(ry)+z*Math.cos(ry);
-    const y2 = y*Math.cos(rx)-z1*Math.sin(rx), z2 = y*Math.sin(rx)+z1*Math.cos(rx);
-    const s = FOV/(FOV+z2);
-    return {x:cx+x1*s, y:cy+y2*s};
+function getBoardQuad(tY,tX,cx,cy,hw,hh) {
+  const ry=tY*Math.PI/180, rx=tX*Math.PI/180;
+  return [[-hw,-hh,0],[hw,-hh,0],[hw,hh,0],[-hw,hh,0]].map(([x,y,z])=>{
+    const x1=x*Math.cos(ry)+z*Math.sin(ry), z1=-x*Math.sin(ry)+z*Math.cos(ry);
+    const y2=y*Math.cos(rx)-z1*Math.sin(rx), z2=y*Math.sin(rx)+z1*Math.cos(rx);
+    const s=FOV/(FOV+z2); return {x:cx+x1*s, y:cy+y2*s};
   });
 }
-
-function drawQuadImg(img, q) {
-  const iw=img.width, ih=img.height;
+function drawQuadImg(img,q) {
+  const iw=img.width,ih=img.height;
   tri(img,[0,0],[iw,0],[0,ih],  q[0],q[1],q[3]);
   tri(img,[iw,0],[iw,ih],[0,ih],q[1],q[2],q[3]);
 }
-
-function tri(img, s0, s1, s2, d0, d1, d2) {
+function tri(img,s0,s1,s2,d0,d1,d2) {
   ctx.save();
-  ctx.beginPath(); ctx.moveTo(d0.x,d0.y); ctx.lineTo(d1.x,d1.y); ctx.lineTo(d2.x,d2.y); ctx.closePath(); ctx.clip();
+  ctx.beginPath();ctx.moveTo(d0.x,d0.y);ctx.lineTo(d1.x,d1.y);ctx.lineTo(d2.x,d2.y);ctx.closePath();ctx.clip();
   const det=(s1[0]-s0[0])*(s2[1]-s0[1])-(s2[0]-s0[0])*(s1[1]-s0[1]);
   const a=((d1.x-d0.x)*(s2[1]-s0[1])-(d2.x-d0.x)*(s1[1]-s0[1]))/det;
   const b=((d2.x-d0.x)*(s1[0]-s0[0])-(d1.x-d0.x)*(s2[0]-s0[0]))/det;
@@ -400,195 +395,273 @@ function tri(img, s0, s1, s2, d0, d1, d2) {
   const f=d0.y-c*s0[0]-d*s0[1];
   ctx.transform(a,c,b,d,e,f); ctx.drawImage(img,0,0); ctx.restore();
 }
-
 function clipQuad(q) {
-  ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.clip();
+  ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.clip();
 }
 
-// ════════════════════════════════════════════════════
-// ANIMATION DELTA
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// ANIMACIÓN DELTA
+// ══════════════════════════════════════════════════════
 function animDelta(ms) {
-  const I   = S.intensity;
-  const t   = ms / 1000 * S.speed;
+  const I=S.intensity, t=ms/1000*S.speed;
   switch(S.anim) {
-    case 'float': {
-      const s = Math.sin(t*1.3);
-      return {dy:s*20*I, dz:s*14*I, ds:1+s*0.03*I, rot:s*1.8*I};
-    }
+    case 'float': { const s=Math.sin(t*1.3); return {dy:s*20*I,dz:s*14*I,ds:1+s*0.03*I,rot:s*1.8*I,sweep:-1}; }
     case 'burst': {
-      const cyc=(t%3)/3, e=1-Math.pow(1-Math.min(cyc*2,1),3);
-      const f=cyc>0.72?1-(cyc-0.72)/0.28:1, v=e*f;
-      return {dy:-v*35*I, dz:v*80*I, ds:0.55+v*0.45*I, rot:0};
+      const cyc=(t%3)/3, e=1-Math.pow(1-Math.min(cyc*2,1),3), f=cyc>.72?1-(cyc-.72)/.28:1, v=e*f;
+      return {dy:-v*35*I,dz:v*80*I,ds:.55+v*.45*I,rot:0,sweep:-1,burstV:v,burstCyc:cyc};
     }
-    case 'swing': {
-      const s=Math.sin(t*0.85);
-      return {dy:0, dz:0, ds:1, rot:s*9*I};
+    case 'swing': { const s=Math.sin(t*.85); return {dy:0,dz:0,ds:1,rot:s*9*I,sweep:-1}; }
+    case 'sweep': {
+      const cyc=(t%2.5)/2.5;
+      const dy=Math.sin(t*.8)*8*I;
+      return {dy,dz:10,ds:1,rot:0,sweep:cyc}; // sweep 0→1
     }
-    default: return {dy:0,dz:0,ds:1,rot:0};
+    default: return {dy:0,dz:0,ds:1,rot:0,sweep:-1};
   }
 }
 
-// ════════════════════════════════════════════════════
-// TEXT OVERLAY
-// ════════════════════════════════════════════════════
-function drawText(ms) {
-  const {text1,text1Color,text1Size,text2,text2Color,text2Size,textPos,textAnim} = S;
-  if (!text1 && !text2) return;
-
-  const cx = W/2;
-  const baseY = textPos==='top' ? H*0.09 : textPos==='center' ? H*0.50 : H*0.87;
-  const t = ms/1000;
-
-  let alpha=1, offsetY=0, glowPx=0;
-  switch(textAnim) {
-    case 'fade':
-      alpha = Math.min(t*1.2, 1); break;
-    case 'slide':
-      const p=Math.min(t*1.4,1), ease=1-Math.pow(1-p,3);
-      offsetY=(1-ease)*H*0.06; alpha=ease; break;
-    case 'glow':
-      glowPx=12+Math.sin(t*2.2)*10; break;
-  }
-
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.textAlign   = 'center';
-  ctx.textBaseline= 'middle';
-
-  if (text1) {
-    const sz = text1Size * (W/1280); // scale to canvas resolution
-    ctx.font = `bold ${sz}px 'Segoe UI', Arial Black, Arial`;
-    ctx.shadowColor = text1Color; ctx.shadowBlur = glowPx;
-    ctx.strokeStyle = 'rgba(0,0,0,0.85)'; ctx.lineWidth = sz/7;
-    ctx.lineJoin = 'round';
-    ctx.strokeText(text1, cx, baseY+offsetY);
-    ctx.fillStyle = text1Color;
-    ctx.fillText(text1, cx, baseY+offsetY);
-  }
-
-  if (text2) {
-    const sz  = text2Size * (W/1280);
-    const gap = text1 ? text1Size*(W/1280)*0.72+sz*0.6 : 0;
-    ctx.font  = `600 ${sz}px 'Segoe UI', Arial`;
-    ctx.shadowColor = text2Color; ctx.shadowBlur = glowPx*0.6;
-    ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.lineWidth = sz/9;
-    ctx.strokeText(text2, cx, baseY+gap+offsetY);
-    ctx.fillStyle = text2Color;
-    ctx.fillText(text2, cx, baseY+gap+offsetY);
-  }
-
-  ctx.restore();
-}
-
-// ════════════════════════════════════════════════════
-// RENDER
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// RENDER PRINCIPAL
+// ══════════════════════════════════════════════════════
 function render(ms) {
   ctx.clearRect(0,0,W,H);
-  const d = animDelta(ms);
+  const d=animDelta(ms);
 
-  // 1. Fondo
-  if (S.bg) { ctx.drawImage(S.bg,0,0,W,H); }
-  else { drawDefaultBg(); }
+  // ─ 1. FONDO ──────────────────────────────────────
+  if(S.bg){ ctx.drawImage(S.bg,0,0,W,H); } else { drawDefaultBg(); }
 
-  // Billboard geom
-  const bW=W*0.46, bH=H*0.42, cx=W/2, cy=H*0.46;
-  const q = getBoardQuad(S.tiltY,S.tiltX,cx,cy,bW/2,bH/2);
+  // ─ 2. GEOMETRÍA DEL CARTEL ───────────────────────
+  const bW=W*.46, bH=H*.42, cx=W/2, cy=H*.46;
+  const q=getBoardQuad(S.tiltY,S.tiltX,cx,cy,bW/2,bH/2);
+  const topY=q.reduce((mn,p)=>Math.min(mn,p.y),Infinity);
 
-  // 2. Fondo del cartel
-  ctx.save(); clipQuad(q);
-  if (S.board) { drawQuadImg(S.board,q); } else { drawDefaultBoard(q,cx,cy); }
-  ctx.restore();
-
-  // 3. Sombra del producto sobre el cartel
-  if (S.product) {
-    const depth=S.depth+d.dz, sc=S.scale*d.ds*(FOV/(FOV+depth));
-    ctx.save(); clipQuad(q);
-    const sg=ctx.createRadialGradient(cx,cy+bH*0.1,10,cx,cy+bH*0.1,bH*0.45*sc);
-    sg.addColorStop(0,'rgba(0,0,0,.52)'); sg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=sg; ctx.beginPath(); ctx.ellipse(cx,cy+bH*0.1,bW*0.36*sc,bH*0.20*sc,0,0,Math.PI*2); ctx.fill();
+  // ─ 3. BLOOM / GLOW del cartel ────────────────────
+  if(S.bloom!=='none') {
+    const str=S.bloom==='strong'?.28:.14;
+    ctx.save();
+    ctx.globalCompositeOperation='screen';
+    const bg2=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(bW,bH)*.7);
+    bg2.addColorStop(0,`rgba(80,130,255,${str})`);
+    bg2.addColorStop(.45,`rgba(40,80,200,${str*.4})`);
+    bg2.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=bg2; ctx.fillRect(0,0,W,H);
     ctx.restore();
   }
 
-  // 4. Marco (tapa base del producto → efecto emergente)
+  // ─ 4. CONTENIDO DEL CARTEL ───────────────────────
+  ctx.save(); clipQuad(q);
+  if(S.board){ drawQuadImg(S.board,q); } else { drawDefaultBoard(q,cx,cy); }
+  ctx.restore();
+
+  // ─ 5. SOMBRA DEL PRODUCTO sobre el cartel ────────
+  if(S.product) {
+    const depth=S.depth+d.dz, sc=S.scale*d.ds*(FOV/(FOV+depth));
+    ctx.save(); clipQuad(q);
+    const sg=ctx.createRadialGradient(cx,cy+bH*.08,8,cx,cy+bH*.08,bH*.48*sc);
+    sg.addColorStop(0,'rgba(0,0,0,.6)'); sg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=sg; ctx.beginPath(); ctx.ellipse(cx,cy+bH*.08,bW*.38*sc,bH*.21*sc,0,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  // ─ 6. MARCO (tapa base del producto) ─────────────
   drawFrame(q);
 
-  // 5. Producto
-  if (S.product) {
+  // ─ 7. PARTÍCULAS (burst) ─────────────────────────
+  if(S.anim==='burst' && d.burstV>0.4 && d.burstCyc<0.55 && S.product) {
+    spawnParticles(cx, topY, 3);
+  }
+  updateParticles();
+  drawParticles();
+
+  // ─ 8. PRODUCTO ───────────────────────────────────
+  if(S.product) {
     const depth=S.depth+d.dz, sc=S.scale*d.ds*(FOV/(FOV+depth));
-    drawProduct(cx, cy+d.dy, sc, S.tiltY*0.12+d.rot);
+    drawProduct(cx, cy+d.dy, sc, S.tiltY*.12+d.rot, d.sweep);
   } else { drawProductHint(q,cx,cy); }
 
-  // 6. Texto publicitario
+  // ─ 9. LOGO ───────────────────────────────────────
+  drawLogo();
+
+  // ─ 10. TEXTO ─────────────────────────────────────
   drawText(ms);
 
-  // 7. Vignette sutil
-  const vg=ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.9);
-  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,0.35)');
+  // ─ 11. COLOR GRADE ───────────────────────────────
+  applyColorGrade();
+
+  // ─ 12. VIÑETA ────────────────────────────────────
+  const vg=ctx.createRadialGradient(W/2,H/2,H*.28,W/2,H/2,H*.88);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.42)');
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H);
 }
 
+// ── SUB-RENDERS ───────────────────────────────────────
+
 function drawDefaultBg() {
   const g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,'#05051a'); g.addColorStop(.6,'#0d1b3e'); g.addColorStop(1,'#0d0d0d');
+  g.addColorStop(0,'#04040f'); g.addColorStop(.55,'#0a1128'); g.addColorStop(1,'#0a0a0a');
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(255,255,255,.035)'; ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(255,255,255,.03)'; ctx.lineWidth=1;
   for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
   for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-  const cg=ctx.createRadialGradient(W/2,H/2,100,W/2,H/2,700);
-  cg.addColorStop(0,'rgba(30,100,255,.06)'); cg.addColorStop(1,'rgba(0,0,0,0)');
+  const cg=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,680);
+  cg.addColorStop(0,'rgba(20,80,255,.06)'); cg.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=cg; ctx.fillRect(0,0,W,H);
 }
 
 function drawDefaultBoard(q,cx,cy) {
-  ctx.fillStyle='#080808';
-  ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.13)';
-  ctx.font=`bold ${H*.026}px Segoe UI`; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('Subí la imagen del cartel (paso 2)',cx,cy);
+  ctx.fillStyle='#070707';
+  ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.12)';
+  ctx.font=`bold ${H*.024}px Segoe UI`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Subí la imagen del cartel (paso ①)',cx,cy);
 }
 
 function drawFrame(q) {
   ctx.save();
-  ctx.beginPath(); ctx.moveTo(q[0].x,q[0].y); q.forEach(p=>ctx.lineTo(p.x,p.y)); ctx.closePath();
-  ctx.strokeStyle='#0a0a0a'; ctx.lineWidth=32; ctx.stroke();
+  ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();
+  ctx.strokeStyle='#080808'; ctx.lineWidth=34; ctx.stroke();
   ctx.strokeStyle='#00e676'; ctx.lineWidth=4;
-  ctx.shadowColor='#00e676'; ctx.shadowBlur=20; ctx.stroke(); ctx.shadowBlur=0;
-  ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=2; ctx.stroke();
+  ctx.shadowColor='#00e676'; ctx.shadowBlur=22; ctx.stroke(); ctx.shadowBlur=0;
+  ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.lineWidth=2; ctx.stroke();
   ctx.restore();
 }
 
-function drawProduct(cx,cy,sc,rotYdeg) {
+function drawProduct(cx, cy, sc, rotYdeg, sweepPhase) {
   const img=S.product, asp=img.width/img.height;
-  const pH=H*0.70*sc, pW=pH*asp;
+  const pH=H*.70*sc, pW=pH*asp;
+  const py=cy-pH*.16, shear=Math.sin(rotYdeg*Math.PI/180)*.22;
+
   ctx.save();
-  ctx.translate(cx, cy-pH*0.16);
-  ctx.transform(1,0,Math.sin(rotYdeg*Math.PI/180)*0.22,1,0,0);
-  ctx.shadowColor='rgba(0,0,0,.8)'; ctx.shadowBlur=70+sc*25; ctx.shadowOffsetX=14; ctx.shadowOffsetY=32;
+  ctx.translate(cx,py);
+  ctx.transform(1,0,shear,1,0,0);
+
+  // Sombra direccional
+  ctx.shadowColor='rgba(0,0,0,.82)'; ctx.shadowBlur=80+sc*30; ctx.shadowOffsetX=16; ctx.shadowOffsetY=36;
   ctx.drawImage(img,-pW/2,-pH/2,pW,pH);
+  ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+
+  // Barrido de luz (animación sweep)
+  if(sweepPhase>=0) {
+    const sx=(-0.6+sweepPhase*2.2)*pW; // barrido de izq a der
+    const gw=pW*.35;
+    const swg=ctx.createLinearGradient(-pW/2+sx,0,-pW/2+sx+gw,0);
+    swg.addColorStop(0,'rgba(255,255,255,0)');
+    swg.addColorStop(0.5,'rgba(255,255,255,0.38)');
+    swg.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.globalCompositeOperation='source-atop';
+    // clip to product shape (approximate)
+    ctx.fillStyle=swg; ctx.fillRect(-pW/2,-pH/2,pW,pH);
+    ctx.globalCompositeOperation='source-over';
+  }
   ctx.restore();
 }
 
 function drawProductHint(q,cx,cy) {
-  const oy=cy-H*0.12;
+  const oy=cy-H*.11;
   ctx.save();
-  ctx.strokeStyle='rgba(0,230,118,.32)'; ctx.lineWidth=3; ctx.setLineDash([12,8]);
-  ctx.strokeRect(cx-H*0.13,oy-H*0.17,H*0.26,H*0.34);
-  ctx.setLineDash([]);
-  ctx.fillStyle='rgba(0,230,118,.45)'; ctx.font=`${H*.019}px Segoe UI`;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('Subí el producto PNG (paso 3)',cx,oy+H*0.20);
+  ctx.strokeStyle='rgba(0,230,118,.28)'; ctx.lineWidth=3; ctx.setLineDash([10,8]);
+  ctx.strokeRect(cx-H*.12,oy-H*.16,H*.24,H*.32); ctx.setLineDash([]);
+  ctx.fillStyle='rgba(0,230,118,.4)';
+  ctx.font=`${H*.018}px Segoe UI`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Subí el producto PNG (paso ①)',cx,oy+H*.18);
+  ctx.restore();
+}
+
+function drawLogo() {
+  if(!S.logo) return;
+  const pad=Math.min(W,H)*.03;
+  const h=S.logoSize*(H/1080);
+  const w=h*(S.logo.width/S.logo.height);
+  let lx, ly;
+  switch(S.logoPos) {
+    case 'tl': lx=pad;    ly=pad;    break;
+    case 'tr': lx=W-w-pad;ly=pad;    break;
+    case 'bl': lx=pad;    ly=H-h-pad;break;
+    default:   lx=W-w-pad;ly=H-h-pad;
+  }
+  ctx.save(); ctx.globalAlpha=.88;
+  ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=18;
+  ctx.drawImage(S.logo,lx,ly,w,h);
+  ctx.restore();
+}
+
+function drawText(ms) {
+  const {text1,text1Color,text1Size,text2,text2Color,text2Size,textPos,textAnim}=S;
+  if(!text1&&!text2) return;
+  const cx=W/2, t=ms/1000;
+  const baseY=textPos==='top'?H*.09:textPos==='center'?H*.50:H*.87;
+  let alpha=1, offsetY=0, glowPx=0;
+  if(textAnim==='fade')  { alpha=Math.min(t*1.2,1); }
+  if(textAnim==='slide') { const p=Math.min(t*1.5,1),ease=1-Math.pow(1-p,3); offsetY=(1-ease)*H*.06; alpha=ease; }
+  if(textAnim==='glow')  { glowPx=14+Math.sin(t*2.4)*10; }
+  ctx.save(); ctx.globalAlpha=alpha; ctx.textAlign='center'; ctx.textBaseline='middle';
+  if(text1) {
+    const sz=text1Size*(W/1280);
+    ctx.font=`bold ${sz}px 'Segoe UI',Arial Black,Arial`;
+    ctx.shadowColor=text1Color; ctx.shadowBlur=glowPx;
+    ctx.strokeStyle='rgba(0,0,0,.88)'; ctx.lineWidth=sz/7; ctx.lineJoin='round';
+    ctx.strokeText(text1,cx,baseY+offsetY);
+    ctx.fillStyle=text1Color; ctx.fillText(text1,cx,baseY+offsetY);
+  }
+  if(text2) {
+    const sz=text2Size*(W/1280);
+    const gap=text1?text1Size*(W/1280)*.72+sz*.65:0;
+    ctx.font=`600 ${sz}px 'Segoe UI',Arial`;
+    ctx.shadowColor=text2Color; ctx.shadowBlur=glowPx*.6;
+    ctx.strokeStyle='rgba(0,0,0,.78)'; ctx.lineWidth=sz/9;
+    ctx.strokeText(text2,cx,baseY+gap+offsetY);
+    ctx.fillStyle=text2Color; ctx.fillText(text2,cx,baseY+gap+offsetY);
+  }
+  ctx.restore();
+}
+
+function applyColorGrade() {
+  if(S.colorGrade==='none') return;
+  ctx.save();
+  switch(S.colorGrade) {
+    case 'cinematic': {
+      const s=ctx.createLinearGradient(0,H*.55,0,H);
+      s.addColorStop(0,'rgba(0,20,30,0)'); s.addColorStop(1,'rgba(0,20,30,.22)');
+      ctx.fillStyle=s; ctx.fillRect(0,0,W,H);
+      const t=ctx.createLinearGradient(0,0,0,H*.38);
+      t.addColorStop(0,'rgba(35,18,0,.18)'); t.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=t; ctx.fillRect(0,0,W,H);
+      break;
+    }
+    case 'neon': {
+      const n=ctx.createLinearGradient(0,0,W,H);
+      n.addColorStop(0,'rgba(90,0,140,.1)'); n.addColorStop(.5,'rgba(0,0,0,0)'); n.addColorStop(1,'rgba(140,0,90,.1)');
+      ctx.fillStyle=n; ctx.fillRect(0,0,W,H);
+      ctx.globalCompositeOperation='screen';
+      const n2=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,H*.5);
+      n2.addColorStop(0,'rgba(80,0,180,.06)'); n2.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=n2; ctx.fillRect(0,0,W,H);
+      ctx.globalCompositeOperation='source-over';
+      break;
+    }
+    case 'warm': {
+      const w=ctx.createLinearGradient(0,0,0,H);
+      w.addColorStop(0,'rgba(50,22,0,.1)'); w.addColorStop(1,'rgba(70,25,0,.18)');
+      ctx.fillStyle=w; ctx.fillRect(0,0,W,H);
+      break;
+    }
+    case 'cold': {
+      const c=ctx.createLinearGradient(0,0,0,H);
+      c.addColorStop(0,'rgba(0,18,50,.12)'); c.addColorStop(1,'rgba(0,8,30,.2)');
+      ctx.fillStyle=c; ctx.fillRect(0,0,W,H);
+      break;
+    }
+  }
   ctx.restore();
 }
 
 window.render=render;
-function redraw() { render(0); }
+function redraw(){ render(0); }
 window.redraw=redraw;
 
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // ANIMACIÓN PREVIEW
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 function startAnim() {
   S.playing=true; S.t0=performance.now();
   document.getElementById('btnAnim').textContent='⏹ Detener';
@@ -596,128 +669,92 @@ function startAnim() {
 }
 function stopAnim() {
   S.playing=false; cancelAnimationFrame(S.rafId);
-  document.getElementById('btnAnim').textContent='▶ Previsualizar';
-  redraw();
+  document.getElementById('btnAnim').textContent='▶ Previsualizar'; redraw();
 }
 window.startAnim=startAnim; window.stopAnim=stopAnim;
+document.getElementById('btnAnim').addEventListener('click',()=> S.playing?stopAnim():startAnim());
 
-document.getElementById('btnAnim').addEventListener('click', ()=> S.playing ? stopAnim() : startAnim());
-
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // MICRÓFONO
-// ════════════════════════════════════════════════════
-document.getElementById('btnMic').addEventListener('click', async () => {
-  if (S.micActive) {
-    S.micStream.getTracks().forEach(t=>t.stop());
-    S.micStream=null; S.micActive=false;
+// ══════════════════════════════════════════════════════
+document.getElementById('btnMic').addEventListener('click', async ()=> {
+  if(S.micActive) {
+    S.micStream.getTracks().forEach(t=>t.stop()); S.micStream=null; S.micActive=false;
     document.getElementById('btnMic').textContent='🎤 Activar micrófono';
     document.getElementById('btnMic').classList.remove('on');
     document.getElementById('micInfo').textContent='Micrófono inactivo';
-    setStatus('Micrófono desactivado');
   } else {
     try {
-      S.micStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
-      S.micActive = true;
-      document.getElementById('btnMic').textContent='🔴 Mic activo – click para apagar';
+      S.micStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+      S.micActive=true;
+      document.getElementById('btnMic').textContent='🔴 Mic activo – click apagar';
       document.getElementById('btnMic').classList.add('on');
-      document.getElementById('micInfo').textContent='✔ Listo para grabar';
-      setStatus('🎤 Micrófono activo. Grabá el video y hablá al mismo tiempo.');
-    } catch(e) {
-      setStatus('⚠️ Sin acceso al micrófono: '+e.message);
-    }
+      document.getElementById('micInfo').textContent='✔ Grabará con el video';
+      setStatus('🎤 Micrófono activo. Hablá mientras grabás el video.');
+    } catch(e){ setStatus('⚠️ Sin acceso al micrófono: '+e.message); }
   }
 });
 
-// ════════════════════════════════════════════════════
-// PNG DOWNLOAD
-// ════════════════════════════════════════════════════
-document.getElementById('btnImg').addEventListener('click', () => {
-  if (S.playing) stopAnim();
-  redraw();
-  cnv.toBlob(blob => {
+// ══════════════════════════════════════════════════════
+// PNG
+// ══════════════════════════════════════════════════════
+document.getElementById('btnImg').addEventListener('click',()=>{
+  if(S.playing) stopAnim(); redraw();
+  cnv.toBlob(blob=>{
     const url=URL.createObjectURL(blob);
     Object.assign(document.createElement('a'),{href:url,download:`billboard-${Date.now()}.png`}).click();
-    URL.revokeObjectURL(url);
-    setStatus('✅ Imagen PNG descargada');
+    URL.revokeObjectURL(url); setStatus('✅ PNG descargado');
   },'image/png');
 });
 
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
 // GRABACIÓN CON AUDIO
-// ════════════════════════════════════════════════════
-let mr=null, chunks=[], recAudioCtx=null, recAudioSrc=null;
+// ══════════════════════════════════════════════════════
+let mr=null, chunks=[], recACtx=null, recASrc=null;
 const btnRec=document.getElementById('btnRec');
-
-btnRec.addEventListener('click', ()=> S.recording ? finishRec() : startRec());
+btnRec.addEventListener('click',()=> S.recording?finishRec():startRec());
 
 async function startRec() {
-  if (S.playing) stopAnim();
-
+  if(S.playing) stopAnim();
   const mime=['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']
     .find(t=>MediaRecorder.isTypeSupported(t));
-  if (!mime) { setStatus('⚠️ Tu navegador no soporta grabación. Usá Chrome o Edge.'); return; }
+  if(!mime){ setStatus('⚠️ Tu navegador no soporta grabación. Usá Chrome.'); return; }
 
-  // ── video stream ──────────────────────────────
-  const videoStream = cnv.captureStream(30);
+  const videoStream=cnv.captureStream(30);
+  let audioTrack=null;
 
-  // ── audio stream ──────────────────────────────
-  let audioTrack = null;
-
-  if (S.audioBuffer) {
-    recAudioCtx = new AudioContext();
-    recAudioSrc = recAudioCtx.createBufferSource();
-    recAudioSrc.buffer = S.audioBuffer;
-    recAudioSrc.loop = true;
-    const gain = recAudioCtx.createGain();
-    gain.gain.value = S.audioVolume;
-    const dest = recAudioCtx.createMediaStreamDestination();
-    recAudioSrc.connect(gain); gain.connect(dest);
-    audioTrack = dest.stream.getAudioTracks()[0];
-  } else if (S.micActive && S.micStream) {
-    audioTrack = S.micStream.getAudioTracks()[0];
+  if(S.audioBuffer) {
+    recACtx=new AudioContext();
+    recASrc=recACtx.createBufferSource(); recASrc.buffer=S.audioBuffer; recASrc.loop=true;
+    const gain=recACtx.createGain(); gain.gain.value=S.audioVolume;
+    const dest=recACtx.createMediaStreamDestination();
+    recASrc.connect(gain); gain.connect(dest); audioTrack=dest.stream.getAudioTracks()[0];
+  } else if(S.micActive&&S.micStream) {
+    audioTrack=S.micStream.getAudioTracks()[0];
   }
 
-  // ── combine ───────────────────────────────────
-  const tracks = [...videoStream.getVideoTracks()];
-  if (audioTrack) tracks.push(audioTrack);
-  const combined = new MediaStream(tracks);
-
-  // ── recorder ──────────────────────────────────
-  chunks = [];
-  mr = new MediaRecorder(combined, {mimeType:mime, videoBitsPerSecond:10_000_000});
-  mr.ondataavailable = e => { if(e.data.size>0) chunks.push(e.data); };
-  mr.onstop = () => {
-    if (recAudioCtx) { recAudioCtx.close(); recAudioCtx=null; }
-    const blob=new Blob(chunks,{type:mime});
-    const ext=mime.includes('mp4')?'mp4':'webm';
+  const tracks=[...videoStream.getVideoTracks()]; if(audioTrack) tracks.push(audioTrack);
+  chunks=[]; mr=new MediaRecorder(new MediaStream(tracks),{mimeType:mime,videoBitsPerSecond:10_000_000});
+  mr.ondataavailable=e=>{ if(e.data.size>0) chunks.push(e.data); };
+  mr.onstop=()=>{
+    if(recACtx){ recACtx.close(); recACtx=null; }
+    const blob=new Blob(chunks,{type:mime}), ext=mime.includes('mp4')?'mp4':'webm';
     const url=URL.createObjectURL(blob);
     Object.assign(document.createElement('a'),{href:url,download:`billboard-3d-${Date.now()}.${ext}`}).click();
     URL.revokeObjectURL(url);
-    const hasAudio = !!(S.audioBuffer||S.micActive);
-    setStatus(`✅ Video${hasAudio?' con audio':''} descargado · ${(blob.size/1048576).toFixed(1)} MB · ${ext.toUpperCase()}`);
+    setStatus(`✅ Video descargado · ${(blob.size/1048576).toFixed(1)} MB · ${ext.toUpperCase()}`);
     endRec();
   };
 
-  S.recording=true;
-  mr.start();
-  if (recAudioSrc) recAudioSrc.start(); // empieza el audio
-
-  btnRec.textContent='⏹  DETENER Y DESCARGAR';
-  btnRec.style.background='#7f0000';
+  S.recording=true; mr.start(); if(recASrc) recASrc.start();
+  btnRec.textContent='⏹  DETENER Y DESCARGAR'; btnRec.style.background='#6f0000';
   document.getElementById('recCount').classList.add('on');
 
-  const durMs=S.duration*1000, t0=performance.now();
-  S.playing=true;
-
+  const durMs=S.duration*1000, t0=performance.now(); S.playing=true;
   let secs=S.duration;
   document.getElementById('recLabel').textContent=`Grabando… ${secs}s`;
-  const tick=setInterval(()=>{
-    secs--; if(secs>0&&S.recording) document.getElementById('recLabel').textContent=`Grabando… ${secs}s`;
-    else clearInterval(tick);
-  },1000);
-
-  const hasAudio=!!(S.audioBuffer||S.micActive);
-  setStatus(`⏺ Grabando ${S.duration}s${hasAudio?' · con audio':''}…`);
+  const tick=setInterval(()=>{ secs--; if(secs>0&&S.recording) document.getElementById('recLabel').textContent=`Grabando… ${secs}s`; else clearInterval(tick); },1000);
+  setStatus(`⏺ Grabando ${S.duration}s${S.audioBuffer||S.micActive?' · con audio':''}…`);
 
   (function loop(now){
     if(!S.recording) return;
@@ -727,22 +764,15 @@ async function startRec() {
   })(t0);
 }
 
-function finishRec() { if(mr&&mr.state!=='inactive') mr.stop(); }
-
-function endRec() {
+function finishRec(){ if(mr&&mr.state!=='inactive') mr.stop(); }
+function endRec(){
   S.recording=false; S.playing=false; cancelAnimationFrame(S.rafId);
-  btnRec.textContent='⏺  GRABAR VIDEO (con audio si está cargado)';
-  btnRec.style.background='';
-  document.getElementById('recCount').classList.remove('on');
-  redraw();
+  btnRec.textContent='⏺  GRABAR VIDEO'; btnRec.style.background=''; PARTS.length=0;
+  document.getElementById('recCount').classList.remove('on'); redraw();
 }
 
-// ════════════════════════════════════════════════════
-// STATUS
-// ════════════════════════════════════════════════════
 function setStatus(m){ document.getElementById('status').textContent=m; }
 
-// ── render inicial ──
 redraw();
 </script>
 </body>
