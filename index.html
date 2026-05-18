@@ -3,220 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creador de Publicidad 3D Billboard</title>
+    <title>Creador Publicidad 3D - Efecto Salida</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: #111; color: #fff; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .panel { background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 900px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        .control { display: flex; flex-direction: column; font-size: 12px; color: #4caf50; font-weight: bold; }
+        input[type="range"] { accent-color: #4caf50; width: 100px; }
 
-        body {
-            background: #1a1a1a;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        h1 {
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-            text-align: center;
-        }
-
-        p {
-            color: #aaa;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        /* Controles */
-        .controls {
-            background: #2a2a2a;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 25px;
-            max-width: 800px;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: #4caf50;
-            font-weight: bold;
-        }
-
-        input[type="file"] {
-            background: #333;
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #444;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        input[type="range"] {
-            accent-color: #4caf50;
-            width: 120px;
-        }
-
-        /* Contenedor del Canvas / Imagen de Fondo */
-        .billboard-container {
+        /* Contenedor del Edificio de la Esquina */
+        .escena {
             position: relative;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             aspect-ratio: 16 / 9;
-            background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?auto=format&fit=crop&w=1200&q=80'); /* Edificio moderno de noche */
+            background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?auto=format&fit=crop&w=1200&q=80');
             background-size: cover;
             background-position: center;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            /* Activamos la perspectiva 3D para los hijos */
-            perspective: 1000px; 
+            perspective: 1200px;
         }
 
-        /* El marco o pantalla virtual en el edificio */
-        .screen-3d {
+        /* Pantalla deformada en la esquina del edificio */
+        .pantalla-led {
             position: absolute;
-            /* Posicionamiento sobre el cartel del edificio de la foto de fondo */
-            top: 25%;
-            left: 35%;
-            width: 38%;
-            height: 32%;
-            background: #050505;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.1);
-            
-            /* Deformación 3D para simular la perspectiva de la esquina de la calle */
+            top: 24%;
+            left: 34.5%;
+            width: 38.5%;
+            height: 33%;
             transform: rotateX(10deg) rotateY(-28deg) rotateZ(3deg) skewY(2deg);
             transform-style: preserve-3d;
         }
 
-        /* Resplandor simulando pantalla LED publicitaria */
-        .screen-3d::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(rgba(255,255,255,0.15), transparent);
-            pointer-events: none;
-            mix-blend-mode: overlay;
-        }
-
-        /* La imagen del usuario dentro del cartel */
-        .user-ad {
+        /* CAPA 1: El Fondo del cartel (se queda adentro) */
+        .capa-fondo {
             position: absolute;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transform-origin: center;
-            transition: transform 0.1s ease-out;
-            filter: brightness(1.1) contrast(1.05); /* Efecto de luz de pantalla */
+            background: #000;
         }
 
-        .placeholder-text {
+        /* CAPA 2: El objeto/producto que SALE de la pantalla */
+        .capa-objeto {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             pointer-events: none;
-            padding: 10px;
+            transform-style: preserve-3d;
+            /* El truco: translateZ la empuja hacia adelante en el espacio 3D */
+            transform: translateZ(50px) scale(1); 
+            filter: drop-shadow(0 20px 15px rgba(0,0,0,0.7));
         }
+
+        .info-vacia { position: absolute; top: 45%; width: 100%; text-align: center; font-size: 11px; color: #666; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <h1>Generador de Cartelería Publicitaria 3D</h1>
-    <p>Subí tu imagen de catálogo, marca o diseño para ver cómo luciría en una pantalla gigante en la ciudad.</p>
+    <h2 style="margin-bottom: 10px;">Tu App de Publicidad 3D Real</h2>
 
-    <div class="controls">
-        <div class="control-group">
-            <label for="imageLoader">1. Seleccioná tu Imagen</label>
-            <input type="file" id="imageLoader" accept="image/*">
+    <div class="panel">
+        <div class="control">
+            <label>1. Imagen de Fondo</label>
+            <input type="file" id="cargarFondo" accept="image/*">
         </div>
-        
-        <div class="control-group">
-            <label for="scale">Zoom Imagen</label>
-            <input type="range" id="scale" min="0.5" max="3" step="0.05" value="1">
+        <div class="control">
+            <label>2. Objeto/Producto (PNG)</label>
+            <input type="file" id="cargarObjeto" accept="image/*">
         </div>
-
-        <div class="control-group">
-            <label for="posX">Posición X</label>
-            <input type="range" id="posX" min="-100" max="100" step="1" value="0">
+        <div class="control">
+            <label>Efecto Salida (Profundidad)</label>
+            <input type="range" id="salida" min="0" max="150" value="40">
         </div>
-
-        <div class="control-group">
-            <label for="posY">Posición Y</label>
-            <input type="range" id="posY" min="-100" max="100" step="1" value="0">
+        <div class="control">
+            <label>Mover Objeto (X)</label>
+            <input type="range" id="moverX" min="-100" max="100" value="0">
+        </div>
+        <div class="control">
+            <label>Tamaño Objeto</label>
+            <input type="range" id="escala" min="0.5" max="2" step="0.1" value="1">
         </div>
     </div>
 
-    <div class="billboard-container">
-        <div class="screen-3d">
-            <div id="placeholder" class="placeholder-text">Tu publicidad va a aparecer acá</div>
-            <img id="outputImage" class="user-ad" style="display: none;" src="" alt="Tu Publicidad">
+    <div class="escena">
+        <div class="pantalla-led">
+            <div class="info-vacia" id="txtAviso">Cargá las imágenes arriba para activar el 3D</div>
+            <img class="capa-fondo" id="imgFondo" style="display:none;">
+            <img class="capa-objeto" id="imgObjeto" style="display:none;">
         </div>
     </div>
 
     <script>
-        const imageLoader = document.getElementById('imageLoader');
-        const outputImage = document.getElementById('outputImage');
-        const placeholder = document.getElementById('placeholder');
-        
-        // Sliders
-        const scaleSlider = document.getElementById('scale');
-        const posXSlider = document.getElementById('posX');
-        const posYSlider = document.getElementById('posY');
+        const cargarFondo = document.getElementById('cargarFondo');
+        const cargarObjeto = document.getElementById('cargarObjeto');
+        const imgFondo = document.getElementById('imgFondo');
+        const imgObjeto = document.getElementById('imgObjeto');
+        const txtAviso = document.getElementById('txtAviso');
 
-        // Escuchar cuando el usuario sube una foto
-        imageLoader.addEventListener('change', handleImage, false);
+        // Sliders de control
+        const sliderSalida = document.getElementById('salida');
+        const sliderX = document.getElementById('moverX');
+        const sliderEscala = document.getElementById('escala');
 
-        function handleImage(e) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                outputImage.src = event.target.result;
-                outputImage.style.display = 'block';
-                placeholder.style.display = 'none';
-                updateImageTransform();
-            }
-            reader.readAsDataURL(e.target.files[0]);
+        function leerImagen(input, elementoImg) {
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        elementoImg.src = event.target.result;
+                        elementoImg.style.display = 'block';
+                        txtAviso.style.display = 'none';
+                        actualizarEfecto();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
         }
 
-        // Actualizar posición y tamaño dentro de la pantalla 3D
-        function updateImageTransform() {
-            const scale = scaleSlider.value;
-            const x = posXSlider.value;
-            const y = posYSlider.value;
+        leerImagen(cargarFondo, imgFondo);
+        leerImagen(cargarObjeto, imgObjeto);
+
+        // Aplicar el movimiento 3D real
+        function actualizarEfecto() {
+            const z = sliderSalida.value;
+            const x = sliderX.value;
+            const sc = sliderEscala.value;
             
-            // Aplicamos las transformaciones de escala y traslación personalizadas por el usuario
-            outputImage.style.transform = `scale(${scale}) translate(${x}px, ${y}px)`;
+            // translateZ(zpx) empuja físicamente la imagen del producto fuera de la estructura del edificio
+            imgObjeto.style.transform = `translateZ(${z}px) translateX(${x}px) scale(${sc})`;
         }
 
-        // Eventos para los cambios en tiempo real de los controles
-        scaleSlider.addEventListener('input', updateImageTransform);
-        posXSlider.addEventListener('input', updateImageTransform);
-        posYSlider.addEventListener('input', updateImageTransform);
+        sliderSalida.addEventListener('input', actualizarEfecto);
+        sliderX.addEventListener('input', actualizarEfecto);
+        sliderEscala.addEventListener('input', actualizarEfecto);
     </script>
 
 </body>
