@@ -1,147 +1,787 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creador Publicidad 3D - Efecto Salida</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #111; color: #fff; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        .panel { background: #222; padding: 15px; border-radius: 8px; margin-bottom: 20px; width: 100%; max-width: 900px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
-        .control { display: flex; flex-direction: column; font-size: 12px; color: #4caf50; font-weight: bold; }
-        input[type="range"] { accent-color: #4caf50; width: 100px; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Billboard Pro – Generador de Publicidad 3D</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Contenedor del Edificio de la Esquina */
-        .escena {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            aspect-ratio: 16 / 9;
-            background-image: url('https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
-            border-radius: 10px;
-            overflow: hidden;
-            perspective: 1200px;
-        }
+    :root {
+      --green: #00e676;
+      --green-dim: #00c85e;
+      --red: #f44336;
+      --bg: #0d0d0d;
+      --surface: #181818;
+      --surface2: #222;
+      --border: #2e2e2e;
+      --text: #e8e8e8;
+      --text-dim: #777;
+    }
 
-        /* Pantalla deformada en la esquina del edificio */
-        .pantalla-led {
-            position: absolute;
-            top: 24%;
-            left: 34.5%;
-            width: 38.5%;
-            height: 33%;
-            transform: rotateX(10deg) rotateY(-28deg) rotateZ(3deg) skewY(2deg);
-            transform-style: preserve-3d;
-        }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+    }
 
-        /* CAPA 1: El Fondo del cartel (se queda adentro) */
-        .capa-fondo {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            background: #000;
-        }
+    /* ─── HEADER ─── */
+    .header { text-align: center; margin-bottom: 22px; }
+    .header h1 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.3px; }
+    .header h1 span { color: var(--green); }
+    .header p  { font-size: 0.82rem; color: var(--text-dim); margin-top: 4px; }
 
-        /* CAPA 2: El objeto/producto que SALE de la pantalla */
-        .capa-objeto {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            pointer-events: none;
-            transform-style: preserve-3d;
-            /* El truco: translateZ la empuja hacia adelante en el espacio 3D */
-            transform: translateZ(50px) scale(1); 
-            filter: drop-shadow(0 20px 15px rgba(0,0,0,0.7));
-        }
+    /* ─── CONTROLS ─── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      max-width: 980px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
 
-        .info-vacia { position: absolute; top: 45%; width: 100%; text-align: center; font-size: 11px; color: #666; pointer-events: none; }
-    </style>
+    .cg { display: flex; flex-direction: column; gap: 7px; }
+
+    .cg label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      font-weight: 700;
+      color: var(--green);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .cg label em {
+      font-style: normal;
+      color: var(--text-dim);
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    input[type="file"] {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 7px 8px;
+      color: var(--text-dim);
+      font-size: 11px;
+      cursor: pointer;
+      width: 100%;
+      transition: border-color .2s;
+    }
+    input[type="file"]:hover { border-color: var(--green); }
+
+    input[type="range"] {
+      accent-color: var(--green);
+      width: 100%;
+      cursor: pointer;
+    }
+
+    select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px;
+      color: var(--text);
+      font-size: 12px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* ─── ACTION BAR ─── */
+    .actions {
+      max-width: 980px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-green  { background: var(--green); color: #000; }
+    .btn-green:hover:not(:disabled) { background: var(--green-dim); transform: translateY(-1px); }
+    .btn-red    { background: var(--red); color: #fff; }
+    .btn-red:hover:not(:disabled)   { background: #d32f2f; transform: translateY(-1px); }
+    .btn-ghost  { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--green); color: var(--green); }
+
+    .rec-badge {
+      display: none;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--red);
+      font-weight: 600;
+    }
+    .rec-badge.on { display: flex; }
+    .rec-dot {
+      width: 9px; height: 9px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    /* ─── CANVAS WRAPPER ─── */
+    .preview {
+      max-width: 980px;
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 70px rgba(0,0,0,.85);
+      background: #000;
+      margin-bottom: 14px;
+    }
+
+    #cnv {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* ─── STATUS ─── */
+    .status {
+      max-width: 980px;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 12px;
+      color: var(--text-dim);
+      text-align: center;
+      min-height: 38px;
+    }
+  </style>
 </head>
 <body>
 
-    <h2 style="margin-bottom: 10px;">Tu App de Publicidad 3D Real</h2>
+<div class="header">
+  <h1>3D Billboard <span>Pro</span></h1>
+  <p>Subí tus imágenes, ajustá el efecto y exportá el video</p>
+</div>
 
-    <div class="panel">
-        <div class="control">
-            <label>1. Imagen de Fondo</label>
-            <input type="file" id="cargarFondo" accept="image/*">
-        </div>
-        <div class="control">
-            <label>2. Objeto/Producto (PNG)</label>
-            <input type="file" id="cargarObjeto" accept="image/*">
-        </div>
-        <div class="control">
-            <label>Efecto Salida (Profundidad)</label>
-            <input type="range" id="salida" min="0" max="150" value="40">
-        </div>
-        <div class="control">
-            <label>Mover Objeto (X)</label>
-            <input type="range" id="moverX" min="-100" max="100" value="0">
-        </div>
-        <div class="control">
-            <label>Tamaño Objeto</label>
-            <input type="range" id="escala" min="0.5" max="2" step="0.1" value="1">
-        </div>
-    </div>
+<!-- CONTROLS -->
+<div class="panel">
 
-    <div class="escena">
-        <div class="pantalla-led">
-            <div class="info-vacia" id="txtAviso">Cargá las imágenes arriba para activar el 3D</div>
-            <img class="capa-fondo" id="imgFondo" style="display:none;">
-            <img class="capa-objeto" id="imgObjeto" style="display:none;">
-        </div>
-    </div>
+  <div class="cg">
+    <label>Fondo de escena</label>
+    <input type="file" id="inBg" accept="image/*">
+  </div>
 
-    <script>
-        const cargarFondo = document.getElementById('cargarFondo');
-        const cargarObjeto = document.getElementById('cargarObjeto');
-        const imgFondo = document.getElementById('imgFondo');
-        const imgObjeto = document.getElementById('imgObjeto');
-        const txtAviso = document.getElementById('txtAviso');
+  <div class="cg">
+    <label>Imagen del cartel</label>
+    <input type="file" id="inBoard" accept="image/*">
+  </div>
 
-        // Sliders de control
-        const sliderSalida = document.getElementById('salida');
-        const sliderX = document.getElementById('moverX');
-        const sliderEscala = document.getElementById('escala');
+  <div class="cg">
+    <label>Producto PNG (sin fondo)</label>
+    <input type="file" id="inProd" accept="image/*">
+  </div>
 
-        function leerImagen(input, elementoImg) {
-            input.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        elementoImg.src = event.target.result;
-                        elementoImg.style.display = 'block';
-                        txtAviso.style.display = 'none';
-                        actualizarEfecto();
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
+  <div class="cg">
+    <label>Rotación Y <em id="vTiltY">–12°</em></label>
+    <input type="range" id="sTiltY" min="-45" max="45" value="-12">
+  </div>
 
-        leerImagen(cargarFondo, imgFondo);
-        leerImagen(cargarObjeto, imgObjeto);
+  <div class="cg">
+    <label>Rotación X <em id="vTiltX">8°</em></label>
+    <input type="range" id="sTiltX" min="-30" max="30" value="8">
+  </div>
 
-        // Aplicar el movimiento 3D real
-        function actualizarEfecto() {
-            const z = sliderSalida.value;
-            const x = sliderX.value;
-            const sc = sliderEscala.value;
-            
-            // translateZ(zpx) empuja físicamente la imagen del producto fuera de la estructura del edificio
-            imgObjeto.style.transform = `translateZ(${z}px) translateX(${x}px) scale(${sc})`;
-        }
+  <div class="cg">
+    <label>Profundidad producto <em id="vDepth">90</em></label>
+    <input type="range" id="sDepth" min="0" max="250" value="90">
+  </div>
 
-        sliderSalida.addEventListener('input', actualizarEfecto);
-        sliderX.addEventListener('input', actualizarEfecto);
-        sliderEscala.addEventListener('input', actualizarEfecto);
-    </script>
+  <div class="cg">
+    <label>Escala producto <em id="vScale">1.0</em></label>
+    <input type="range" id="sScale" min="0.4" max="2.8" step="0.05" value="1.0">
+  </div>
 
+  <div class="cg">
+    <label>Posición X <em id="vPosX">0</em></label>
+    <input type="range" id="sPosX" min="-300" max="300" value="0">
+  </div>
+
+  <div class="cg">
+    <label>Posición Y <em id="vPosY">0</em></label>
+    <input type="range" id="sPosY" min="-200" max="200" value="0">
+  </div>
+
+  <div class="cg">
+    <label>Animación</label>
+    <select id="sAnim">
+      <option value="float">Flotante</option>
+      <option value="burst">Irrupción</option>
+      <option value="swing">Balanceo</option>
+      <option value="none">Sin animación</option>
+    </select>
+  </div>
+
+  <div class="cg">
+    <label>Duración video <em id="vDur">5 s</em></label>
+    <input type="range" id="sDur" min="2" max="20" value="5">
+  </div>
+
+  <div class="cg">
+    <label>FPS grabación</label>
+    <select id="sFps">
+      <option value="30">30 fps</option>
+      <option value="60">60 fps</option>
+      <option value="24">24 fps</option>
+    </select>
+  </div>
+
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+  <button class="btn btn-green" id="btnAnim">▶ Previsualizar</button>
+  <button class="btn btn-red"   id="btnRec">⏺ Grabar video</button>
+  <div class="rec-badge" id="recBadge">
+    <div class="rec-dot"></div>
+    <span id="recLabel">Grabando…</span>
+  </div>
+  <button class="btn btn-ghost" id="btnReset" style="margin-left:auto">↺ Reiniciar</button>
+</div>
+
+<!-- CANVAS PREVIEW -->
+<div class="preview">
+  <canvas id="cnv"></canvas>
+</div>
+
+<div class="status" id="statusBar">
+  Cargá las imágenes para empezar. El video se guarda como .webm (compatible con la mayoría de reproductores).
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// SETUP
+// ═══════════════════════════════════════════════════════════
+
+const cnv = document.getElementById('cnv');
+const ctx = cnv.getContext('2d');
+const W = 1920, H = 1080;
+cnv.width  = W;
+cnv.height = H;
+
+const st = {
+  bg:         null,
+  board:      null,
+  product:    null,
+  tiltY:     -12,
+  tiltX:       8,
+  depth:      90,
+  scale:       1.0,
+  posX:        0,
+  posY:        0,
+  anim:       'float',
+  duration:    5,
+  fps:         30,
+  playing:     false,
+  recording:   false,
+  rafId:       null,
+  t0:          0,
+};
+
+// ═══════════════════════════════════════════════════════════
+// FILE INPUTS
+// ═══════════════════════════════════════════════════════════
+
+function bindFile(id, key) {
+  document.getElementById(id).addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = new Image();
+      img.onload = () => { st[key] = img; redraw(); setStatus(`✔ ${f.name} cargado`); };
+      img.src = ev.target.result;
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+bindFile('inBg',    'bg');
+bindFile('inBoard', 'board');
+bindFile('inProd',  'product');
+
+// ═══════════════════════════════════════════════════════════
+// SLIDERS
+// ═══════════════════════════════════════════════════════════
+
+function bindSlider(sliderId, displayId, key, unit = '', decimals = 0) {
+  const s = document.getElementById(sliderId);
+  const d = document.getElementById(displayId);
+  s.addEventListener('input', () => {
+    st[key] = parseFloat(s.value);
+    d.textContent = parseFloat(s.value).toFixed(decimals) + unit;
+    if (!st.playing) redraw();
+  });
+}
+
+bindSlider('sTiltY', 'vTiltY',  'tiltY',  '°');
+bindSlider('sTiltX', 'vTiltX',  'tiltX',  '°');
+bindSlider('sDepth', 'vDepth',  'depth',  '');
+bindSlider('sScale', 'vScale',  'scale',  '', 2);
+bindSlider('sPosX',  'vPosX',   'posX',   '');
+bindSlider('sPosY',  'vPosY',   'posY',   '');
+bindSlider('sDur',   'vDur',    'duration','  s');
+
+document.getElementById('sAnim').addEventListener('change', e => { st.anim = e.target.value; });
+document.getElementById('sFps').addEventListener('change',  e => { st.fps  = +e.target.value; });
+
+// ═══════════════════════════════════════════════════════════
+// PERSPECTIVE MATH
+// ═══════════════════════════════════════════════════════════
+
+const FOV = 1400;
+
+/* Returns 4 canvas-space points {x,y} for the billboard quad:
+   [TL, TR, BR, BL] after applying tiltY + tiltX + perspective. */
+function getBoardQuad(tiltYdeg, tiltXdeg, cx, cy, bW, bH) {
+  const ry = tiltYdeg * Math.PI / 180;
+  const rx = tiltXdeg * Math.PI / 180;
+  const half = [ [-bW,-bH,0], [bW,-bH,0], [bW,bH,0], [-bW,bH,0] ];
+
+  return half.map(([x, y, z]) => {
+    // Rotate Y
+    const x1 = x * Math.cos(ry) + z * Math.sin(ry);
+    const z1 = -x * Math.sin(ry) + z * Math.cos(ry);
+    // Rotate X
+    const y2 = y * Math.cos(rx) - z1 * Math.sin(rx);
+    const z2 = y * Math.sin(rx) + z1 * Math.cos(rx);
+    // Perspective
+    const s = FOV / (FOV + z2);
+    return { x: cx + x1 * s, y: cy + y2 * s };
+  });
+}
+
+/* Draw image stretched to a perspective quad using two affine triangles. */
+function drawQuadImage(img, quad) {
+  const [tl, tr, br, bl] = quad;
+  const iw = img.width, ih = img.height;
+  // Upper-left triangle  : img (0,0)(iw,0)(0,ih)  → canvas tl,tr,bl
+  triDraw(img, [0,0],[iw,0],[0,ih],  tl, tr, bl);
+  // Lower-right triangle : img (iw,0)(iw,ih)(0,ih) → canvas tr,br,bl
+  triDraw(img, [iw,0],[iw,ih],[0,ih], tr, br, bl);
+}
+
+function triDraw(img, s0, s1, s2, d0, d1, d2) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(d0.x, d0.y);
+  ctx.lineTo(d1.x, d1.y);
+  ctx.lineTo(d2.x, d2.y);
+  ctx.closePath();
+  ctx.clip();
+
+  const det = (s1[0]-s0[0])*(s2[1]-s0[1]) - (s2[0]-s0[0])*(s1[1]-s0[1]);
+  const a  = ((d1.x-d0.x)*(s2[1]-s0[1]) - (d2.x-d0.x)*(s1[1]-s0[1])) / det;
+  const b  = ((d2.x-d0.x)*(s1[0]-s0[0]) - (d1.x-d0.x)*(s2[0]-s0[0])) / det;
+  const e  = d0.x - a*s0[0] - b*s0[1];
+  const c  = ((d1.y-d0.y)*(s2[1]-s0[1]) - (d2.y-d0.y)*(s1[1]-s0[1])) / det;
+  const d  = ((d2.y-d0.y)*(s1[0]-s0[0]) - (d1.y-d0.y)*(s2[0]-s0[0])) / det;
+  const f  = d0.y - c*s0[0] - d*s0[1];
+
+  ctx.transform(a, c, b, d, e, f);
+  ctx.drawImage(img, 0, 0);
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ANIMATION HELPERS
+// ═══════════════════════════════════════════════════════════
+
+function getAnimDelta(t) {
+  switch (st.anim) {
+    case 'float': {
+      const s = Math.sin(t * 1.4);
+      return { dy: s * 18, dz: s * 12, ds: 1 + s * 0.025, dr: s * 1.5 };
+    }
+    case 'burst': {
+      const cyc = (t % 2.8) / 2.8;
+      const ease = 1 - Math.pow(1 - Math.min(cyc * 2, 1), 3);
+      const fade = cyc > 0.75 ? 1 - (cyc - 0.75) / 0.25 : 1;
+      const v = ease * fade;
+      return { dy: -v * 30, dz: v * 70, ds: 0.6 + v * 0.4, dr: 0 };
+    }
+    case 'swing': {
+      const s = Math.sin(t * 0.9);
+      return { dy: 0, dz: 0, ds: 1, dr: s * 8 };
+    }
+    default:
+      return { dy: 0, dz: 0, ds: 1, dr: 0 };
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════════════════════
+
+function render(t) {
+  ctx.clearRect(0, 0, W, H);
+
+  const anim = getAnimDelta(t / 1000);
+
+  // ── 1. BACKGROUND ───────────────────────────────────────
+  if (st.bg) {
+    ctx.drawImage(st.bg, 0, 0, W, H);
+  } else {
+    drawDefaultBg();
+  }
+
+  // Billboard geometry
+  const boardW = W * 0.46;
+  const boardH = H * 0.42;
+  const cx = W / 2 + st.posX;
+  const cy = H / 2 - H * 0.02 + st.posY;
+  const quad = getBoardQuad(st.tiltY, st.tiltX, cx, cy, boardW / 2, boardH / 2);
+
+  // ── 2. BILLBOARD BACKGROUND ─────────────────────────────
+  ctx.save();
+  clipToQuad(quad);
+  if (st.board) {
+    drawQuadImage(st.board, quad);
+  } else {
+    drawDefaultBoard(quad);
+  }
+  ctx.restore();
+
+  // ── 3. PRODUCT SHADOW on the billboard surface ──────────
+  if (st.product) {
+    const depth  = st.depth + anim.dz;
+    const pScale = st.scale * anim.ds * (FOV / (FOV + depth));
+    const shadowH = boardH * 0.25 * pScale;
+    const shadowW = shadowH * 1.6;
+
+    ctx.save();
+    clipToQuad(quad);
+    const sg = ctx.createRadialGradient(cx, cy + boardH * 0.1, 10, cx, cy + boardH * 0.1, shadowH * 1.4);
+    sg.addColorStop(0, 'rgba(0,0,0,0.55)');
+    sg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = sg;
+    ctx.ellipse(cx, cy + boardH * 0.1, shadowW, shadowH, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // ── 4. BILLBOARD FRAME (covers product bottom) ──────────
+  drawBoardFrame(quad);
+
+  // ── 5. PRODUCT (in front of frame) ──────────────────────
+  if (st.product) {
+    const depth  = st.depth + anim.dz;
+    const pScale = st.scale * anim.ds * (FOV / (FOV + depth));
+    const dy     = anim.dy;
+    const rotY   = st.tiltY * 0.15 + anim.dr;
+
+    drawProduct(cx, cy + dy, pScale, rotY);
+  } else {
+    drawProductHint(quad);
+  }
+
+  // ── 6. SCAN LINES overlay (subtle, cinematic) ───────────
+  drawScanLines();
+}
+
+// ── SUB-RENDERS ─────────────────────────────────────────────
+
+function drawDefaultBg() {
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0,   '#0d1117');
+  g.addColorStop(0.5, '#161b22');
+  g.addColorStop(1,   '#0d1117');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle building grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Glow at center
+  const cg = ctx.createRadialGradient(W/2, H/2, 100, W/2, H/2, 700);
+  cg.addColorStop(0, 'rgba(0,100,255,0.06)');
+  cg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = cg;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function clipToQuad(q) {
+  ctx.beginPath();
+  ctx.moveTo(q[0].x, q[0].y);
+  q.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.closePath();
+  ctx.clip();
+}
+
+function drawDefaultBoard(quad) {
+  const g = ctx.createLinearGradient(quad[0].x, quad[0].y, quad[2].x, quad[2].y);
+  g.addColorStop(0, '#050505');
+  g.addColorStop(1, '#121212');
+  ctx.fillStyle = g;
+  ctx.beginPath();
+  ctx.moveTo(quad[0].x, quad[0].y);
+  quad.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ctx.font = `bold ${H * 0.04}px Segoe UI`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const cx = quad.reduce((s, p) => s + p.x, 0) / 4;
+  const cy = quad.reduce((s, p) => s + p.y, 0) / 4;
+  ctx.fillText('PUBLICIDAD', cx, cy);
+}
+
+function drawBoardFrame(quad) {
+  // Thick outer frame (dark metal)
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(quad[0].x, quad[0].y);
+  quad.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.closePath();
+  ctx.strokeStyle = '#111';
+  ctx.lineWidth   = 28;
+  ctx.stroke();
+
+  // Inner highlight edge
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth   = 3;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawProduct(cx, cy, scale, rotYdeg) {
+  const img = st.product;
+  const aspect = img.width / img.height;
+  const baseH  = H * 0.68;
+  const pH = baseH * scale;
+  const pW = pH * aspect;
+
+  ctx.save();
+  ctx.translate(cx, cy - pH * 0.18); // float a bit upward
+
+  // Simulate tilt: horizontal shear proportional to rotY
+  const shear = Math.sin(rotYdeg * Math.PI / 180) * 0.25;
+  ctx.transform(1, 0, shear, 1, 0, 0);
+
+  // Drop shadow
+  ctx.shadowColor   = 'rgba(0,0,0,0.75)';
+  ctx.shadowBlur    = 60 + scale * 20;
+  ctx.shadowOffsetX = 12;
+  ctx.shadowOffsetY = 30;
+
+  ctx.drawImage(img, -pW / 2, -pH / 2, pW, pH);
+  ctx.restore();
+}
+
+function drawProductHint(quad) {
+  const cx = quad.reduce((s, p) => s + p.x, 0) / 4;
+  const cy = quad.reduce((s, p) => s + p.y, 0) / 4;
+  ctx.save();
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx.font = `${H * 0.025}px Segoe UI`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('Subí un producto PNG para ver el efecto 3D', cx, cy);
+  ctx.restore();
+}
+
+function drawScanLines() {
+  ctx.save();
+  ctx.globalAlpha = 0.025;
+  ctx.fillStyle = '#000';
+  for (let y = 0; y < H; y += 4) {
+    ctx.fillRect(0, y, W, 2);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function redraw() { render(0); }
+
+// ═══════════════════════════════════════════════════════════
+// ANIMATION LOOP
+// ═══════════════════════════════════════════════════════════
+
+document.getElementById('btnAnim').addEventListener('click', () => {
+  st.playing ? stopAnim() : startAnim();
+});
+
+function startAnim() {
+  if (st.playing) return;
+  st.playing = true;
+  st.t0 = performance.now();
+  document.getElementById('btnAnim').textContent = '⏹ Detener';
+  loop(st.t0);
+}
+
+function stopAnim() {
+  st.playing = false;
+  cancelAnimationFrame(st.rafId);
+  document.getElementById('btnAnim').textContent = '▶ Previsualizar';
+  redraw();
+}
+
+function loop(now) {
+  if (!st.playing) return;
+  render(now - st.t0);
+  st.rafId = requestAnimationFrame(loop);
+}
+
+// ═══════════════════════════════════════════════════════════
+// RECORDING
+// ═══════════════════════════════════════════════════════════
+
+let mr = null, chunks = [];
+
+document.getElementById('btnRec').addEventListener('click', () => {
+  st.recording ? stopRec() : startRec();
+});
+
+function startRec() {
+  if (st.playing) stopAnim();
+
+  const mime = pickMime();
+  if (!mime) { setStatus('⚠️ Tu navegador no soporta grabación de canvas. Probá con Chrome.'); return; }
+
+  chunks = [];
+  const stream = cnv.captureStream(st.fps);
+  mr = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 10_000_000 });
+
+  mr.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  mr.onstop = () => {
+    const blob = new Blob(chunks, { type: mime });
+    const ext  = mime.includes('mp4') ? 'mp4' : 'webm';
+    downloadBlob(blob, `3d-billboard-${Date.now()}.${ext}`);
+    setStatus(`✅ Video exportado · ${(blob.size / 1048576).toFixed(1)} MB`);
+    cleanupRec();
+  };
+
+  st.recording = true;
+  mr.start();
+
+  document.getElementById('recBadge').classList.add('on');
+  document.getElementById('btnRec').textContent = '⏹ Detener grabación';
+
+  // Run animation for the recording
+  const durMs = st.duration * 1000;
+  st.playing = true;
+  const recStart = performance.now();
+
+  let countdown = st.duration;
+  document.getElementById('recLabel').textContent = `Grabando… ${countdown}s`;
+  const ticker = setInterval(() => {
+    countdown--;
+    if (countdown > 0) document.getElementById('recLabel').textContent = `Grabando… ${countdown}s`;
+  }, 1000);
+
+  function recLoop(now) {
+    if (!st.recording) return;
+    const elapsed = now - recStart;
+    render(elapsed);
+    if (elapsed < durMs) {
+      st.rafId = requestAnimationFrame(recLoop);
+    } else {
+      clearInterval(ticker);
+      stopRec();
+    }
+  }
+  st.rafId = requestAnimationFrame(recLoop);
+  setStatus(`⏺ Grabando ${st.duration}s de video…`);
+}
+
+function stopRec() {
+  if (mr && mr.state !== 'inactive') mr.stop();
+}
+
+function cleanupRec() {
+  st.recording = false;
+  st.playing   = false;
+  cancelAnimationFrame(st.rafId);
+  document.getElementById('recBadge').classList.remove('on');
+  document.getElementById('btnRec').textContent = '⏺ Grabar video';
+  redraw();
+}
+
+function pickMime() {
+  const types = [
+    'video/mp4;codecs=h264',
+    'video/mp4',
+    'video/webm;codecs=vp9',
+    'video/webm;codecs=vp8',
+    'video/webm',
+  ];
+  return types.find(t => MediaRecorder.isTypeSupported(t)) ?? null;
+}
+
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a   = Object.assign(document.createElement('a'), { href: url, download: name });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════════════════════
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  if (st.playing)   stopAnim();
+  if (st.recording) stopRec();
+  ['inBg','inBoard','inProd'].forEach(id => document.getElementById(id).value = '');
+  Object.assign(st, { bg: null, board: null, product: null,
+    tiltY: -12, tiltX: 8, depth: 90, scale: 1.0, posX: 0, posY: 0 });
+  document.getElementById('sTiltY').value = -12; document.getElementById('vTiltY').textContent = '-12°';
+  document.getElementById('sTiltX').value =   8; document.getElementById('vTiltX').textContent = '8°';
+  document.getElementById('sDepth').value =  90; document.getElementById('vDepth').textContent = '90';
+  document.getElementById('sScale').value = 1.0; document.getElementById('vScale').textContent = '1.00';
+  document.getElementById('sPosX').value  =   0; document.getElementById('vPosX').textContent = '0';
+  document.getElementById('sPosY').value  =   0; document.getElementById('vPosY').textContent = '0';
+  redraw();
+  setStatus('Reiniciado. Cargá tus imágenes para empezar.');
+});
+
+// ═══════════════════════════════════════════════════════════
+// STATUS
+// ═══════════════════════════════════════════════════════════
+
+function setStatus(msg) {
+  document.getElementById('statusBar').textContent = msg;
+}
+
+// ─── initial render ───────────────────────────────────────
+redraw();
+</script>
 </body>
 </html>
