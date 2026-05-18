@@ -331,9 +331,9 @@ const W = 1920, H = 1080;
 cnv.width = W; cnv.height = H;
 
 // ═══════════════════════════════════════════
-// STATE
+// STATE (exposed on window for automation/testing)
 // ═══════════════════════════════════════════
-const S = {
+window.S = {
   bg: null, board: null, product: null,
   tiltY: -12, tiltX: 8,
   depth: 90, scale: 1.0,
@@ -341,6 +341,7 @@ const S = {
   playing: false, recording: false,
   rafId: null, t0: 0,
 };
+const S = window.S;
 
 // ═══════════════════════════════════════════
 // FILE INPUTS
@@ -574,6 +575,10 @@ function drawProductHint(q) {
 }
 
 function redraw() { render(0); }
+window.redraw = redraw;
+window.render = render;
+window.startAnim = startAnim;
+window.stopAnim  = stopAnim;
 
 // ═══════════════════════════════════════════
 // ANIMACIÓN PREVIEW
