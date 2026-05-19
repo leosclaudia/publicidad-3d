@@ -356,7 +356,7 @@ function showGate() {
 }
 
 async function validateKey() {
-  const key = document.getElementById('keyInput').value.trim();
+  const key = (document.getElementById('keyInput').value || '').trim();
   if (!key) { showGateError('Ingresá tu clave de licencia'); return; }
 
   const btn = document.getElementById('gateBtn');
@@ -554,6 +554,12 @@ document.getElementById('sSpd').addEventListener('input',e=>{
 ['tText1','tText2','tCol1','tCol2'].forEach(id=>{
   const map={tText1:'text1',tText2:'text2',tCol1:'text1Color',tCol2:'text2Color'};
   document.getElementById(id).addEventListener('input',e=>{ S[map[id]]=e.target.value; if(!S.playing)redraw(); });
+  if(id==='tText1'||id==='tText2'){
+    document.getElementById(id).addEventListener('blur',e=>{
+      const trimmed=(e.target.value||'').trim();
+      e.target.value=trimmed; S[map[id]]=trimmed; if(!S.playing)redraw();
+    });
+  }
 });
 
 document.getElementById('sGrade').addEventListener('change',e=>{ S.colorGrade=e.target.value; if(!S.playing)redraw(); });
@@ -759,7 +765,9 @@ function drawLogo() {
   ctx.restore();
 }
 function drawText(ms) {
-  const {text1,text1Color,text1Size,text2,text2Color,text2Size,textPos,textAnim}=S;
+  const {text1Color,text1Size,text2Color,text2Size,textPos,textAnim}=S;
+  const text1=(S.text1||'').trim();
+  const text2=(S.text2||'').trim();
   if(!text1&&!text2) return;
   const cx=W/2, t=ms/1000;
   const baseY=textPos==='top'?H*.09:textPos==='center'?H*.50:H*.87;
