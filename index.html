@@ -126,7 +126,6 @@
       box-shadow: inset 0 0 0 1px #000, 0 0 28px rgba(0,230,118,.35);
       pointer-events: none;
     }
-    /* producto flotante */
     .prod-float {
       position: absolute;
       width: clamp(110px, 22%, 200px);
@@ -140,9 +139,7 @@
       0%,100% { transform: translateX(-50%) translateY(0); }
       50%      { transform: translateX(-50%) translateY(-22px); }
     }
-    /* Silueta simplificada de zapatilla */
     .shoe-svg { width: 100%; height: auto; }
-    /* partículas CSS */
     .sparks { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 15; }
     .spark {
       position: absolute; width: 4px; height: 4px; border-radius: 50%;
@@ -167,7 +164,6 @@
     .spark:nth-child(5){ --tx:40px;  --ty:-65px; }
     .spark:nth-child(6){ --tx:10px;  --ty:-90px; }
 
-    /* trust strip */
     .trust {
       display: flex; gap: 28px; justify-content: center; flex-wrap: wrap;
       padding: 18px 24px; border-top: 1px solid var(--bd); margin-top: 24px;
@@ -175,7 +171,6 @@
     .trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--dim); }
     .trust-icon { color: var(--g); font-size: 16px; }
 
-    /* ── SECCIONES GENÉRICO ───────────────────────── */
     section { padding: 100px 24px; }
     .section-label {
       font-size: 11px; text-transform: uppercase; letter-spacing: 3px;
@@ -193,7 +188,6 @@
     }
     .container { max-width: 1100px; margin: 0 auto; }
 
-    /* ── FEATURES ────────────────────────────────── */
     #features { background: var(--bg2); }
     .features-grid {
       display: grid;
@@ -209,7 +203,6 @@
     .feat-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 9px; }
     .feat-card p { font-size: .875rem; color: var(--dim); line-height: 1.65; }
 
-    /* ── CÓMO FUNCIONA ───────────────────────────── */
     .steps {
       display: flex; gap: 0; justify-content: center;
       position: relative; max-width: 860px; margin: 0 auto;
@@ -231,7 +224,6 @@
     .step p { font-size: .875rem; color: var(--dim); line-height: 1.6; }
     @media(max-width:640px){ .steps{flex-direction:column;gap:36px;} .steps::before{display:none;} }
 
-    /* ── DEMOSTRACIÓN ────────────────────────────── */
     #demo { background: var(--bg2); }
     .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 1000px; margin: 0 auto; align-items: center; }
     @media(max-width:700px){ .demo-grid{grid-template-columns:1fr;} }
@@ -257,7 +249,6 @@
     .demo-preview-text { color: var(--dim); font-size: 14px; text-align: center; padding: 20px; position: relative; z-index:1; }
     .demo-preview-text a { color: var(--y); text-decoration: none; font-weight: 700; }
 
-    /* ── PRICING ─────────────────────────────────── */
     .pricing-note { text-align:center; color:var(--dim); font-size:13px; margin-top:20px; }
     .pricing-grid {
       display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; align-items: flex-start;
@@ -296,7 +287,6 @@
     .btn-buy-o { background: transparent; color: var(--tx); border: 1px solid var(--bd); }
     .btn-buy-o:hover { border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.06); }
 
-    /* ── FAQ ─────────────────────────────────────── */
     #faq { background: var(--bg2); }
     .faq-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
     .faq-item { background: var(--card); border: 1px solid var(--bd); border-radius: 14px; overflow: hidden; }
@@ -312,7 +302,6 @@
     .faq-a p { padding: 0 24px 20px; font-size: 14px; color: var(--dim); line-height: 1.75; }
     .faq-item.open .faq-a { max-height: 400px; }
 
-    /* ── FOOTER ──────────────────────────────────── */
     footer { background: #020209; border-top: 1px solid var(--bd); padding: 48px 24px; text-align: center; }
     .footer-logo { font-size: 1.4rem; font-weight: 900; margin-bottom: 14px; }
     .footer-logo span { color: var(--y); }
@@ -324,7 +313,6 @@
 </head>
 <body>
 
-<!-- ══ NAV ══════════════════════════════════════════ -->
 <nav>
   <a class="logo" href="#">3D Billboard <span>Pro</span></a>
   <ul>
@@ -333,11 +321,9 @@
     <li><a href="#pricing">Precios</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
-  <!-- ★ REEMPLAZÁ ESTE LINK CON TU URL DE LEMON SQUEEZY -->
-  <a class="nav-cta" href="https://TU_TIENDA.lemonsqueezy.com/buy/TU_PRODUCTO" target="_blank">Comprar ahora</a>
+  <a class="nav-cta" href="https://billboard3dpro.lemonsqueezy.com/checkout/buy/7ff977e2-e577-47a6-8acc-9a75f35c47ae" target="_blank">Comprar ahora</a>
 </nav>
 
-<!-- ══ HERO ══════════════════════════════════════════ -->
 <section id="hero">
   <div class="hero-badge">Nuevo · 2025</div>
   <h1>Creá videos 3D<br>que <em>venden solos</em></h1>
@@ -346,16 +332,14 @@
     Sin Photoshop. Sin After Effects. Sin conocimientos técnicos.
   </p>
   <div class="cta-group">
-    <!-- ★ REEMPLAZÁ ESTOS LINKS CON TUS URLs DE LEMON SQUEEZY -->
-    <a class="btn-primary" href="https://TU_TIENDA.lemonsqueezy.com/buy/TU_PRODUCTO_LIFETIME" target="_blank">
+    <a class="btn-primary" href="https://billboard3dpro.lemonsqueezy.com/checkout/buy/7ff977e2-e577-47a6-8acc-9a75f35c47ae" target="_blank">
       ⚡ Comprar de por vida — $49
     </a>
-    <a class="btn-secondary" href="app/" >
+    <a class="btn-secondary" href="app/">
       🎬 Probar gratis 7 días
     </a>
   </div>
 
-  <!-- Billboard animado -->
   <div class="hero-visual">
     <div class="bb-scene">
       <div class="bb-inner">
@@ -365,37 +349,28 @@
         <div class="bb-sub">JUST DO IT · NEW COLLECTION 2025</div>
         <div class="bb-glow"></div>
       </div>
-      <!-- Producto flotando -->
       <div class="prod-float">
         <svg class="shoe-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
-          <!-- suela -->
           <ellipse cx="112" cy="142" rx="92" ry="16" fill="#ddd"/>
           <ellipse cx="112" cy="146" rx="88" ry="12" fill="#bb1010"/>
           <ellipse cx="112" cy="150" rx="82" ry="8" fill="#aaa"/>
-          <!-- cuerpo -->
           <path d="M28 128 C28 128 22 92 52 70 C76 52 108 46 140 58 C170 70 188 96 190 122 C192 134 186 140 178 144 L28 140Z" fill="#111"/>
-          <!-- panel blanco -->
           <path d="M58 94 C76 76 108 68 132 66 C152 64 166 72 172 84 L166 124 C144 110 102 108 66 118Z" fill="#f0f0f0"/>
-          <!-- swoosh rojo -->
           <path d="M68 112 C98 90 164 84 196 104 C175 110 118 128 56 136Z" fill="#bb1010"/>
           <path d="M72 110 C100 90 162 86 190 104 C178 108 118 122 62 130Z" fill="rgba(255,255,255,.15)"/>
-          <!-- lengüeta -->
           <path d="M122 50 C118 28 122 8 130 2 C138 -2 146 0 148 12 C152 28 148 46 144 52Z" fill="#1a1a1a"/>
           <circle cx="136" cy="8" r="8" fill="#bb1010"/>
-          <!-- cordones -->
           <line x1="124" y1="52" x2="145" y2="50" stroke="#ccc" stroke-width="3" stroke-linecap="round"/>
           <line x1="124" y1="60" x2="144" y2="58" stroke="#ccc" stroke-width="3" stroke-linecap="round"/>
           <line x1="125" y1="68" x2="143" y2="66" stroke="#ccc" stroke-width="3" stroke-linecap="round"/>
           <line x1="126" y1="76" x2="142" y2="74" stroke="#ccc" stroke-width="3" stroke-linecap="round"/>
         </svg>
       </div>
-      <!-- partículas -->
       <div class="sparks">
         <div class="spark"></div><div class="spark"></div><div class="spark"></div>
         <div class="spark"></div><div class="spark"></div><div class="spark"></div>
       </div>
     </div>
-
     <div class="trust">
       <div class="trust-item"><span class="trust-icon">✓</span> Sin instalación — corre en el navegador</div>
       <div class="trust-item"><span class="trust-icon">✓</span> Exporta MP4 en HD</div>
@@ -405,7 +380,6 @@
   </div>
 </section>
 
-<!-- ══ FEATURES ══════════════════════════════════════ -->
 <section id="features">
   <div class="container">
     <div class="section-label">Funciones</div>
@@ -446,7 +420,6 @@
   </div>
 </section>
 
-<!-- ══ CÓMO FUNCIONA ══════════════════════════════════ -->
 <section id="how">
   <div class="section-label">Cómo funciona</div>
   <h2>3 pasos y tu video<br>está <em>listo</em></h2>
@@ -470,7 +443,6 @@
   </div>
 </section>
 
-<!-- ══ DEMO ════════════════════════════════════════════ -->
 <section id="demo">
   <div class="section-label">Demo en vivo</div>
   <h2>Probalo antes de comprar</h2>
@@ -519,13 +491,11 @@
   </div>
 </section>
 
-<!-- ══ PRICING ════════════════════════════════════════ -->
 <section id="pricing">
   <div class="section-label">Precios</div>
   <h2>Invertí una vez,<br>usá para <em>siempre</em></h2>
   <p class="section-sub">Sin sorpresas. Pagás y es tuyo. O abonás mensual si preferís flexibilidad.</p>
   <div class="pricing-grid">
-    <!-- Plan mensual -->
     <div class="price-card">
       <div class="price-name">Plan Mensual</div>
       <div class="price-amount"><sup>$</sup>9<span style="font-size:1.8rem">.99</span></div>
@@ -538,12 +508,10 @@
         <li>Audio y voz integrados</li>
         <li>Actualizaciones incluidas</li>
       </ul>
-      <!-- ★ REEMPLAZÁ CON TU URL DE LEMON SQUEEZY (plan mensual) -->
-      <a class="btn-buy btn-buy-o" href="https://TU_TIENDA.lemonsqueezy.com/buy/TU_PRODUCTO_MENSUAL" target="_blank">
+      <a class="btn-buy btn-buy-o" href="https://billboard3dpro.lemonsqueezy.com/checkout/buy/d796d83d-9eb2-45ac-aa3f-b5ecd5ab620e" target="_blank">
         Suscribirse por $9.99/mes
       </a>
     </div>
-    <!-- Plan lifetime (RECOMENDADO) -->
     <div class="price-card popular">
       <div class="popular-badge">⭐ MÁS POPULAR</div>
       <div class="price-name">De por vida</div>
@@ -557,8 +525,7 @@
         <li>Soporte prioritario por email</li>
         <li>1 clave de licencia activable en cualquier navegador</li>
       </ul>
-      <!-- ★ REEMPLAZÁ CON TU URL DE LEMON SQUEEZY (lifetime) -->
-      <a class="btn-buy btn-buy-y" href="https://TU_TIENDA.lemonsqueezy.com/buy/TU_PRODUCTO_LIFETIME" target="_blank">
+      <a class="btn-buy btn-buy-y" href="https://billboard3dpro.lemonsqueezy.com/checkout/buy/7ff977e2-e577-47a6-8acc-9a75f35c47ae" target="_blank">
         ⚡ Comprar de por vida — $49
       </a>
     </div>
@@ -566,7 +533,6 @@
   <p class="pricing-note">Todos los precios en USD · Pagos procesados de forma segura por Lemon Squeezy · Garantía de reembolso de 7 días</p>
 </section>
 
-<!-- ══ FAQ ════════════════════════════════════════════ -->
 <section id="faq">
   <div class="section-label">Preguntas frecuentes</div>
   <h2>Todo lo que necesitás <em>saber</em></h2>
@@ -599,22 +565,19 @@
   </div>
 </section>
 
-<!-- ══ FOOTER ═════════════════════════════════════════ -->
 <footer>
   <div class="footer-logo">3D Billboard <span>Pro</span></div>
   <div class="footer-links">
     <a href="app/">Abrir app</a>
     <a href="#pricing">Precios</a>
     <a href="#faq">FAQ</a>
-    <!-- ★ REEMPLAZÁ CON TU EMAIL DE CONTACTO -->
-    <a href="mailto:TU_EMAIL@ejemplo.com">Contacto</a>
+    <a href="mailto:contacto@billboard3dpro.com">Contacto</a>
   </div>
   <p>© 2025 3D Billboard Pro · Todos los derechos reservados</p>
   <p>Pagos procesados por Lemon Squeezy</p>
 </footer>
 
 <script>
-  // FAQ accordion
   document.querySelectorAll('.faq-q').forEach(q => {
     q.addEventListener('click', () => {
       const item = q.parentElement;
