@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3D Billboard Pro</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,700;1,700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--g:#00e676;--g2:#00c85e;--y:#ffd600;--r:#f44336;--bg:#060608;--s1:#0e0e12;--s2:#16161c;--bd:#2a2a35;--tx:#e8e8f0;--dim:#5a5a72}
@@ -55,8 +55,8 @@ input[type=file]{display:none}
 .fbtn:hover{border-color:var(--g);color:var(--tx)}
 .fbtn.ok{border-color:var(--g);color:var(--g);border-style:solid}
 input[type=range]{accent-color:var(--g);width:100%;cursor:pointer}
-input[type=text]{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:6px 8px;color:var(--tx);font-size:12px;width:100%;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s}
-input[type=text]:focus{border-color:var(--g)}
+input[type=text],textarea{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:6px 8px;color:var(--tx);font-size:12px;width:100%;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s}
+input[type=text]:focus,textarea:focus{border-color:var(--g)}
 input[type=color]{background:var(--s2);border:1px solid var(--bd);border-radius:5px;width:28px;height:24px;cursor:pointer;padding:2px}
 select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:5px 7px;color:var(--tx);font-size:11px;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif}
 
@@ -101,6 +101,12 @@ select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding
 .btn-mic{background:var(--s2);color:var(--tx);border:1px solid var(--bd);width:100%;justify-content:center}
 .btn-mic.on{background:#6f0000;color:#fff;border-color:var(--r);animation:blink 1.1s infinite}
 .anote{font-size:10px;color:var(--dim);margin-top:3px}
+input[type=color]{cursor:pointer;border-radius:5px;padding:2px}
+input[type=color]::-webkit-color-swatch-wrapper{padding:2px}
+input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
+.style-btn{background:var(--s2);border:1px solid var(--bd);color:var(--dim);border-radius:5px;padding:4px 10px;cursor:pointer;font-size:13px;font-family:serif;transition:all .2s}
+.style-btn:hover{border-color:var(--g);color:var(--tx)}
+.style-btn.on{background:var(--g);color:#000;border-color:var(--g)}
 
 /* GATE */
 #gate{display:none;position:fixed;inset:0;z-index:9999;background:rgba(3,3,10,.97);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px}
@@ -201,6 +207,14 @@ select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding
         <div class="fo-prev"><svg width="36" height="26" viewBox="0 0 36 26"><rect x="2" y="2" width="32" height="22" rx="2" fill="#111"/><text x="18" y="15" text-anchor="middle" fill="#555" font-size="7" font-family="sans-serif">libre</text></svg></div>
         <div class="fo-label">Sin marco</div>
       </div>
+      <div class="fo" data-f="chanel" onclick="setFrame('chanel',this)">
+        <div class="fo-prev"><svg width="36" height="26" viewBox="0 0 36 26">
+          <rect x="2" y="2" width="32" height="24" rx="1" fill="none" stroke="white" stroke-width="2"/>
+          <rect x="2" y="18" width="32" height="8" rx="0" fill="white"/>
+          <text x="18" y="23.5" text-anchor="middle" fill="#000" font-size="4.5" font-weight="bold" font-family="sans-serif">SLOGAN</text>
+        </svg></div>
+        <div class="fo-label">+ Slogan</div>
+      </div>
       <div class="fo" data-f="gold" onclick="setFrame('gold',this)">
         <div class="fo-prev"><svg width="36" height="26" viewBox="0 0 36 26"><rect x="2" y="2" width="32" height="22" rx="2" fill="none" stroke="#ffd600" stroke-width="2.5"/><rect x="5" y="5" width="26" height="16" rx="1" fill="none" stroke="#ffd600" stroke-width="1" opacity="0.5"/></svg></div>
         <div class="fo-label">Dorado</div>
@@ -215,18 +229,10 @@ select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding
       </div>
     </div>
     <div class="f" style="margin-top:8px">
-      <label>Color del marco <em id="vFCol">#00e676</em></label>
+      <label>Color del marco</label>
       <div style="display:flex;gap:7px;align-items:center;margin-top:3px">
-        <input type="color" id="iFC" value="#00e676">
-        <div class="cdots">
-          <div class="cdot" style="background:#00e676" onclick="setFC('#00e676')"></div>
-          <div class="cdot" style="background:#ffd600" onclick="setFC('#ffd600')"></div>
-          <div class="cdot" style="background:#ff00ff" onclick="setFC('#ff00ff')"></div>
-          <div class="cdot" style="background:#00ffff" onclick="setFC('#00ffff')"></div>
-          <div class="cdot" style="background:#ff4444" onclick="setFC('#ff4444')"></div>
-          <div class="cdot" style="background:#ffffff;border-color:#555" onclick="setFC('#ffffff')"></div>
-          <div class="cdot" style="background:#ff8c00" onclick="setFC('#ff8c00')"></div>
-        </div>
+        <input type="color" id="iFC" value="#00e676" style="width:48px;height:36px;cursor:pointer">
+        <span style="font-size:10px;color:var(--dim)">← Clic para elegir cualquier color</span>
       </div>
     </div>
   </div>
@@ -236,32 +242,56 @@ select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding
     <div class="sb-title">③ Texto del cartel</div>
     <div class="f">
       <label>Título principal</label>
-      <div class="trow"><input type="text" class="ti" id="t1" placeholder="Tu marca"><input type="color" id="c1" value="#ffffff"></div>
+      <div class="trow"><textarea class="ti" id="t1" placeholder="Tu marca&#10;(Enter para nueva línea)" rows="2" style="resize:vertical;min-height:38px"></textarea><input type="color" id="c1" value="#ffffff"></div>
     </div>
     <div class="f"><label>Tamaño título <em id="vs1">72</em></label><input type="range" id="s1" min="24" max="160" value="72"></div>
     <div class="f"><label>Fuente título</label><select id="f1">
       <option value="'Bebas Neue',sans-serif">Bebas Neue — Impacto</option>
+      <option value="'Lora',serif">Lora — Clásica</option>
       <option value="'DM Sans',sans-serif">DM Sans — Moderno</option>
-      <option value="Georgia,serif">Georgia — Elegante</option>
+      <option value="'Montserrat',sans-serif">Montserrat</option>
+      <option value="'Raleway',sans-serif">Raleway — Elegante</option>
+      <option value="'Oswald',sans-serif">Oswald — Condensada</option>
+      <option value="'Playfair Display',serif">Playfair Display</option>
+      <option value="Georgia,serif">Georgia</option>
       <option value="Impact,sans-serif">Impact — Bold</option>
       <option value="'Arial Black',sans-serif">Arial Black</option>
       <option value="'Courier New',monospace">Courier New — Retro</option>
       <option value="'Times New Roman',serif">Times New Roman</option>
     </select></div>
+    <div class="f"><label>Estilo título</label>
+      <div style="display:flex;gap:5px">
+        <button class="style-btn" id="b1Bold" onclick="toggleStyle('bold1')" title="Negrita"><b>N</b></button>
+        <button class="style-btn" id="b1Ital" onclick="toggleStyle('ital1')" title="Cursiva"><i>C</i></button>
+        <button class="style-btn" id="b1Under" onclick="toggleStyle('under1')" title="Subrayado"><u>S</u></button>
+      </div>
+    </div>
     <div class="f">
       <label>Subtítulo</label>
-      <div class="trow"><input type="text" class="ti" id="t2" placeholder="Tu slogan"><input type="color" id="c2" value="#ffd600"></div>
+      <div class="trow"><textarea class="ti" id="t2" placeholder="Tu slogan&#10;(Enter para nueva línea)" rows="2" style="resize:vertical;min-height:38px"></textarea><input type="color" id="c2" value="#ffd600"></div>
     </div>
     <div class="f"><label>Tamaño subtítulo <em id="vs2">42</em></label><input type="range" id="s2" min="14" max="100" value="42"></div>
     <div class="f"><label>Fuente subtítulo</label><select id="f2">
       <option value="'DM Sans',sans-serif">DM Sans — Moderno</option>
+      <option value="'Lora',serif">Lora — Clásica</option>
       <option value="'Bebas Neue',sans-serif">Bebas Neue — Impacto</option>
-      <option value="Georgia,serif">Georgia — Elegante</option>
+      <option value="'Montserrat',sans-serif">Montserrat</option>
+      <option value="'Raleway',sans-serif">Raleway — Elegante</option>
+      <option value="'Oswald',sans-serif">Oswald — Condensada</option>
+      <option value="'Playfair Display',serif">Playfair Display</option>
+      <option value="Georgia,serif">Georgia</option>
       <option value="Impact,sans-serif">Impact — Bold</option>
       <option value="'Arial Black',sans-serif">Arial Black</option>
       <option value="'Courier New',monospace">Courier New — Retro</option>
       <option value="'Times New Roman',serif">Times New Roman</option>
     </select></div>
+    <div class="f"><label>Estilo subtítulo</label>
+      <div style="display:flex;gap:5px">
+        <button class="style-btn" id="b2Bold" onclick="toggleStyle('bold2')" title="Negrita"><b>N</b></button>
+        <button class="style-btn" id="b2Ital" onclick="toggleStyle('ital2')" title="Cursiva"><i>C</i></button>
+        <button class="style-btn" id="b2Under" onclick="toggleStyle('under2')" title="Subrayado"><u>S</u></button>
+      </div>
+    </div>
     <div class="r2">
       <div class="f"><label>Posición</label><select id="tPos"><option value="bottom">Abajo</option><option value="top">Arriba</option><option value="center">Centro</option></select></div>
       <div class="f"><label>Animación</label><select id="tAnim"><option value="none">Estático</option><option value="fade">Fade</option><option value="slide">Slide</option><option value="glow">Glow</option></select></div>
@@ -273,8 +303,8 @@ select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding
     <div class="sb-title">✨ Barra slogan<small>estilo Chanel</small></div>
     <div class="f"><label>Texto del slogan</label><input type="text" id="tSlogan" placeholder="Ej: BREAK THE FRAME"></div>
     <div class="r2">
-      <div class="f"><label>Color texto</label><input type="color" id="cSlogan" value="#ffffff"></div>
-      <div class="f"><label>Color fondo</label><input type="color" id="bgSlogan" value="#000000"></div>
+      <div class="f"><label>Color texto</label><input type="color" id="cSlogan" value="#ffffff" style="width:100%;height:32px;cursor:pointer"></div>
+      <div class="f"><label>Color fondo</label><input type="color" id="bgSlogan" value="#000000" style="width:100%;height:32px;cursor:pointer"></div>
     </div>
     <div class="f"><label>Mostrar barra</label><select id="showSlogan"><option value="yes">Sí</option><option value="no">No</option></select></div>
   </div>
@@ -283,7 +313,7 @@ select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding
   <div class="sb">
     <div class="sb-title">🔤 Zoom de texto<small>sale solo automático</small></div>
     <div class="f"><label>Texto zoom</label><input type="text" id="tZoom" placeholder="Ej: ALMA DE HUERTA"></div>
-    <div class="f"><label>Color</label><input type="color" id="cZoom" value="#ffd600"></div>
+    <div class="f"><label>Color</label><input type="color" id="cZoom" value="#ffd600" style="width:100%;height:32px;cursor:pointer"></div>
     <div class="f"><label>Animación</label><select id="animZoom">
       <option value="none">Desactivado</option>
       <option value="zoomin">Zoom In/Out automático</option>
@@ -402,6 +432,16 @@ document.getElementById('keyInp').addEventListener('keydown',e=>{if(e.key==='Ent
   else if(a.trial){const b=document.getElementById('trialBanner');b.style.display='flex';document.getElementById('trialDays').textContent=a.d;}
 })();
 
+// ── TEXT STYLES ──
+function toggleStyle(key){
+  S[key]=!S[key];
+  const btnMap={bold1:'b1Bold',ital1:'b1Ital',under1:'b1Under',bold2:'b2Bold',ital2:'b2Ital',under2:'b2Under'};
+  const btn=document.getElementById(btnMap[key]);
+  if(btn)btn.classList.toggle('on',S[key]);
+  if(!S.playing)redraw();
+}
+window.toggleStyle=toggleStyle;
+
 // ── PANEL ──
 let panelOpen=true;
 function togglePanel(){panelOpen=!panelOpen;document.getElementById('sidebar').classList.toggle('closed',!panelOpen);}
@@ -426,6 +466,7 @@ const S={
   format:'16:9',grade:'none',bloom:'medium',
   lp:'br',ls:120,
   vol:1,audioBuffer:null,micStream:null,micOn:false,
+  bold1:false,ital1:false,under1:false,bold2:false,ital2:false,under2:false,
   playing:false,recording:false,rafId:null,t0:0
 };
 
@@ -593,6 +634,41 @@ function drawFrame(q,cx,cy,bW,bH){
     case'minimal':
       ctx.save();ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();
       ctx.strokeStyle=fc;ctx.lineWidth=2;ctx.stroke();ctx.restore();break;
+    case'chanel':{
+      ctx.save();
+      // Outer black border
+      ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();
+      ctx.strokeStyle='#000';ctx.lineWidth=28;ctx.stroke();
+      // Colored frame line
+      ctx.strokeStyle=fc||'#ffffff';ctx.lineWidth=4;ctx.shadowColor=fc||'#fff';ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0;
+      // Slogan bar: bottom 22% of the quad, following perspective
+      const t=0.78; // bar starts at 78% down the quad
+      // Interpolate bottom bar corners following quad perspective
+      const blX=q[3].x+(q[2].x-q[3].x)*0;
+      const blY=q[3].y+(q[2].y-q[3].y)*0;
+      const brX=q[2].x;const brY=q[2].y;
+      // Top of bar (78% down)
+      const tlX=q[0].x+(q[3].x-q[0].x)*t;
+      const tlY=q[0].y+(q[3].y-q[0].y)*t;
+      const trX=q[1].x+(q[2].x-q[1].x)*t;
+      const trY=q[1].y+(q[2].y-q[1].y)*t;
+      // Draw white bar following perspective
+      ctx.beginPath();ctx.moveTo(tlX,tlY);ctx.lineTo(trX,trY);ctx.lineTo(brX,brY);ctx.lineTo(blX,blY);ctx.closePath();
+      ctx.globalAlpha=0.95;ctx.fillStyle='#fff';ctx.fill();ctx.globalAlpha=1;
+      // Slogan text
+      if(S.slogan){
+        ctx.save();ctx.clip();
+        const midX=(tlX+trX+brX+blX)/4;
+        const midY=(tlY+trY+brY+blY)/4;
+        const barH=Math.abs(blY-tlY);
+        const sz2=barH*.45;
+        ctx.font=`900 ${sz2}px 'Bebas Neue',Impact,sans-serif`;
+        ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillStyle='#000';ctx.shadowBlur=0;
+        ctx.fillText(S.slogan.toUpperCase(),midX,midY);
+        ctx.restore();
+      }
+      ctx.restore();break;}
   }
 }
 
@@ -705,9 +781,21 @@ function drawLogo(){
   switch(S.lp){case'tl':lx=pad;ly=pad;break;case'tr':lx=W-w-pad;ly=pad;break;case'bl':lx=pad;ly=H-h-pad;break;default:lx=W-w-pad;ly=H-h-pad;}
   ctx.save();ctx.globalAlpha=.88;ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=18;ctx.drawImage(S.logo,lx,ly,w,h);ctx.restore();
 }
+function drawTextLines(lines,cx,startY,sz,font,color,gl,lh,under){
+  lines.forEach((line,i)=>{
+    const y=startY+i*lh;
+    ctx.font=font;
+    ctx.shadowColor=color;ctx.shadowBlur=gl;
+    ctx.strokeStyle='rgba(0,0,0,.88)';ctx.lineWidth=sz/7;ctx.lineJoin='round';
+    ctx.strokeText(line,cx,y);ctx.fillStyle=color;ctx.fillText(line,cx,y);
+    if(under){const m=ctx.measureText(line);ctx.fillRect(cx-m.width/2,y+sz*.55,m.width,sz*.06);}
+  });
+}
 function drawText(ms){
-  const t1=(S.t1||'').trim(),t2=(S.t2||'').trim();
-  if(!t1&&!t2)return;
+  const raw1=(S.t1||'').trim(),raw2=(S.t2||'').trim();
+  if(!raw1&&!raw2)return;
+  const lines1=raw1?raw1.split('\n').map(l=>l.trim()).filter(l=>l):[];
+  const lines2=raw2?raw2.split('\n').map(l=>l.trim()).filter(l=>l):[];
   const cx=W/2,t=ms/1000;
   const by2=S.tPos==='top'?H*.09:S.tPos==='center'?H*.50:H*.87;
   let al=1,oy=0,gl=0;
@@ -715,19 +803,20 @@ function drawText(ms){
   if(S.tAnim==='slide'){const p=Math.min(t*1.5,1),e=1-Math.pow(1-p,3);oy=(1-e)*H*.06;al=e;}
   if(S.tAnim==='glow')gl=14+Math.sin(t*2.4)*10;
   ctx.save();ctx.globalAlpha=al;ctx.textAlign='center';ctx.textBaseline='middle';
-  if(t1){
+  if(lines1.length>0){
     const sz=S.sz1*(W/1280);
-    ctx.font=`bold ${sz}px ${S.font1}`;
-    ctx.shadowColor=S.c1;ctx.shadowBlur=gl;
-    ctx.strokeStyle='rgba(0,0,0,.88)';ctx.lineWidth=sz/7;ctx.lineJoin='round';
-    ctx.strokeText(t1,cx,by2+oy);ctx.fillStyle=S.c1;ctx.fillText(t1,cx,by2+oy);
+    const style=(S.ital1?'italic ':'')+(S.bold1?'bold ':'');
+    const font=`${style}${sz}px ${S.font1}`;
+    const lh=sz*1.2;
+    drawTextLines(lines1,cx,by2+oy,sz,font,S.c1,gl,lh,S.under1);
   }
-  if(t2){
-    const sz=S.sz2*(W/1280),gap=t1?S.sz1*(W/1280)*.72+sz*.65:0;
-    ctx.font=`600 ${sz}px ${S.font2}`;
-    ctx.shadowColor=S.c2;ctx.shadowBlur=gl*.6;
-    ctx.strokeStyle='rgba(0,0,0,.78)';ctx.lineWidth=sz/9;
-    ctx.strokeText(t2,cx,by2+gap+oy);ctx.fillStyle=S.c2;ctx.fillText(t2,cx,by2+gap+oy);
+  if(lines2.length>0){
+    const sz=S.sz2*(W/1280);
+    const style=(S.ital2?'italic ':'')+(S.bold2?'bold ':'');
+    const font=`${style}${sz}px ${S.font2}`;
+    const lh=sz*1.2;
+    const gap=lines1.length>0?S.sz1*(W/1280)*lines1.length*1.2+sz*.65:0;
+    drawTextLines(lines2,cx,by2+gap+oy,sz,font,S.c2,gl,lh,S.under2);
   }
   ctx.restore();
 }
