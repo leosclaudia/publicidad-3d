@@ -356,11 +356,11 @@ function setFrameColor(color) {
   if(!S.playing) redraw();
 }
 window.setFrameColor = setFrameColor;
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('frameColor').addEventListener('input', e => {
-    setFrameColor(e.target.value);
-  });
-});
+// frameColor listener added after DOM ready
+setTimeout(()=>{
+  const fc = document.getElementById('frameColor');
+  if(fc) fc.addEventListener('input', e => { setFrameColor(e.target.value); });
+}, 100);
 
 // ── LICENCIA ──
 const VALIDATE_URL = 'https://TU_WORKER.workers.dev/validate';
@@ -613,8 +613,8 @@ function render(ms){
   ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
 }
 
-function drawDefaultBg(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#04040f');g.addColorStop(.55,'#0a1128');g.addColorStop(1,'#0a0a0a');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=1;for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}}
-function drawDefaultBoard(q,cx,cy){ctx.fillStyle='#070707';ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.fill();ctx.fillStyle='rgba(255,255,255,.12)';ctx.font=`bold ${H*.02}px DM Sans`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Subí imagen del cartel',cx,cy);}
+function drawDefaultBg(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#06061a');g.addColorStop(.5,'#0d0d28');g.addColorStop(1,'#080814');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(100,100,255,.06)';ctx.lineWidth=1;for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}const cg=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,680);cg.addColorStop(0,'rgba(20,80,255,.08)');cg.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=cg;ctx.fillRect(0,0,W,H);}
+function drawDefaultBoard(q,cx,cy){ctx.fillStyle='#0a0a1a';ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.fill();ctx.fillStyle='rgba(255,255,255,.18)';ctx.font=`bold ${H*.02}px 'DM Sans',sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('📷 Subí imagen del cartel',cx,cy);}
 function drawProduct(cx,cy,sc,rotYdeg,sweepPhase){const img=S.product,asp=img.width/img.height;const pH=H*.70*sc,pW=pH*asp,py=cy-pH*.16,shear=Math.sin(rotYdeg*Math.PI/180)*.22;ctx.save();ctx.translate(cx,py);ctx.transform(1,0,shear,1,0,0);ctx.shadowColor='rgba(0,0,0,.82)';ctx.shadowBlur=80+sc*30;ctx.shadowOffsetX=16;ctx.shadowOffsetY=36;ctx.drawImage(img,-pW/2,-pH/2,pW,pH);ctx.shadowBlur=0;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;if(sweepPhase>=0){const sx=(-0.6+sweepPhase*2.2)*pW,gw=pW*.35;const swg=ctx.createLinearGradient(-pW/2+sx,0,-pW/2+sx+gw,0);swg.addColorStop(0,'rgba(255,255,255,0)');swg.addColorStop(0.5,'rgba(255,255,255,0.38)');swg.addColorStop(1,'rgba(255,255,255,0)');ctx.globalCompositeOperation='source-atop';ctx.fillStyle=swg;ctx.fillRect(-pW/2,-pH/2,pW,pH);ctx.globalCompositeOperation='source-over';}ctx.restore();}
 function drawProductHint(q,cx,cy){const oy=cy-H*.11;ctx.save();ctx.strokeStyle='rgba(0,230,118,.28)';ctx.lineWidth=3;ctx.setLineDash([10,8]);ctx.strokeRect(cx-H*.12,oy-H*.16,H*.24,H*.32);ctx.setLineDash([]);ctx.fillStyle='rgba(0,230,118,.4)';ctx.font=`${H*.015}px DM Sans`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Subí el producto PNG',cx,oy+H*.18);ctx.restore();}
 function drawLogo(){if(!S.logo)return;const pad=Math.min(W,H)*.03,h=S.logoSize*(H/1080),w=h*(S.logo.width/S.logo.height);let lx,ly;switch(S.logoPos){case'tl':lx=pad;ly=pad;break;case'tr':lx=W-w-pad;ly=pad;break;case'bl':lx=pad;ly=H-h-pad;break;default:lx=W-w-pad;ly=H-h-pad;}ctx.save();ctx.globalAlpha=.88;ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=18;ctx.drawImage(S.logo,lx,ly,w,h);ctx.restore();}
