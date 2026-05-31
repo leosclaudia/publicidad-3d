@@ -264,9 +264,9 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
         <button class="style-btn" id="b1Bold" onclick="toggleStyle('bold1')" title="Negrita"><b>N</b></button>
         <button class="style-btn" id="b1Ital" onclick="toggleStyle('ital1')" title="Cursiva"><i>C</i></button>
         <button class="style-btn" id="b1Under" onclick="toggleStyle('under1')" title="Subrayado"><u>S</u></button>
-        <button class="style-btn" id="b1AlL" onclick="setAlign(1,'left')" title="Izquierda">≡</button>
-        <button class="style-btn on" id="b1AlC" onclick="setAlign(1,'center')" title="Centro">≡</button>
-        <button class="style-btn" id="b1AlR" onclick="setAlign(1,'right')" title="Derecha">≡</button>
+        <button class="style-btn" id="b1AlL" onclick="setAlign(1,'left')" title="Izquierda" style="font-size:11px;letter-spacing:-1px">▐▬▬</button>
+        <button class="style-btn on" id="b1AlC" onclick="setAlign(1,'center')" title="Centro" style="font-size:11px;letter-spacing:-1px">▬▬▬</button>
+        <button class="style-btn" id="b1AlR" onclick="setAlign(1,'right')" title="Derecha" style="font-size:11px;letter-spacing:-1px">▬▬▌</button>
       </div>
     </div>
     <div class="f">
@@ -293,9 +293,9 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
         <button class="style-btn" id="b2Bold" onclick="toggleStyle('bold2')" title="Negrita"><b>N</b></button>
         <button class="style-btn" id="b2Ital" onclick="toggleStyle('ital2')" title="Cursiva"><i>C</i></button>
         <button class="style-btn" id="b2Under" onclick="toggleStyle('under2')" title="Subrayado"><u>S</u></button>
-        <button class="style-btn" id="b2AlL" onclick="setAlign(2,'left')" title="Izquierda">≡</button>
-        <button class="style-btn on" id="b2AlC" onclick="setAlign(2,'center')" title="Centro">≡</button>
-        <button class="style-btn" id="b2AlR" onclick="setAlign(2,'right')" title="Derecha">≡</button>
+        <button class="style-btn" id="b2AlL" onclick="setAlign(2,'left')" title="Izquierda" style="font-size:11px;letter-spacing:-1px">▐▬▬</button>
+        <button class="style-btn on" id="b2AlC" onclick="setAlign(2,'center')" title="Centro" style="font-size:11px;letter-spacing:-1px">▬▬▬</button>
+        <button class="style-btn" id="b2AlR" onclick="setAlign(2,'right')" title="Derecha" style="font-size:11px;letter-spacing:-1px">▬▬▌</button>
       </div>
     </div>
     <div class="r2">
@@ -311,6 +311,26 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
     <div class="r2">
       <div class="f"><label>Color texto</label><input type="color" id="cSlogan" value="#ffffff" style="width:100%;height:32px;cursor:pointer"></div>
       <div class="f"><label>Color fondo</label><input type="color" id="bgSlogan" value="#000000" style="width:100%;height:32px;cursor:pointer"></div>
+    </div>
+    <div class="f"><label>Fuente slogan</label><select id="fSlogan">
+      <option value="'Bebas Neue',sans-serif">Bebas Neue — Impacto</option>
+      <option value="'DM Sans',sans-serif">DM Sans — Moderno</option>
+      <option value="'Montserrat',sans-serif">Montserrat</option>
+      <option value="'Raleway',sans-serif">Raleway — Elegante</option>
+      <option value="'Oswald',sans-serif">Oswald — Condensada</option>
+      <option value="'Playfair Display',serif">Playfair Display</option>
+      <option value="Georgia,serif">Georgia</option>
+      <option value="Impact,sans-serif">Impact — Bold</option>
+      <option value="'Arial Black',sans-serif">Arial Black</option>
+    </select></div>
+    <div class="f"><label>Estilo slogan</label>
+      <div style="display:flex;gap:5px">
+        <button class="style-btn" id="bSBold" onclick="toggleStyle('boldS')" title="Negrita"><b>N</b></button>
+        <button class="style-btn" id="bSItal" onclick="toggleStyle('italS')" title="Cursiva"><i>C</i></button>
+        <button class="style-btn" id="bSAlL" onclick="setAlign(3,'left')" title="Izquierda" style="font-size:11px;letter-spacing:-1px">▐▬▬</button>
+        <button class="style-btn on" id="bSAlC" onclick="setAlign(3,'center')" title="Centro" style="font-size:11px;letter-spacing:-1px">▬▬▬</button>
+        <button class="style-btn" id="bSAlR" onclick="setAlign(3,'right')" title="Derecha" style="font-size:11px;letter-spacing:-1px">▬▬▌</button>
+      </div>
     </div>
     <div class="f"><label>Mostrar barra</label><select id="showSlogan"><option value="yes">Sí</option><option value="no">No</option></select></div>
   </div>
@@ -441,7 +461,7 @@ document.getElementById('keyInp').addEventListener('keydown',e=>{if(e.key==='Ent
 // ── TEXT STYLES ──
 function toggleStyle(key){
   S[key]=!S[key];
-  const btnMap={bold1:'b1Bold',ital1:'b1Ital',under1:'b1Under',bold2:'b2Bold',ital2:'b2Ital',under2:'b2Under'};
+  const btnMap={bold1:'b1Bold',ital1:'b1Ital',under1:'b1Under',bold2:'b2Bold',ital2:'b2Ital',under2:'b2Under',boldS:'bSBold',italS:'bSItal'};
   const btn=document.getElementById(btnMap[key]);
   if(btn)btn.classList.toggle('on',S[key]);
   if(!S.playing)redraw();
@@ -449,12 +469,21 @@ function toggleStyle(key){
 window.toggleStyle=toggleStyle;
 
 function setAlign(num,align){
-  S['align'+num]=align;
-  const ids={left:'L',center:'C',right:'R'};
-  Object.keys(ids).forEach(a=>{
-    const btn=document.getElementById('b'+num+'Al'+ids[a]);
-    if(btn)btn.classList.toggle('on',a===align);
-  });
+  if(num===3){
+    S.alignS=align;
+    const ids={left:'L',center:'C',right:'R'};
+    Object.keys(ids).forEach(a=>{
+      const btn=document.getElementById('bSAl'+ids[a]);
+      if(btn)btn.classList.toggle('on',a===align);
+    });
+  } else {
+    S['align'+num]=align;
+    const ids={left:'L',center:'C',right:'R'};
+    Object.keys(ids).forEach(a=>{
+      const btn=document.getElementById('b'+num+'Al'+ids[a]);
+      if(btn)btn.classList.toggle('on',a===align);
+    });
+  }
   if(!S.playing)redraw();
 }
 window.setAlign=setAlign;
@@ -484,6 +513,7 @@ const S={
   lp:'br',ls:120,
   vol:1,audioBuffer:null,audioArrayBuffer:null,micStream:null,micOn:false,
   bold1:false,ital1:false,under1:false,align1:'center',bold2:false,ital2:false,under2:false,align2:'center',
+  boldS:false,italS:false,alignS:'center',fontSlogan:"'Bebas Neue',sans-serif",
   playing:false,recording:false,rafId:null,t0:0
 };
 
@@ -573,8 +603,8 @@ sl('sVol','vVol','vol','%',0,0.01);
   document.getElementById(id).addEventListener('input',e=>{S[map[id]]=e.target.value;if(!S.playing)redraw();});
 });
 // Selects
-['f1','f2','tPos','tAnim','sAnim','showSlogan','animZoom','sFormat','sGrade','sBloom','sLP'].forEach(id=>{
-  const map={f1:'font1',f2:'font2',tPos:'tPos',tAnim:'tAnim',sAnim:'anim',showSlogan:'showSlogan',animZoom:'animZoom',sFormat:'format',sGrade:'grade',sBloom:'bloom',sLP:'lp'};
+['f1','f2','fSlogan','tPos','tAnim','sAnim','showSlogan','animZoom','sFormat','sGrade','sBloom','sLP'].forEach(id=>{
+  const map={f1:'font1',f2:'font2',fSlogan:'fontSlogan',tPos:'tPos',tAnim:'tAnim',sAnim:'anim',showSlogan:'showSlogan',animZoom:'animZoom',sFormat:'format',sGrade:'grade',sBloom:'bloom',sLP:'lp'};
   document.getElementById(id).addEventListener('change',e=>{
     S[map[id]]=e.target.value;
     if(id==='sFormat'){
@@ -871,10 +901,15 @@ function drawSloganBar(){
   ctx.save();ctx.globalAlpha=.85;ctx.fillStyle=S.bgSlogan||'#000';ctx.fillRect(0,bY,W,bH);
   ctx.globalAlpha=1;
   const sz=H*.048;
-  ctx.font=`900 ${sz}px 'Bebas Neue',Impact,sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
+  const style=(S.italS?'italic ':'')+(S.boldS?'bold ':'');
+  ctx.font=`${style}${sz}px ${S.fontSlogan||"'Bebas Neue',sans-serif"}`;
+  ctx.textBaseline='middle';
+  const align=S.alignS||'center';
+  ctx.textAlign=align;
+  const pad=W*.04;
+  const tx=align==='left'?pad:align==='right'?W-pad:W/2;
   ctx.fillStyle=S.cSlogan||'#fff';
-  ctx.fillText((S.slogan||'').toUpperCase(),W/2,bY+bH/2);
+  ctx.fillText((S.slogan||'').toUpperCase(),tx,bY+bH/2);
   ctx.restore();
 }
 function applyGrade(){
@@ -917,18 +952,19 @@ async function startRec(){
   if(S.audioArrayBuffer){
     try{
       rAC=new AudioContext();
-      // Decodificar fresco dentro del gesto del usuario
+      await rAC.resume();
       const bufCopy=S.audioArrayBuffer.slice(0);
-      S.audioBuffer=await rAC.decodeAudioData(bufCopy);
+      const decoded=await rAC.decodeAudioData(bufCopy);
       rAS=rAC.createBufferSource();
-      rAS.buffer=S.audioBuffer;
+      rAS.buffer=decoded;
       rAS.loop=true;
       const g=rAC.createGain();
-      g.gain.value=S.vol;
+      g.gain.value=Math.max(0.01,S.vol);
       const d=rAC.createMediaStreamDestination();
       rAS.connect(g);g.connect(d);g.connect(rAC.destination);
       at=d.stream.getAudioTracks()[0];
-    }catch(err){setStatus('⚠️ Error al procesar audio: '+err.message);rAC=null;}
+      console.log('Audio track listo:',at);
+    }catch(err){console.error('Audio error:',err);setStatus('⚠️ Error de audio: '+err.message);rAC=null;}
   } else if(S.micOn&&S.micStream){
     at=S.micStream.getAudioTracks()[0];
   }
