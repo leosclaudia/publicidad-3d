@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>3D Billboard Pro</title>
+<title>AD3D · Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,700;1,700&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--g:#00e676;--g2:#00c85e;--y:#ffd600;--r:#f44336;--bg:#060608;--s1:#0e0e12;--s2:#16161c;--bd:#2a2a35;--tx:#e8e8f0;--dim:#5a5a72}
+:root{--g:#ff6a00;--g2:#e55a00;--y:#ffb347;--r:#ff3d3d;--bg:#07080f;--s1:#0c0d18;--s2:#13152a;--bd:#252840;--tx:#eeeef8;--dim:#5a5c80}
 body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 
 /* TOP BAR */
@@ -84,7 +84,7 @@ select{background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding
 
 /* CANVAS */
 .canvas-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;gap:10px;overflow:hidden;background:#040406}
-.preview-wrap{border-radius:12px;overflow:hidden;border:1.5px solid var(--g);box-shadow:0 0 0 1px #003d20,0 0 30px rgba(0,230,118,.1),0 20px 60px rgba(0,0,0,.9);background:#000;max-width:100%;max-height:calc(100vh - 180px);aspect-ratio:16/9;transition:aspect-ratio .3s}
+.preview-wrap{border-radius:12px;overflow:hidden;border:1.5px solid var(--g);box-shadow:0 0 0 1px #3d1800,0 0 30px rgba(255,106,0,.12),0 20px 60px rgba(0,0,0,.9);background:#000;max-width:100%;max-height:calc(100vh - 180px);aspect-ratio:16/9;transition:aspect-ratio .3s}
 #cnv{width:100%;height:100%;display:block}
 
 /* BOTTOM */
@@ -108,7 +108,21 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
 .style-btn:hover{border-color:var(--g);color:var(--tx)}
 .style-btn.on{background:var(--g);color:#000;border-color:var(--g)}
 
-/* GATE */
+/* CROP MODAL */
+#cropModal{display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.92);align-items:center;justify-content:center;flex-direction:column;gap:14px}
+#cropModal.on{display:flex}
+.crop-box{position:relative;background:#000;overflow:hidden;cursor:crosshair}
+.crop-box canvas{display:block}
+.crop-selection{position:absolute;border:2px solid #ff6a00;box-shadow:0 0 0 9999px rgba(0,0,0,.55);cursor:move;box-sizing:border-box}
+.crop-handle{position:absolute;width:12px;height:12px;background:#ff6a00;border-radius:2px}
+.crop-handle.tl{top:-6px;left:-6px;cursor:nw-resize}
+.crop-handle.tr{top:-6px;right:-6px;cursor:ne-resize}
+.crop-handle.bl{bottom:-6px;left:-6px;cursor:sw-resize}
+.crop-handle.br{bottom:-6px;right:-6px;cursor:se-resize}
+.crop-actions{display:flex;gap:10px}
+.crop-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:3px;color:var(--tx)}
+.crop-title span{color:var(--g)}
+.crop-hint{font-size:11px;color:var(--dim);text-align:center}
 #gate{display:none;position:fixed;inset:0;z-index:9999;background:rgba(3,3,10,.97);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:20px}
 #gate.on{display:flex}
 .gate-box{background:#0d0d18;border:1px solid rgba(255,214,0,.25);border-radius:20px;padding:38px;max-width:460px;width:100%;text-align:center}
@@ -133,7 +147,7 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
 <!-- GATE -->
 <div id="gate">
   <div class="gate-box">
-    <div class="gate-logo">3D Billboard <span>Pro</span></div>
+    <div class="gate-logo">AD3D <span>· Studio</span></div>
     <h2 class="gate-title">Tu prueba gratuita finalizó</h2>
     <p class="gate-sub">Ingresá tu clave de licencia para continuar.</p>
     <input class="gate-inp" id="keyInp" type="text" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="36" autocomplete="off">
@@ -147,7 +161,7 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="logo">3D Billboard <span>Pro</span></div>
+  <div class="logo">AD3D <span>· Studio</span></div>
   <div class="topbar-btns">
     <button class="btn btn-panel" onclick="togglePanel()">☰ Panel</button>
     <button class="btn btn-ghost" id="btnPng">📸 PNG</button>
@@ -166,19 +180,34 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
 
 <div class="sidebar" id="sidebar">
 
-  <!-- IMÁGENES -->
+  <!-- VIDEO -->
   <div class="sb">
-    <div class="sb-title">① Imágenes</div>
-    <div class="f"><label>Fondo de escena</label><button class="fbtn" id="lbBg" onclick="document.getElementById('iBg').click()">Elegir imagen…</button><input type="file" id="iBg" accept="image/*"></div>
-    <div class="f"><label>Imagen del cartel</label><button class="fbtn" id="lbBoard" onclick="document.getElementById('iBoard').click()">Elegir imagen…</button><input type="file" id="iBoard" accept="image/*"></div>
-    <div class="f"><label>Producto PNG (sin fondo)</label><button class="fbtn" id="lbProd" onclick="document.getElementById('iProd').click()">Elegir imagen…</button><input type="file" id="iProd" accept="image/*"></div>
+    <div class="sb-title">① Tu video publicitario</div>
+    <div class="f">
+      <label>Video principal</label>
+      <button class="fbtn" id="lbBoard" onclick="document.getElementById('iBoard').click()">Elegir video…</button>
+      <input type="file" id="iBoard" accept="video/*">
+      <input type="text" id="urlBoard" placeholder="…o pegá URL de video" style="margin-top:4px;font-size:11px" oninput="loadVideoUrl('board','lbBoard',this.value)">
+    </div>
+    <div class="f" style="margin-top:2px">
+      <label style="color:var(--g);font-size:9px">✦ El pop-out 3D se genera solo</label>
+    </div>
+    <div class="f">
+      <button class="fbtn" id="btnCropTool" onclick="openCropModal()" style="border-color:var(--g);color:var(--g);display:none">✂ Elegir zona del pop-out</button>
+    </div>
+    <div class="f">
+      <label>Fondo de escena <small style="color:var(--dim);font-weight:400">(opcional)</small></label>
+      <button class="fbtn" id="lbBg" onclick="document.getElementById('iBg').click()">Elegir imagen o video…</button>
+      <input type="file" id="iBg" accept="video/*,image/*">
+      <input type="text" id="urlBg" placeholder="…o pegá URL" style="margin-top:4px;font-size:11px" oninput="loadVideoUrl('bg','lbBg',this.value)">
+    </div>
   </div>
 
   <!-- FONDOS -->
   <div class="sb">
     <div class="sb-title">🌆 Fondos de ciudad<small>clic para usar</small></div>
-    <button class="fbtn" id="lbBgC" onclick="document.getElementById('iBgC').click()" style="border-color:var(--y);color:var(--y);margin-bottom:6px">📁 Subir mi propio fondo…</button>
-    <input type="file" id="iBgC" accept="image/*">
+    <button class="fbtn" id="lbBgC" onclick="document.getElementById('iBgC').click()" style="border-color:var(--y);color:var(--y);margin-bottom:6px">📁 Subir mi propio fondo (imagen o video)…</button>
+    <input type="file" id="iBgC" accept="image/*,video/*">
     <div class="bg-grid" id="bgGrid">
       <div class="bgt" onclick="loadBg('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1280&q=80','Ciudad noche',this)"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=200&q=60" alt=""><div class="bgt-lbl">Ciudad noche</div></div>
       <div class="bgt" onclick="loadBg('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1280&q=80','Neón urbano',this)"><img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=200&q=60" alt=""><div class="bgt-lbl">Neón urbano</div></div>
@@ -231,7 +260,7 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
     <div class="f" style="margin-top:8px">
       <label>Color del marco</label>
       <div style="display:flex;gap:7px;align-items:center;margin-top:3px">
-        <input type="color" id="iFC" value="#00e676" style="width:48px;height:36px;cursor:pointer">
+        <input type="color" id="iFC" value="#ff6a00" style="width:48px;height:36px;cursor:pointer">
         <span style="font-size:10px;color:var(--dim)">← Clic para elegir cualquier color</span>
       </div>
     </div>
@@ -340,6 +369,11 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
     <div class="f"><label>Velocidad <em id="vSpd">1.0×</em></label><input type="range" id="sSpd" min="20" max="300" value="100"></div>
     <div class="f"><label>Profundidad <em id="vDep">90</em></label><input type="range" id="sDep" min="0" max="250" value="90"></div>
     <div class="f"><label>Tamaño <em id="vSc">1.00</em></label><input type="range" id="sSc" min="0.3" max="3.0" step="0.05" value="1.0"></div>
+    <div class="f" style="margin-top:6px;border-top:1px solid var(--bd);padding-top:8px">
+      <label style="color:var(--g)">✦ Breakout — rompe el marco</label>
+    </div>
+    <div class="f"><label>Velocidad breakout <em id="vBK">4.5s</em></label><input type="range" id="sBK" min="2" max="10" step="0.5" value="4.5"></div>
+    <div class="f"><label>Altura salida <em id="vBH">38%</em></label><input type="range" id="sBH" min="10" max="70" value="38"></div>
   </div>
 
   <!-- POSICIÓN CARTEL -->
@@ -385,12 +419,116 @@ input[type=color]::-webkit-color-swatch{border-radius:3px;border:none}
     <button class="btn btn-rec" id="btnRec">⏺ GRABAR VIDEO</button>
     <div class="rec-info" id="recInfo"><div class="rdot"></div><span id="recLbl">Grabando…</span></div>
   </div>
-  <div class="status" id="status">Elegí las imágenes del panel · Clic en "Panel" para ocultar/mostrar controles</div>
+  <div class="status" id="status">Cargá tu video publicitario en ① · La app genera el pop-out 3D automáticamente ✦</div>
 </div>
 
 </div><!-- /main -->
 
 <script>
+// ── CROP TOOL — recorte por puntos ──
+const CROP_W=640,CROP_H=360;
+let cropPoints=[];
+let cropClosed=false;
+let cropDragIdx=-1;
+const PT_R=7;
+
+function openCropModal(){
+  if(!S.board){setStatus('⚠️ Primero cargá un video');return;}
+  const cpv=document.getElementById('cropPreview');
+  const cov=document.getElementById('cropOverlay');
+  cpv.width=CROP_W;cpv.height=CROP_H;
+  cov.width=CROP_W;cov.height=CROP_H;
+  document.getElementById('cropBox').style.width=CROP_W+'px';
+  document.getElementById('cropBox').style.height=CROP_H+'px';
+  document.getElementById('cropModal').classList.add('on');
+  drawCropFrame();drawCropOverlay();
+}
+function drawCropFrame(){
+  if(!S.board)return;
+  const tc=document.getElementById('cropPreview').getContext('2d');
+  tc.drawImage(S.board,0,0,CROP_W,CROP_H);
+  if(document.getElementById('cropModal').classList.contains('on'))requestAnimationFrame(drawCropFrame);
+}
+function drawCropOverlay(){
+  const cov=document.getElementById('cropOverlay');if(!cov)return;
+  const oc=cov.getContext('2d');oc.clearRect(0,0,CROP_W,CROP_H);
+  if(!cropPoints.length)return;
+  const pts=cropPoints.map(p=>({x:p.x*CROP_W,y:p.y*CROP_H}));
+  if(cropClosed&&pts.length>2){
+    oc.save();oc.fillStyle='rgba(0,0,0,0.5)';oc.fillRect(0,0,CROP_W,CROP_H);
+    oc.globalCompositeOperation='destination-out';
+    oc.beginPath();oc.moveTo(pts[0].x,pts[0].y);pts.forEach(p=>oc.lineTo(p.x,p.y));oc.closePath();oc.fill();oc.restore();
+    oc.beginPath();oc.moveTo(pts[0].x,pts[0].y);pts.forEach(p=>oc.lineTo(p.x,p.y));oc.closePath();
+    oc.strokeStyle='#ff6a00';oc.lineWidth=2;oc.stroke();
+  } else {
+    oc.beginPath();oc.moveTo(pts[0].x,pts[0].y);pts.forEach(p=>oc.lineTo(p.x,p.y));
+    oc.strokeStyle='#ff6a00';oc.lineWidth=2;oc.setLineDash([5,4]);oc.stroke();oc.setLineDash([]);
+  }
+  pts.forEach((p,i)=>{
+    oc.beginPath();oc.arc(p.x,p.y,PT_R,0,Math.PI*2);
+    oc.fillStyle=i===0?'#ff6a00':'#fff';oc.fill();
+    oc.strokeStyle='#ff6a00';oc.lineWidth=2;oc.stroke();
+  });
+}
+function clearCropPoints(){cropPoints=[];cropClosed=false;document.getElementById('btnConfirmCrop').disabled=true;drawCropOverlay();}
+function confirmCrop(){
+  if(!cropClosed||cropPoints.length<3)return;
+  S.cropPolygon=cropPoints.map(p=>({x:p.x,y:p.y}));
+  const xs=cropPoints.map(p=>p.x),ys=cropPoints.map(p=>p.y);
+  S.cropX=Math.min(...xs);S.cropY=Math.min(...ys);S.cropW=Math.max(...xs)-S.cropX;S.cropH=Math.max(...ys)-S.cropY;
+  closeCropModal();setStatus('✔ Forma definida — '+cropPoints.length+' puntos');if(!S.playing)redraw();
+}
+function resetCrop(){
+  clearCropPoints();S.cropPolygon=null;S.cropX=0;S.cropY=0;S.cropW=1;S.cropH=1;setStatus('✔ Video completo');
+}
+function toggleCropPause(){
+  if(!S.board)return;const btn=document.getElementById('btnCropPause');
+  if(S.board.paused){S.board.play();btn.textContent='⏸ Pausar';}else{S.board.pause();btn.textContent='▶ Reproducir';}
+}
+function cropStepFrame(dir){
+  if(!S.board)return;S.board.pause();document.getElementById('btnCropPause').textContent='▶ Reproducir';
+  S.board.currentTime=Math.max(0,Math.min(S.board.duration,S.board.currentTime+dir/30));
+}
+function closeCropModal(){
+  document.getElementById('cropModal').classList.remove('on');
+  if(S.board&&S.board.paused)S.board.play();
+  const btn=document.getElementById('btnCropPause');if(btn)btn.textContent='⏸ Pausar';
+}
+window.openCropModal=openCropModal;window.confirmCrop=confirmCrop;window.resetCrop=resetCrop;
+window.closeCropModal=closeCropModal;window.clearCropPoints=clearCropPoints;
+window.toggleCropPause=toggleCropPause;window.cropStepFrame=cropStepFrame;
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const cov=document.getElementById('cropOverlay');if(!cov)return;
+  cov.addEventListener('click',e=>{
+    if(cropDragIdx>=0||cropClosed)return;
+    const r=cov.getBoundingClientRect(),x=(e.clientX-r.left)/CROP_W,y=(e.clientY-r.top)/CROP_H;
+    if(cropPoints.length>2){
+      const fp=cropPoints[0];
+      if(Math.hypot(x*CROP_W-fp.x*CROP_W,y*CROP_H-fp.y*CROP_H)<PT_R*2){
+        cropClosed=true;document.getElementById('btnConfirmCrop').disabled=false;drawCropOverlay();return;
+      }
+    }
+    cropPoints.push({x,y});drawCropOverlay();
+  });
+  cov.addEventListener('dblclick',e=>{
+    if(cropPoints.length>2&&!cropClosed){cropClosed=true;document.getElementById('btnConfirmCrop').disabled=false;drawCropOverlay();}
+  });
+  cov.addEventListener('mousedown',e=>{
+    const r=cov.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+    cropDragIdx=-1;
+    cropPoints.forEach((p,i)=>{if(Math.hypot(mx-p.x*CROP_W,my-p.y*CROP_H)<PT_R+3)cropDragIdx=i;});
+  });
+  cov.addEventListener('mousemove',e=>{
+    if(cropDragIdx<0)return;
+    const r=cov.getBoundingClientRect();
+    cropPoints[cropDragIdx]={x:Math.max(0,Math.min(1,(e.clientX-r.left)/CROP_W)),y:Math.max(0,Math.min(1,(e.clientY-r.top)/CROP_H))};
+    drawCropOverlay();
+  });
+  cov.addEventListener('mouseup',()=>{setTimeout(()=>{cropDragIdx=-1;},50);});
+});
+
+
 // ── LICENCIA ──
 const VURL='https://TU_WORKER.workers.dev/validate';
 const KT='bb_trial',KL='bb_lic',KE='bb_exp';
@@ -461,13 +599,15 @@ const S={
   tPos:'bottom',tAnim:'none',
   slogan:'',cSlogan:'#ffffff',bgSlogan:'#000000',showSlogan:'yes',
   zoomT:'',cZoom:'#ffd600',animZoom:'none',
-  frame:'green',fc:'#00e676',
+  frame:'green',fc:'#ff6a00',
   bx:50,by:46,
   format:'16:9',grade:'none',bloom:'medium',
   lp:'br',ls:120,
   vol:1,audioBuffer:null,micStream:null,micOn:false,
   bold1:false,ital1:false,under1:false,bold2:false,ital2:false,under2:false,
-  playing:false,recording:false,rafId:null,t0:0
+  playing:false,recording:false,rafId:null,t0:0,
+  breakoutCycle:4.5,breakoutHeight:0.38,
+  cropX:0,cropY:0,cropW:1,cropH:1,cropPolygon:null
 };
 
 // ── BG GALLERY ──
@@ -502,6 +642,65 @@ window.setFC=setFC;
 document.getElementById('iFC').addEventListener('input',e=>setFC(e.target.value));
 
 // ── FILE BINDINGS ──
+function loadVideoIntoState(file,btnId,key,label){
+  const url=URL.createObjectURL(file);
+  _loadVid(key,url);
+  document.getElementById(btnId).textContent='✔ '+file.name;
+  document.getElementById(btnId).classList.add('ok');
+  setStatus('✔ '+label+': '+file.name);
+}
+function _loadVid(key,url){
+  const vid=document.createElement('video');
+  vid.crossOrigin='anonymous';vid.loop=true;vid.muted=true;vid.playsInline=true;vid.autoplay=true;
+  vid.src=url;
+  vid.addEventListener('loadeddata',()=>{
+    S[key]=vid;
+    vid.play().catch(()=>{});
+    // Si es el video principal (board), crear automáticamente el pop-out
+    if(key==='board'){
+      const vid2=document.createElement('video');
+      vid2.crossOrigin='anonymous';vid2.loop=true;vid2.muted=true;vid2.playsInline=true;vid2.autoplay=true;
+      vid2.src=url;
+      vid2.addEventListener('loadeddata',()=>{S.prod=vid2;vid2.play().catch(()=>{});});
+      vid2.load();
+      // Mostrar botón de recorte
+      document.getElementById('btnCropTool').style.display='block';
+    }
+    if(!S.playing)redraw();
+  });
+  vid.load();
+}
+function loadVideoUrl(key,btnId,url,label,trusted){
+  if(!url||url.trim().length<4)return;
+  _loadVid(key,url.trim());
+  if(btnId&&!trusted){
+    const b=document.getElementById(btnId);
+    if(b){b.textContent='✔ URL cargada';b.classList.add('ok');}
+  }
+}
+window.loadVideoUrl=loadVideoUrl;
+
+// Video principal
+document.getElementById('iBoard').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  loadVideoIntoState(f,'lbBoard','board','Video');
+});
+
+// Fondo — acepta imagen o video
+document.getElementById('iBg').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(f.type.startsWith('video/')){
+    loadVideoIntoState(f,'lbBg','bg','Fondo');
+  } else {
+    const r=new FileReader();
+    r.onload=ev=>{const img=new Image();img.onload=()=>{S.bg=img;if(!S.playing)redraw();setStatus('✔ Fondo: '+f.name);};img.src=ev.target.result;};
+    r.readAsDataURL(f);
+    document.getElementById('lbBg').textContent='✔ '+f.name;
+    document.getElementById('lbBg').classList.add('ok');
+  }
+});
+
+// Logo stays as image
 function bindFile(inputId,btnId,key,label){
   document.getElementById(inputId).addEventListener('change',e=>{
     const f=e.target.files[0];if(!f)return;
@@ -512,11 +711,21 @@ function bindFile(inputId,btnId,key,label){
     document.getElementById(btnId).classList.add('ok');
   });
 }
-bindFile('iBg','lbBg','bg','Fondo');
-bindFile('iBoard','lbBoard','board','Cartel');
-bindFile('iProd','lbProd','prod','Producto');
 bindFile('iLogo','lbLogo','logo','Logo');
-bindFile('iBgC','lbBgC','bg','Fondo propio');
+
+// Custom background gallery upload
+document.getElementById('iBgC').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(f.type.startsWith('video/')){
+    loadVideoIntoState(f,'lbBgC','bg','Fondo propio');
+  } else {
+    const r=new FileReader();
+    r.onload=ev=>{const img=new Image();img.onload=()=>{S.bg=img;redraw();setStatus('✔ Fondo propio: '+f.name);};img.src=ev.target.result;};
+    r.readAsDataURL(f);
+    document.getElementById('lbBgC').textContent='✔ '+f.name;
+    document.getElementById('lbBgC').classList.add('ok');
+  }
+});
 document.getElementById('iAud').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
   setStatus('⏳ Decodificando…');
@@ -544,6 +753,10 @@ sl('sDep','vDep','dep','');sl('sSc','vSc','sc','',2);
 sl('sTY','vTY','tiltY','°');sl('sDur','vDur','dur','s');
 sl('sLS','vLS','ls','');sl('sBX','vBX','bx','%');sl('sBY','vBY','by','%');
 sl('sVol','vVol','vol','%',0,0.01);
+
+// Breakout sliders
+document.getElementById('sBK').addEventListener('input',e=>{S.breakoutCycle=parseFloat(e.target.value);document.getElementById('vBK').textContent=e.target.value+'s';});
+document.getElementById('sBH').addEventListener('input',e=>{S.breakoutHeight=parseFloat(e.target.value)/100;document.getElementById('vBH').textContent=e.target.value+'%';});
 
 // Text inputs
 ['t1','t2','tSlogan','tZoom'].forEach(id=>{
@@ -579,7 +792,7 @@ function drawP(){PARTS.forEach(p=>{ctx.save();ctx.globalAlpha=Math.pow(p.life,.6
 // ── PERSPECTIVE ──
 const FOV=1400;
 function getQuad(tY,tX,cx,cy,hw,hh){const ry=tY*Math.PI/180,rx=tX*Math.PI/180;return[[-hw,-hh,0],[hw,-hh,0],[hw,hh,0],[-hw,hh,0]].map(([x,y,z])=>{const x1=x*Math.cos(ry)+z*Math.sin(ry),z1=-x*Math.sin(ry)+z*Math.cos(ry);const y2=y*Math.cos(rx)-z1*Math.sin(rx),z2=y*Math.sin(rx)+z1*Math.cos(rx);const s=FOV/(FOV+z2);return{x:cx+x1*s,y:cy+y2*s};});}
-function drawQImg(img,q){const iw=img.width,ih=img.height;tri(img,[0,0],[iw,0],[0,ih],q[0],q[1],q[3]);tri(img,[iw,0],[iw,ih],[0,ih],q[1],q[2],q[3]);}
+function drawQImg(img,q){const iw=img.videoWidth||img.naturalWidth||img.width||1,ih=img.videoHeight||img.naturalHeight||img.height||1;tri(img,[0,0],[iw,0],[0,ih],q[0],q[1],q[3]);tri(img,[iw,0],[iw,ih],[0,ih],q[1],q[2],q[3]);}
 function tri(img,s0,s1,s2,d0,d1,d2){ctx.save();ctx.beginPath();ctx.moveTo(d0.x,d0.y);ctx.lineTo(d1.x,d1.y);ctx.lineTo(d2.x,d2.y);ctx.closePath();ctx.clip();const det=(s1[0]-s0[0])*(s2[1]-s0[1])-(s2[0]-s0[0])*(s1[1]-s0[1]);const a=((d1.x-d0.x)*(s2[1]-s0[1])-(d2.x-d0.x)*(s1[1]-s0[1]))/det;const b=((d2.x-d0.x)*(s1[0]-s0[0])-(d1.x-d0.x)*(s2[0]-s0[0]))/det;const e=d0.x-a*s0[0]-b*s0[1];const c=((d1.y-d0.y)*(s2[1]-s0[1])-(d2.y-d0.y)*(s1[1]-s0[1]))/det;const d=((d2.y-d0.y)*(s1[0]-s0[0])-(d1.y-d0.y)*(s2[0]-s0[0]))/det;const f=d0.y-c*s0[0]-d*s0[1];ctx.transform(a,c,b,d,e,f);ctx.drawImage(img,0,0);ctx.restore();}
 function clipQ(q){ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.clip();}
 
@@ -697,36 +910,90 @@ function render(ms){
     ctx.save();clipQ(q);
     if(S.board){drawQImg(S.board,q);}else{drawBoard(q,cx,cy);}
     ctx.restore();
-    if(S.prod){
-      const dep2=S.dep+d.dz,sc2=S.sc*d.ds*(FOV/(FOV+dep2));
-      ctx.save();clipQ(q);
-      const sg=ctx.createRadialGradient(cx,cy+bH*.08,8,cx,cy+bH*.08,bH*.48*sc2);
-      sg.addColorStop(0,'rgba(0,0,0,.6)');sg.addColorStop(1,'rgba(0,0,0,0)');
-      ctx.fillStyle=sg;ctx.beginPath();ctx.ellipse(cx,cy+bH*.08,bW*.38*sc2,bH*.21*sc2,0,0,Math.PI*2);ctx.fill();
-      ctx.restore();
-    }
+  // Product / breakout effect
+  if(S.prod){
+    const dep2=S.dep+d.dz,sc2=S.sc*d.ds*(FOV/(FOV+dep2));
+    ctx.save();clipQ(q);
+    const sg=ctx.createRadialGradient(cx,cy+bH*.08,8,cx,cy+bH*.08,bH*.48*sc2);
+    sg.addColorStop(0,'rgba(0,0,0,.6)');sg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=sg;ctx.beginPath();ctx.ellipse(cx,cy+bH*.08,bW*.38*sc2,bH*.21*sc2,0,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
   }
 
   drawFrame(q,cx,cy,bW,bH);
 
   // Particles
-  if(S.anim==='burst'&&d.bv>0.4&&d.bc<0.55&&S.prod)spawnP(cx,topY,3);
+  if(S.anim==='burst'&&d.bv>0.4&&d.bc<0.55&&S.board)spawnP(cx,topY,3);
   updateP();drawP();
 
-  // Product
-  if(S.prod){
-    const dep2=S.dep+d.dz,sc2=S.sc*d.ds*(FOV/(FOV+dep2));
-    drawProd(cx,cy+d.dy,sc2,S.tiltY*.12+d.rot,d.sw);
-  }else{drawProdHint(q,cx,cy);}
+  // ── BREAKOUT EFFECT — rompe el marco ──
+  // ── BREAKOUT EFFECT — recorte limpio sin oval ──
+  if(S.board){
+    const cycle=S.breakoutCycle||4.5;
+    const tSec=(ms/1000)%cycle;
+    const quietEnd=cycle*0.44,outEnd=cycle*0.67,holdEnd=cycle*0.84;
+    let breakProg=0;
+    if(tSec>quietEnd&&tSec<=outEnd){const p=(tSec-quietEnd)/(outEnd-quietEnd);breakProg=1-Math.pow(1-p,3);}
+    else if(tSec>outEnd&&tSec<=holdEnd){breakProg=1;}
+    else if(tSec>holdEnd){const p=(tSec-holdEnd)/(cycle-holdEnd);breakProg=1-p;}
 
-  // Ambient glow
-  if(S.prod&&curFrame!=='noframe'){
-    const dep2=S.dep,sc2=S.sc*(FOV/(FOV+dep2));
-    ctx.save();ctx.globalCompositeOperation='screen';
-    const gg=ctx.createRadialGradient(cx,cy-H*.1,0,cx,cy-H*.1,H*.25*sc2);
-    gg.addColorStop(0,'rgba(255,220,100,0.05)');gg.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=gg;ctx.fillRect(0,0,W,H);ctx.restore();
-  }
+    if(breakProg>0.01){
+      const maxHeight=S.breakoutHeight||0.38;
+      const scaleOut=1+breakProg*0.45;
+      const yLift=-breakProg*bH*maxHeight;
+      const outW=bW*scaleOut;
+      const outH=bH*scaleOut;
+      const ox=cx, oy=cy+yLift;
+
+      const iw=S.board.videoWidth||S.board.naturalWidth||S.board.width||1;
+      const ih=S.board.videoHeight||S.board.naturalHeight||S.board.height||1;
+      const srcX=iw*S.cropX, srcY=ih*S.cropY;
+      const srcW=iw*S.cropW, srcH=ih*S.cropH;
+
+      // Sombra debajo
+      ctx.save();
+      ctx.globalAlpha=breakProg*0.45;
+      const sg=ctx.createRadialGradient(cx,cy+bH*0.5+breakProg*25,0,cx,cy+bH*0.5+breakProg*25,outW*0.5);
+      sg.addColorStop(0,'rgba(0,0,0,.75)');sg.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=sg;
+      ctx.beginPath();ctx.ellipse(cx,cy+bH*0.5+breakProg*25,outW*0.45,outH*0.09,0,0,Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+
+      // Dibujar recorte — con forma de polígono si está definido
+      ctx.save();
+      ctx.globalAlpha=Math.min(breakProg*1.8,1);
+      if(breakProg>0.25){ctx.shadowColor='rgba(255,106,0,'+(breakProg*0.65)+')';ctx.shadowBlur=Math.round(28*breakProg);}
+
+      if(S.cropPolygon&&S.cropPolygon.length>2){
+        // Recorte por polígono
+        ctx.beginPath();
+        S.cropPolygon.forEach((p,i)=>{
+          const px=ox-outW/2+p.x*outW, py=oy-outH/2+p.y*outH;
+          i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+        });
+        ctx.closePath();ctx.clip();
+      }
+      ctx.drawImage(S.board,srcX,srcY,srcW,srcH,ox-outW/2,oy-outH/2,outW,outH);
+      ctx.shadowBlur=0;
+
+      // Destello en el pico
+      if(breakProg>0.82){
+        const fl=breakProg-0.82;
+        ctx.globalCompositeOperation='screen';
+        ctx.globalAlpha=fl*2.2;
+        const flg=ctx.createRadialGradient(ox,oy,0,ox,oy,outW*0.45);
+        flg.addColorStop(0,'rgba(255,180,80,0.45)');
+        flg.addColorStop(0.5,'rgba(255,106,0,0.2)');
+        flg.addColorStop(1,'rgba(0,0,0,0)');
+        ctx.fillStyle=flg;
+        ctx.fillRect(ox-outW,oy-outH,outW*2,outH*2);
+        ctx.globalCompositeOperation='source-over';
+      }
+      ctx.restore();
+    }
+  } else { drawProdHint(q,cx,cy); }
 
   drawLogo();drawText(ms);drawZoomText(ms);drawSloganBar();applyGrade();
 
@@ -738,22 +1005,25 @@ function render(ms){
 
 function drawBg(){
   const g=ctx.createLinearGradient(0,0,0,H);
-  g.addColorStop(0,'#06061a');g.addColorStop(.5,'#0d0d28');g.addColorStop(1,'#080814');
+  g.addColorStop(0,'#07080f');g.addColorStop(.5,'#0c0d1a');g.addColorStop(1,'#080810');
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(100,100,255,.05)';ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(255,106,0,.04)';ctx.lineWidth=1;
   for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
   for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
   const cg=ctx.createRadialGradient(W/2,H/2,80,W/2,H/2,700);
-  cg.addColorStop(0,'rgba(20,80,255,.07)');cg.addColorStop(1,'rgba(0,0,0,0)');
+  cg.addColorStop(0,'rgba(255,106,0,.05)');cg.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=cg;ctx.fillRect(0,0,W,H);
 }
 function drawBoard(q,cx,cy){
   ctx.fillStyle='#0a0a1a';ctx.beginPath();ctx.moveTo(q[0].x,q[0].y);q.forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.fill();
   ctx.fillStyle='rgba(255,255,255,.18)';ctx.font=`bold ${H*.02}px 'DM Sans',sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('📷 Subí imagen del cartel',cx,cy);
+  ctx.fillText('🎬 Subí video del cartel',cx,cy);
 }
 function drawProd(cx,cy,sc,rotYdeg,sw){
-  const img=S.prod,asp=img.width/img.height;
+  const img=S.prod;
+  const iw=img.videoWidth||img.naturalWidth||img.width||1;
+  const ih=img.videoHeight||img.naturalHeight||img.height||1;
+  const asp=iw/ih;
   const pH=H*.70*sc,pW=pH*asp,py=cy-pH*.16,sh=Math.sin(rotYdeg*Math.PI/180)*.22;
   ctx.save();ctx.translate(cx,py);ctx.transform(1,0,sh,1,0,0);
   ctx.shadowColor='rgba(0,0,0,.82)';ctx.shadowBlur=80+sc*30;ctx.shadowOffsetX=16;ctx.shadowOffsetY=36;
@@ -769,10 +1039,10 @@ function drawProd(cx,cy,sc,rotYdeg,sw){
 }
 function drawProdHint(q,cx,cy){
   const oy=cy-H*.11;
-  ctx.save();ctx.strokeStyle='rgba(0,230,118,.28)';ctx.lineWidth=3;ctx.setLineDash([10,8]);
+  ctx.save();ctx.strokeStyle='rgba(255,106,0,.28)';ctx.lineWidth=3;ctx.setLineDash([10,8]);
   ctx.strokeRect(cx-H*.12,oy-H*.16,H*.24,H*.32);ctx.setLineDash([]);
-  ctx.fillStyle='rgba(0,230,118,.4)';ctx.font=`${H*.015}px 'DM Sans',sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('Subí el producto PNG',cx,oy+H*.18);ctx.restore();
+  ctx.fillStyle='rgba(255,106,0,.5)';ctx.font=`${H*.015}px 'DM Sans',sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('Subí el video producto (pop-out)',cx,oy+H*.18);ctx.restore();
 }
 function drawLogo(){
   if(!S.logo)return;
@@ -865,6 +1135,15 @@ function applyGrade(){
 function redraw(){render(0);}
 window.render=render;window.redraw=redraw;
 
+// ── VIDEO FRAME LOOP ──
+// When not in preview animation mode, still update canvas for live video frames
+(function videoLoop(){
+  requestAnimationFrame(videoLoop);
+  if(S.playing)return; // preview mode handles its own loop
+  const hasVid=['bg','board','prod'].some(k=>S[k]&&S[k].tagName==='VIDEO'&&!S[k].paused&&!S[k].ended);
+  if(hasVid)render(0);
+})();
+
 // ── PREVIEW ──
 function startAnim(){S.playing=true;S.t0=performance.now();document.getElementById('btnPrev').textContent='⏹ Detener';(function loop(now){if(!S.playing)return;render(now-S.t0);S.rafId=requestAnimationFrame(loop);})(S.t0);}
 function stopAnim(){S.playing=false;cancelAnimationFrame(S.rafId);document.getElementById('btnPrev').textContent='▶ Preview';redraw();}
@@ -912,6 +1191,27 @@ function stopRec(){if(mr&&mr.state!=='inactive')mr.stop();}
 function endRec(){S.recording=false;S.playing=false;cancelAnimationFrame(S.rafId);const btn=document.getElementById('btnRec');btn.textContent='⏺ GRABAR VIDEO';btn.classList.remove('rec');PARTS.length=0;document.getElementById('recInfo').classList.remove('on');redraw();}
 function setStatus(m){document.getElementById('status').textContent=m;}
 redraw();
+</script>
+<!-- CROP MODAL -->
+<div id="cropModal">
+  <div class="crop-title">AD3D <span>· Recorte por puntos</span></div>
+  <p class="crop-hint">Clic para agregar puntos · Doble clic para cerrar la forma · Arrastrá puntos para ajustar</p>
+  <div class="crop-box" id="cropBox">
+    <canvas id="cropPreview"></canvas>
+    <canvas id="cropOverlay" style="position:absolute;top:0;left:0;cursor:crosshair"></canvas>
+  </div>
+  <div class="crop-actions">
+    <button class="btn btn-panel" id="btnCropPause" onclick="toggleCropPause()">⏸ Pausar</button>
+    <button class="btn btn-panel" onclick="cropStepFrame(-1)">◀ Frame</button>
+    <button class="btn btn-panel" onclick="cropStepFrame(1)">Frame ▶</button>
+    <button class="btn btn-panel" onclick="clearCropPoints()">🗑 Borrar</button>
+    <button class="btn btn-g" id="btnConfirmCrop" onclick="confirmCrop()">✔ Confirmar</button>
+    <button class="btn btn-ghost" onclick="resetCrop()">↺ Completo</button>
+    <button class="btn btn-ghost" onclick="closeCropModal()">✕</button>
+  </div>
+</div>
+
+<script>
 </script>
 </body>
 </html>
